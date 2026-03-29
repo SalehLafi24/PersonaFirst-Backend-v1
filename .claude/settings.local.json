@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python -m pytest tests/test_purchases.py tests/test_affinity_generate.py tests/test_recommendations_v2.py -v 2>&1)",
+      "Bash(.venv/Scripts/python -m pytest -v 2>&1)",
+      "Bash(python -m pytest -v)",
+      "Bash(python -m pytest tests/test_recommendations_v2.py -v)",
+      "Bash(python -m pytest -q)",
+      "Bash(python:*)",
+      "Bash(.venv/Scripts/python -m pytest tests/test_behavior_engine.py tests/test_recommendations_v7.py -v 2>&1)"
+    ]
+  }
+}
