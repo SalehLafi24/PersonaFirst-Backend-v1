@@ -102,8 +102,6 @@ def run_relationship_engine(
                     source_value=a[1],
                     target_attribute_id=b[0],
                     target_value=b[1],
-                    relationship_type="complementary",
-                    source="cooccurrence",
                     confidence=round(confidence, 6),
                     strength=round(confidence, 6),
                     lift=round(lift, 6),

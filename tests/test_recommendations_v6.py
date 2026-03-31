@@ -155,7 +155,7 @@ def test_popularity_weight_affects_ranking(client, db):
 
 
 def test_popularity_weight_zero_keeps_popular_items_last(client, db):
-    """With popularity_weight=0.0, popular items score 0 and appear last."""
+    """With popularity_weight=0.0, popular-only items score 0 and are excluded."""
     ws = make_workspace(client, "V6-4", "v6-4")
     wid = ws["id"]
 
@@ -168,10 +168,9 @@ def test_popularity_weight_zero_keeps_popular_items_last(client, db):
     data = client.get(
         f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=0.0"
     ).json()
-    # Direct item has score 0.01, popular item has score 0 → direct is first
+    # Direct item scores 0.01; popular item scores 0 → filtered out
+    assert len(data) == 1
     assert data[0]["product_id"] == "prod_direct"
-    assert data[1]["product_id"] == "prod_pop"
-    assert data[1]["recommendation_score"] == pytest.approx(0.0)
 
 
 # ---------------------------------------------------------------------------
@@ -207,8 +206,8 @@ def test_direct_weight_dominates_when_high(client, db):
 
 def test_direct_weight_zero_removes_direct_only_items(client, db):
     """
-    direct_weight=0 means direct matches score 0, so a popular item outranks them
-    when popularity_weight > 0.
+    direct_weight=0 means direct-only items score 0 and are excluded from results.
+    A popular item with popularity_weight>0 outranks and is the only result.
     """
     ws = make_workspace(client, "V6-6", "v6-6")
     wid = ws["id"]
@@ -223,10 +222,10 @@ def test_direct_weight_zero_removes_direct_only_items(client, db):
     data = client.get(
         f"/workspaces/{wid}/recommendations/cust_1?direct_weight=0.0&popularity_weight=1.0"
     ).json()
-    # prod_direct: 0.9 * 0 = 0; prod_pop: 5 * 1.0 = 5.0 → popular wins
+    # prod_direct: 0.9 * 0 = 0 → filtered out; prod_pop: 5 * 1.0 = 5.0 → only result
+    assert len(data) == 1
     assert data[0]["product_id"] == "prod_pop"
-    assert data[1]["product_id"] == "prod_direct"
-    assert data[1]["recommendation_score"] == pytest.approx(0.0)
+    assert data[0]["recommendation_score"] == pytest.approx(5.0)
 
 
 # ---------------------------------------------------------------------------

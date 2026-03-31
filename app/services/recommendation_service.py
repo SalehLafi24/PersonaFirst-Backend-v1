@@ -14,6 +14,7 @@ from app.schemas.recommendation import (
     MatchedAttribute,
     RecommendationRead,
     RelationshipMatch,
+    SlotFilter,
 )
 
 # ---------------------------------------------------------------------------
@@ -31,6 +32,58 @@ _DEFAULT_DIRECT_WEIGHT: float = 1.0
 _DEFAULT_RELATIONSHIP_WEIGHT: float = 1.0
 _DEFAULT_POPULARITY_WEIGHT: float = 0.0
 _DEFAULT_BEHAVIORAL_WEIGHT: float = 0.0
+
+# ---------------------------------------------------------------------------
+# Algorithm presets — each maps to weights + a tie-break priority.
+#
+# tie_break_priority: ordered list of score fields used to break ties when
+# final_score is equal. After exhausting these, product PK ASC is the final
+# deterministic tiebreaker.
+# ---------------------------------------------------------------------------
+
+ALGORITHM_PRESETS: dict[str, dict] = {
+    "balanced": {
+        "direct_weight": 1.0,
+        "relationship_weight": 0.7,
+        "popularity_weight": 0.0,
+        "behavioral_weight": 0.5,
+        "tie_break_priority": ["direct_score", "relationship_score", "behavioral_score", "product_id"],
+    },
+    "behavior_first": {
+        "direct_weight": 0.3,
+        "relationship_weight": 0.3,
+        "popularity_weight": 0.0,
+        "behavioral_weight": 1.0,
+        "tie_break_priority": ["behavioral_score", "relationship_score", "direct_score", "product_id"],
+    },
+    "affinity_first": {
+        "direct_weight": 1.0,
+        "relationship_weight": 0.3,
+        "popularity_weight": 0.0,
+        "behavioral_weight": 0.2,
+        "tie_break_priority": ["direct_score", "relationship_score", "behavioral_score", "product_id"],
+    },
+    "relationship_only": {
+        "direct_weight": 0.0,
+        "relationship_weight": 1.0,
+        "popularity_weight": 0.0,
+        "behavioral_weight": 0.0,
+        "tie_break_priority": ["relationship_score", "direct_score", "behavioral_score", "product_id"],
+    },
+    "behavioral_only": {
+        "direct_weight": 0.0,
+        "relationship_weight": 0.0,
+        "popularity_weight": 0.0,
+        "behavioral_weight": 1.0,
+        "tie_break_priority": ["behavioral_score", "relationship_score", "direct_score", "product_id"],
+    },
+}
+
+
+def get_algorithm_preset(name: str) -> dict | None:
+    """Return a copy of the named preset, or None if unknown."""
+    preset = ALGORITHM_PRESETS.get(name)
+    return dict(preset) if preset is not None else None
 
 
 def get_attribute_weight(attr_id: str) -> float:
@@ -65,7 +118,7 @@ def _is_group_suppressed(
         return False
     if window is not None:
         return (reference_date - most_recent_order_date).days <= window
-    return False
+    return True
 
 
 def _build_suppression_sets(
@@ -175,6 +228,29 @@ def _is_functionally_suppressed(
 # Main recommendation logic
 # ---------------------------------------------------------------------------
 
+def _product_passes_filters(
+    db_id: int,
+    attrs_by_product: dict[int, list],
+    filters: list[SlotFilter],
+) -> bool:
+    """Return True if the product satisfies ALL filters (AND logic)."""
+    product_attrs = attrs_by_product.get(db_id, [])
+    for f in filters:
+        matched = False
+        for attr in product_attrs:
+            if attr.attribute_id != f.attribute_id:
+                continue
+            if f.operator == "eq" and attr.attribute_value == f.value:
+                matched = True
+                break
+            if f.operator == "in" and attr.attribute_value in f.value:
+                matched = True
+                break
+        if not matched:
+            return False
+    return True
+
+
 def get_recommendations(
     db: Session,
     workspace_id: int,
@@ -186,7 +262,12 @@ def get_recommendations(
     relationship_weight: float = _DEFAULT_RELATIONSHIP_WEIGHT,
     popularity_weight: float = _DEFAULT_POPULARITY_WEIGHT,
     behavioral_weight: float = _DEFAULT_BEHAVIORAL_WEIGHT,
-) -> list[RecommendationRead]:
+    tie_break_priority: list[str] | None = None,
+    slot_filters: list[SlotFilter] | None = None,
+    fallback_mode: str = "strict",
+    diversity_enabled: bool = False,
+    excluded_product_ids: set[str] | None = None,
+) -> tuple[list[RecommendationRead], bool]:
     if reference_date is None:
         reference_date = date.today()
 
@@ -210,7 +291,7 @@ def get_recommendations(
     # 2. Load all products and attributes
     products = db.query(Product).filter(Product.workspace_id == workspace_id).all()
     if not products:
-        return []
+        return [], False
 
     product_db_ids = [p.id for p in products]
     raw_attrs = (
@@ -394,9 +475,9 @@ def get_recommendations(
         # Determine source label — only include a signal if it actually contributed
         # (score > 0 AND weight > 0). "popular" is a fallback when nothing else fires.
         sources = []
-        if direct_score > 0:
+        if direct_score > 0 and direct_weight > 0:
             sources.append("direct")
-        if relationship_score > 0:
+        if relationship_score > 0 and relationship_weight > 0:
             sources.append("relationship")
         if behavioral_score > 0 and behavioral_weight > 0:
             sources.append("behavioral")
@@ -458,7 +539,7 @@ def get_recommendations(
         ))
 
     if not candidates:
-        return []
+        return [], False
 
     # 8. Apply weighted scoring to every candidate
     scored: list[tuple[float, int, RecommendationRead]] = []
@@ -470,24 +551,78 @@ def get_recommendations(
             + rec.behavioral_score * behavioral_weight,
             6,
         )
+        if final_score <= 0:
+            continue
         scored.append((
             final_score,
             db_id,
             rec.model_copy(update={"recommendation_score": final_score}),
         ))
 
-    # 9. Deduplicate by group — keep highest final_score per group
-    by_group: dict[str, tuple[float, int, RecommendationRead]] = {}
-    for final_score, db_id, rec in scored:
-        key = rec.group_id if rec.group_id else rec.product_id
-        if key not in by_group or final_score > by_group[key][0]:
-            by_group[key] = (final_score, db_id, rec)
+    # 9. Deduplicate by group — keep highest final_score per group.
+    #    When diversity_enabled, skip dedup here; the diversity-aware selection
+    #    in step 11 enforces max-1-per-group from the full ranked pool instead.
+    if diversity_enabled:
+        by_group: dict[str, tuple[float, int, RecommendationRead]] = {
+            f"{db_id}": (final_score, db_id, rec)
+            for final_score, db_id, rec in scored
+        }
+    else:
+        by_group: dict[str, tuple[float, int, RecommendationRead]] = {}
+        for final_score, db_id, rec in scored:
+            key = rec.group_id if rec.group_id else rec.product_id
+            if key not in by_group or final_score > by_group[key][0]:
+                by_group[key] = (final_score, db_id, rec)
 
-    # 10. Sort by final_score DESC; break ties by internal product PK ASC (deterministic)
-    return [
-        rec
-        for _, _, rec in sorted(
-            by_group.values(),
-            key=lambda t: (-t[0], t[1]),
-        )
-    ][:top_n]
+    # 10. Apply slot filters — remove candidates that don't match all filters.
+    #     If filtering empties the set and fallback_mode is "relax_filters",
+    #     fall back to the unfiltered candidate pool (no score recomputation).
+    fallback_applied = False
+    if slot_filters:
+        filtered = {
+            k: v for k, v in by_group.items()
+            if _product_passes_filters(v[1], attrs_by_product, slot_filters)
+        }
+        if filtered or fallback_mode == "strict":
+            by_group = filtered
+        else:
+            # fallback_mode == "relax_filters" — keep by_group as-is
+            fallback_applied = True
+
+    # 11. Sort by final_score DESC, then algorithm-specific tie-break fields,
+    #     then internal product PK ASC (deterministic fallback).
+    #     Numeric fields sort DESC (negated); string fields sort ASC naturally.
+    def _sort_key(t: tuple[float, int, RecommendationRead]):
+        final_score, db_id, rec = t
+        key: list = [-final_score]
+        for field in (tie_break_priority or []):
+            val = getattr(rec, field, 0.0)
+            if isinstance(val, str):
+                key.append(val)
+            else:
+                key.append(-val)
+        key.append(float(db_id))
+        return key
+
+    ranked = sorted(by_group.values(), key=_sort_key)
+
+    # 12. Selection with refill — single pass over the ranked pool.
+    #     Skips excluded products (cross-slot) and duplicate groups (diversity).
+    #     Continues scanning past skipped candidates until top_n or pool exhausted.
+    _excluded = excluded_product_ids or set()
+    seen_groups: set[str] = set()
+    results: list[RecommendationRead] = []
+
+    for _, _, rec in ranked:
+        if rec.product_id in _excluded:
+            continue
+        if diversity_enabled:
+            gkey = rec.group_id if rec.group_id else rec.product_id
+            if gkey in seen_groups:
+                continue
+            seen_groups.add(gkey)
+        results.append(rec)
+        if len(results) >= top_n:
+            break
+
+    return results, fallback_applied

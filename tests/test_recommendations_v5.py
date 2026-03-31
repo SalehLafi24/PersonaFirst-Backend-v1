@@ -111,7 +111,9 @@ def test_no_matches_fallback_fills_with_popular(client, db):
     # Another customer bought it → popular
     seed_purchase(db, wid, "other_cust", "prod_popular", quantity=10)
 
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 1
     assert data[0]["product_id"] == "prod_popular"
@@ -126,6 +128,8 @@ def test_partial_results_fallback_fills_gap(client, db):
     """
     Main pipeline returns 1 result, top_n=3. Fallback fills 2 more slots.
     Fallback items appear AFTER main results in the list.
+    popularity_weight=0.001 keeps popular items scoring > 0 but well below
+    the direct match so ordering is preserved.
     """
     ws = make_workspace(client, "V5-3", "v5-3")
     wid = ws["id"]
@@ -143,10 +147,12 @@ def test_partial_results_fallback_fills_gap(client, db):
     seed_purchase(db, wid, "other_cust", "prod_pop_a", quantity=8)
     seed_purchase(db, wid, "other_cust", "prod_pop_b", quantity=3)
 
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1?top_n=3").json()
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?top_n=3&popularity_weight=0.001"
+    ).json()
 
     assert len(data) == 3
-    # Direct recommendation comes first
+    # Direct recommendation comes first (0.9 >> 0.008 and 0.003)
     assert data[0]["product_id"] == "prod_direct"
     assert data[0]["recommendation_source"] == "direct"
     # Fallback items appended in popularity order
@@ -321,8 +327,10 @@ def test_fallback_ordered_by_popularity_desc(client, db):
     seed_purchase(db, wid, "cust_x", "prod_b", quantity=10)
     seed_purchase(db, wid, "cust_x", "prod_c", quantity=2)
 
-    # No affinities for cust_1 → pure fallback
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
+    # No affinities for cust_1 → pure fallback; popularity_weight=1.0 so items score > 0
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 3
     assert data[0]["product_id"] == "prod_a"  # 20
@@ -345,7 +353,9 @@ def test_fallback_tie_break_by_product_pk_asc(client, db):
     seed_purchase(db, wid, "cust_x", "prod_z", quantity=5)
     seed_purchase(db, wid, "cust_x", "prod_a", quantity=5)
 
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 2
     assert data[0]["product_id"] == "prod_z"  # lower PK → first
@@ -371,8 +381,10 @@ def test_fallback_popularity_is_sum_of_quantity(client, db):
     seed_purchase(db, wid, "cust_b", "prod_1", quantity=7)
     seed_purchase(db, wid, "cust_c", "prod_1", quantity=2)
 
-    # cust_1 has no affinities → fallback
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
+    # cust_1 has no affinities → fallback; popularity_weight=1.0 so items score > 0
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 1
     assert data[0]["popularity_score"] == pytest.approx(12.0)  # 3+7+2
@@ -390,7 +402,9 @@ def test_fallback_multiple_purchases_same_customer_sum(client, db):
     seed_purchase(db, wid, "cust_x", "prod_1", quantity=4)
     seed_purchase(db, wid, "cust_x", "prod_1", quantity=6)
 
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 1
     assert data[0]["popularity_score"] == pytest.approx(10.0)
@@ -525,7 +539,9 @@ def test_fallback_capped_by_top_n(client, db):
         seed_purchase(db, wid, "cust_x", pid, quantity=i + 1)
 
     # cust_1 has no affinities → pure fallback, top_n=3
-    data = client.get(f"/workspaces/{wid}/recommendations/cust_1?top_n=3").json()
+    data = client.get(
+        f"/workspaces/{wid}/recommendations/cust_1?top_n=3&popularity_weight=1.0"
+    ).json()
 
     assert len(data) == 3
     assert all(r["recommendation_source"] == "popular" for r in data)

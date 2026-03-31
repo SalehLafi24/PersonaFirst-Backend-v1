@@ -12,8 +12,8 @@ class RelationshipRead(BaseModel):
     source_value: str
     target_attribute_id: str
     target_value: str
-    relationship_type: str
-    source: str
+    relationship_type: str | None = None
+    source: str | None = None
     confidence: float
     lift: float
     pair_count: int

@@ -118,8 +118,8 @@ def test_different_group_not_suppressed(client, db):
 
 def test_no_repurchase_metadata_does_not_suppress_group(client, db):
     """
-    A product with no repurchase_behavior should NOT cause its group to be
-    suppressed when another product in the same group hasn't been purchased.
+    A product with no repurchase_behavior (None) is treated as non-repurchasable,
+    so its group is suppressed — prod_2 in the same group is not returned.
     """
     ws = make_workspace(client, "V2-Fix2", "v2-fix2")
     wid = ws["id"]
@@ -135,9 +135,9 @@ def test_no_repurchase_metadata_does_not_suppress_group(client, db):
     seed_purchase(db, wid, "cust_1", "prod_1", group_id="g_yoga")
 
     data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
-    # prod_1 suppressed (exact purchase); group not suppressed → prod_2 appears
-    assert len(data) == 1
-    assert data[0]["product_id"] == "prod_2"
+    # prod_1 suppressed (exact purchase); group suppressed (no repurchase_behavior → True)
+    # → prod_2 also suppressed
+    assert data == []
 
 
 # ---------------------------------------------------------------------------
