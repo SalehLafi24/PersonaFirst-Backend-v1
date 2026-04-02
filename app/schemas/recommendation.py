@@ -1,7 +1,10 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 VALID_FILTER_OPERATORS = {"eq", "in"}
 VALID_FALLBACK_MODES = {"strict", "relax_filters"}
+VALID_EXCLUSION_LEVELS = {"product", "group"}
+VALID_DIVERSITY_MODES = {"off", "strict", "adaptive"}
+VALID_FALLBACK_BEHAVIORS = {"none", "direct", "balanced"}
 
 
 class SlotFilter(BaseModel):
@@ -26,7 +29,29 @@ class SlotConfig(BaseModel):
     filters: list[SlotFilter] = []
     fallback_mode: str = "strict"
     exclude_previous_slots: bool = False
+    exclusion_level: str = "product"
     diversity_enabled: bool = False
+    diversity_mode: str = "off"
+    fallback_behavior: str = "none"
+
+    @model_validator(mode="after")
+    def _resolve_diversity_compat(self) -> "SlotConfig":
+        """Legacy diversity_enabled=true maps to diversity_mode='strict'
+        unless diversity_mode was explicitly set to something other than 'off'."""
+        # If caller set diversity_mode explicitly (not default), it takes precedence.
+        # If only diversity_enabled was set, map it.
+        if self.diversity_enabled and self.diversity_mode == "off":
+            self.diversity_mode = "strict"
+        return self
+
+    @field_validator("diversity_mode")
+    @classmethod
+    def diversity_mode_must_be_valid(cls, v: str) -> str:
+        if v not in VALID_DIVERSITY_MODES:
+            raise ValueError(
+                f"Invalid diversity_mode '{v}'. Must be one of: {', '.join(sorted(VALID_DIVERSITY_MODES))}"
+            )
+        return v
 
     @field_validator("top_n")
     @classmethod
@@ -41,6 +66,24 @@ class SlotConfig(BaseModel):
         if v not in VALID_FALLBACK_MODES:
             raise ValueError(
                 f"Invalid fallback_mode '{v}'. Must be one of: {', '.join(sorted(VALID_FALLBACK_MODES))}"
+            )
+        return v
+
+    @field_validator("exclusion_level")
+    @classmethod
+    def exclusion_level_must_be_valid(cls, v: str) -> str:
+        if v not in VALID_EXCLUSION_LEVELS:
+            raise ValueError(
+                f"Invalid exclusion_level '{v}'. Must be one of: {', '.join(sorted(VALID_EXCLUSION_LEVELS))}"
+            )
+        return v
+
+    @field_validator("fallback_behavior")
+    @classmethod
+    def fallback_behavior_must_be_valid(cls, v: str) -> str:
+        if v not in VALID_FALLBACK_BEHAVIORS:
+            raise ValueError(
+                f"Invalid fallback_behavior '{v}'. Must be one of: {', '.join(sorted(VALID_FALLBACK_BEHAVIORS))}"
             )
         return v
 

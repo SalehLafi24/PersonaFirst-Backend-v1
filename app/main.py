@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api.routes import affinities, behavioral_relationships, health, purchases, recommendations, relationships, users, workspaces
+from app.api.routes import affinities, behavioral_relationships, health, purchases, recommendations, relationships, signal_strength, users, workspaces
 from app.core.config import settings
 from app.core.database import Base, engine
 
@@ -16,3 +16,4 @@ app.include_router(purchases.router)
 app.include_router(recommendations.router)
 app.include_router(relationships.router)
 app.include_router(behavioral_relationships.router)
+app.include_router(signal_strength.router)

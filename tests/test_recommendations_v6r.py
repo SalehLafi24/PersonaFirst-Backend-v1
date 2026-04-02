@@ -273,34 +273,25 @@ def test_deterministic_tiebreak_with_equal_popularity_boost(client, db):
 # V6r-7: group dedup picks popular winner when popularity_weight is high
 # ---------------------------------------------------------------------------
 
-def test_group_dedup_picks_popular_winner_with_high_weight(client, db):
+def test_same_group_both_returned_ranked_by_weight(client, db):
     """
     Two products in the same group: one has a direct match, the other is
-    more popular. With a high enough popularity_weight the popular product
-    wins the group slot.
+    more popular. Without diversity, both are returned ranked by weighted score.
     """
     ws = make_workspace(client, "V6R-7", "v6r-7")
     wid = ws["id"]
 
     seed_affinity(db, wid, "cust_1", "category", "pilates", 0.4)
 
-    # Direct-match member of the group (weak signal)
+    # Direct-match member of the group
     seed_product(db, wid, "prod_g_direct", "SKU-GD", "Pilates Ring",
                  group_id="grp_pilates",
                  attributes=[("category", "pilates")])
 
-    # Popular-only member of the same group (no affinity match for cust_1)
-    # Needs a non-complementary signal — give it a type affinity that cust_1
-    # doesn't have, so it scores 0 direct but has high popularity.
+    # Popular-only member — replace attribute with brand=generic (no affinity match)
     seed_product(db, wid, "prod_g_pop", "SKU-GP", "Pilates Ball",
                  group_id="grp_pilates",
                  attributes=[("category", "pilates")])
-
-    # cust_1 has affinity for prod_g_direct; prod_g_pop gets no direct match
-    # because we only gave cust_1 "pilates" affinity and both share it.
-    # Override: give prod_g_pop a DIFFERENT attribute so it has zero direct_score.
-    # Rebuild: prod_g_pop has only "brand=generic", no affinity match.
-    # Re-create properly:
     db.query(ProductAttribute).filter_by(
         product_id=db.query(Product).filter_by(
             workspace_id=wid, product_id="prod_g_pop"
@@ -317,34 +308,27 @@ def test_group_dedup_picks_popular_winner_with_high_weight(client, db):
     ))
     db.commit()
 
-    # prod_g_pop is very popular
     seed_purchase(db, wid, "other_a", "prod_g_pop", quantity=500)
-    # prod_g_direct has minimal popularity
     seed_purchase(db, wid, "other_b", "prod_g_direct", quantity=1)
 
-    # With low popularity_weight: direct winner (prod_g_direct)
-    # direct_score for prod_g_direct = 0.4 * 1.0 = 0.4
-    # final = 0.4*1 + 0*1 + 1*0.01 = 0.4 + 0.01 = 0.41 > 500*0.01=5? No, 5>0.41
-    # Let's use popularity_weight=0.001:
-    # prod_g_direct final = 0.4 + 1*0.001 = 0.401
-    # prod_g_pop final = 0 + 500*0.001 = 0.5 → pop wins at 0.001 weight
-    # Actually let's verify at popularity_weight=0 (direct wins):
-    data_direct_wins = client.get(
+    # popularity_weight=0: only prod_g_direct scores > 0 (direct=0.4)
+    data_direct_only = client.get(
         f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=0.0"
     ).json()
-    group_results = [r for r in data_direct_wins if r["group_id"] == "grp_pilates"]
+    group_results = [r for r in data_direct_only if r["group_id"] == "grp_pilates"]
     assert len(group_results) == 1
     assert group_results[0]["product_id"] == "prod_g_direct"
 
-    # With popularity_weight=0.01 high enough for pop product to win the group
-    # prod_g_direct: 0.4*1 + 0 + 1*0.01 = 0.41
-    # prod_g_pop:    0 + 0 + 500*0.01 = 5.0  → pop wins
-    data_pop_wins = client.get(
+    # popularity_weight=0.01: both score > 0; pop product ranks first
+    # prod_g_direct: 0.4*1 + 1*0.01 = 0.41
+    # prod_g_pop:    0 + 500*0.01 = 5.0
+    data_both = client.get(
         f"/workspaces/{wid}/recommendations/cust_1"
         "?direct_weight=1.0&relationship_weight=1.0&popularity_weight=0.01"
     ).json()
-    group_results_pop = [r for r in data_pop_wins if r["group_id"] == "grp_pilates"]
-    assert len(group_results_pop) == 1
-    assert group_results_pop[0]["product_id"] == "prod_g_pop"
-    assert group_results_pop[0]["recommendation_source"] == "popular"
-    assert group_results_pop[0]["popularity_score"] == pytest.approx(500.0)
+    group_results_both = [r for r in data_both if r["group_id"] == "grp_pilates"]
+    assert len(group_results_both) == 2
+    assert group_results_both[0]["product_id"] == "prod_g_pop"
+    assert group_results_both[0]["recommendation_source"] == "popular"
+    assert group_results_both[0]["popularity_score"] == pytest.approx(500.0)
+    assert group_results_both[1]["product_id"] == "prod_g_direct"

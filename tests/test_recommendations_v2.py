@@ -224,10 +224,12 @@ def test_repurchasable_no_window_keeps_group_eligible(client, db):
 
 
 # ---------------------------------------------------------------------------
-# Rule 5: final dedup by group_id + null group treated as own group
+# Rule 5: same group returns all ranked (diversity controls dedup)
 # ---------------------------------------------------------------------------
 
-def test_dedup_keeps_highest_score_per_group(client, db):
+def test_same_group_returns_all_ranked_by_score(client, db):
+    """Without diversity, both products in the same group are returned,
+    highest score first."""
     ws = make_workspace(client, "V2-8", "v2-8")
     wid = ws["id"]
 
@@ -240,9 +242,10 @@ def test_dedup_keeps_highest_score_per_group(client, db):
                  attributes=[("category", "yoga"), ("activity", "pregnant")])
 
     data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
-    assert len(data) == 1
+    assert len(data) == 2
     assert data[0]["product_id"] == "prod_2"
     assert data[0]["recommendation_score"] == pytest.approx(1.7)
+    assert data[1]["product_id"] == "prod_1"
 
 
 def test_null_group_id_treated_as_own_group(client, db):

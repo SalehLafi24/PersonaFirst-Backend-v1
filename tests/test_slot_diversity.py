@@ -138,11 +138,11 @@ def test_diversity_preserves_rank_order(client, db):
 
 
 # ---------------------------------------------------------------------------
-# Without diversity — current dedup still works
+# Without diversity — no group dedup, all candidates returned
 # ---------------------------------------------------------------------------
 
-def test_without_diversity_dedup_still_applies(client, db):
-    """diversity_enabled=false uses existing group dedup (best per group)."""
+def test_without_diversity_same_group_returns_all(client, db):
+    """diversity_enabled=false allows multiple products from the same group."""
     ws = make_workspace(client, "DIV-4", "div-4")
     wid = ws["id"]
 
@@ -155,8 +155,8 @@ def test_without_diversity_dedup_still_applies(client, db):
     resp = slot_post(client, wid, "cust_1", "balanced", 5,
                      diversity_enabled=False)
     data = resp.json()["results"]
-    # Dedup keeps 1 per group even without diversity
-    assert len(data) == 1
+    # Both returned — no group dedup without diversity
+    assert len(data) == 2
 
 
 # ---------------------------------------------------------------------------
@@ -243,7 +243,8 @@ def test_diversity_works_with_filters(client, db):
 # Diversity in multi-slot
 # ---------------------------------------------------------------------------
 
-def test_diversity_works_in_multi_slot(client, db):
+def test_diversity_contrast_in_multi_slot(client, db):
+    """Diverse slot returns 1 per group; normal slot returns all."""
     ws = make_workspace(client, "DIV-8", "div-8")
     wid = ws["id"]
 
@@ -265,8 +266,8 @@ def test_diversity_works_in_multi_slot(client, db):
 
     # Diverse slot: 1 per group
     assert len(diverse) == 1
-    # Normal slot: dedup also keeps 1 per group (existing behavior)
-    assert len(normal) == 1
+    # Normal slot: both products returned (no dedup)
+    assert len(normal) == 2
 
 
 # ---------------------------------------------------------------------------

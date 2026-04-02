@@ -168,11 +168,11 @@ def test_behavior_first_ranks_behavioral_higher(client, db):
     ws = make_workspace(client, "Slot-BF", "slot-bf")
     wid = ws["id"]
 
-    seed_affinity(db, wid, "cust_1", "category", "yoga", 0.9)
+    seed_affinity(db, wid, "cust_1", "category", "yoga", 2.5)
     # prod_direct: strong direct match, no behavioral
     seed_product(db, wid, "prod_direct", "SKU-D", "Yoga Mat",
                  attributes=[("category", "yoga")])
-    # prod_beh: weak direct match but strong behavioral
+    # prod_beh: same direct match but strong behavioral
     seed_product(db, wid, "prod_purchased", "SKU-P", "Purchased Item")
     seed_product(db, wid, "prod_beh", "SKU-B", "Behavioral Target",
                  attributes=[("category", "yoga")])
@@ -184,8 +184,8 @@ def test_behavior_first_ranks_behavioral_higher(client, db):
     resp = slot_post(client, wid, "cust_1", "behavior_first", 5)
     data = resp.json()["results"]
     assert len(data) == 2
-    # prod_beh: direct=0.9*0.3=0.27 + behavioral=0.9*1.0=0.9 = 1.17
-    # prod_direct: direct=0.9*0.3=0.27 + behavioral=0*1.0=0 = 0.27
+    # prod_beh: direct=2.5*0.3=0.75 + behavioral=0.9*1.0=0.9 = 1.65
+    # prod_direct: direct=2.5*0.3=0.75 + behavioral=0*1.0=0 = 0.75
     assert data[0]["product_id"] == "prod_beh"
     assert data[1]["product_id"] == "prod_direct"
 
@@ -251,7 +251,7 @@ def test_tie_break_uses_algorithm_priority(client, db):
     ws = make_workspace(client, "Slot-TB", "slot-tb")
     wid = ws["id"]
 
-    seed_affinity(db, wid, "cust_1", "category", "yoga", 0.9)
+    seed_affinity(db, wid, "cust_1", "category", "yoga", 2.5)
 
     # Both products match category=yoga (same direct score)
     prod_a = seed_product(db, wid, "prod_a", "SKU-A", "Product A",
@@ -266,8 +266,8 @@ def test_tie_break_uses_algorithm_priority(client, db):
                       strength=0.5, overlap=5, source_count=10)
 
     # behavior_first: direct=0.3, rel=0.3, pop=0.0, beh=1.0
-    # prod_a: 0.9*0.3 + 0*1.0 = 0.27
-    # prod_b: 0.9*0.3 + 0.5*1.0 = 0.77
+    # prod_a: 2.5*0.3 + 0*1.0 = 0.75
+    # prod_b: 2.5*0.3 + 0.5*1.0 = 1.25
     # prod_b wins outright on final_score.
 
     resp = slot_post(client, wid, "cust_1", "behavior_first", 5)

@@ -194,10 +194,12 @@ def test_results_sorted_by_recommendation_score_desc(client, db):
 
 
 # ---------------------------------------------------------------------------
-# Deduplication by group_id
+# Same group — no automatic dedup (diversity controls this)
 # ---------------------------------------------------------------------------
 
-def test_deduplicates_by_group_id_keeps_highest_score(client, db):
+def test_same_group_returns_all_ranked(client, db):
+    """Without diversity, multiple products from the same group are returned
+    in score order."""
     ws = make_workspace(client, "R9", "r9")
     wid = ws["id"]
 
@@ -205,7 +207,7 @@ def test_deduplicates_by_group_id_keeps_highest_score(client, db):
         ("category", "yoga", 0.9),
         ("activity", "pregnant", 0.8),
     ])
-    # Two products in the same group — prod_better scores higher
+    # Two products in the same group — both returned, highest score first
     seed_product(db, wid, "prod_basic", "SKU-A", "Basic Yoga Mat", "group_yoga", [
         ("category", "yoga"),
     ])
@@ -215,8 +217,9 @@ def test_deduplicates_by_group_id_keeps_highest_score(client, db):
     ])
 
     data = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
-    assert len(data) == 1
+    assert len(data) == 2
     assert data[0]["product_id"] == "prod_better"
+    assert data[1]["product_id"] == "prod_basic"
 
 
 # ---------------------------------------------------------------------------

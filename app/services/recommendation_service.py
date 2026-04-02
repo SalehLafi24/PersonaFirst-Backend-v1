@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 from collections import defaultdict
 from datetime import date
 
@@ -251,6 +255,35 @@ def _product_passes_filters(
     return True
 
 
+def _compute_effective_score(
+    rec: RecommendationRead,
+    final_score: float,
+    algorithm: str | None,
+    fallback_behavior: str,
+) -> tuple[float, str]:
+    """Return (effective_score, fallback_explanation).
+
+    When the algorithm's primary signal is absent and a fallback policy is set,
+    returns an alternative score for ranking/thresholding.  Otherwise returns
+    (final_score, "").
+    """
+    if algorithm in ("behavior_first", "behavioral_only") and rec.behavioral_score <= 0:
+        if fallback_behavior == "direct":
+            return rec.direct_score, "Behavioral signal unavailable; fell back to direct score."
+        if fallback_behavior == "balanced":
+            eff = rec.direct_score + rec.relationship_score + rec.behavioral_score
+            return eff, "Behavioral signal unavailable; fell back to balanced fallback score."
+
+    if algorithm == "relationship_only" and rec.relationship_score <= 0:
+        if fallback_behavior == "direct":
+            return rec.direct_score, "Relationship signal unavailable; fell back to direct score."
+        if fallback_behavior == "balanced":
+            eff = rec.direct_score + rec.relationship_score + rec.behavioral_score
+            return eff, "Relationship signal unavailable; fell back to balanced fallback score."
+
+    return final_score, ""
+
+
 def get_recommendations(
     db: Session,
     workspace_id: int,
@@ -265,9 +298,15 @@ def get_recommendations(
     tie_break_priority: list[str] | None = None,
     slot_filters: list[SlotFilter] | None = None,
     fallback_mode: str = "strict",
-    diversity_enabled: bool = False,
+    algorithm: str | None = None,
+    fallback_behavior: str = "none",
+    max_per_group: int | None = None,
+    max_scan_depth: int | None = None,
+    min_score_threshold: float | None = None,
     excluded_product_ids: set[str] | None = None,
+    excluded_group_ids: set[str] | None = None,
 ) -> tuple[list[RecommendationRead], bool]:
+    logger.warning("DEBUG get_recommendations called: workspace=%s customer=%s", workspace_id, customer_id)
     if reference_date is None:
         reference_date = date.today()
 
@@ -287,9 +326,12 @@ def get_recommendations(
     suppressed_product_ids, suppressed_group_keys, suppressed_functional_sigs = (
         _build_suppression_sets(db, workspace_id, customer_id, reference_date)
     )
+    logger.warning("DEBUG suppressed: products=%d groups=%d sigs=%d",
+                   len(suppressed_product_ids), len(suppressed_group_keys), len(suppressed_functional_sigs))
 
     # 2. Load all products and attributes
     products = db.query(Product).filter(Product.workspace_id == workspace_id).all()
+    logger.warning("DEBUG products loaded: %d", len(products))
     if not products:
         return [], False
 
@@ -311,6 +353,7 @@ def get_recommendations(
     if min_score is not None:
         affinities_q = affinities_q.filter(CustomerAttributeAffinity.score >= min_score)
     affinities = affinities_q.order_by(CustomerAttributeAffinity.score.desc()).all()
+    logger.warning("DEBUG affinities loaded: %d (min_score filter=%s)", len(affinities), min_score)
 
     # 4. Build affinity map and relationship contributions
     affinity_map: dict[tuple[str, str], float] = {}
@@ -538,10 +581,16 @@ def get_recommendations(
             ),
         ))
 
+    logger.warning("DEBUG candidates after step 7: %d", len(candidates))
     if not candidates:
         return [], False
 
-    # 8. Apply weighted scoring to every candidate
+    # 8. Apply weighted scoring to every candidate.
+    #    When fallback_behavior is active, effective_score may differ from
+    #    final_score for candidates missing the algorithm's primary signal.
+    #    effective_score is stored as the tuple's first element and used for
+    #    ranking (step 11) and threshold (step 12).  recommendation_score in
+    #    the response always reflects the original weighted final_score.
     scored: list[tuple[float, int, RecommendationRead]] = []
     for db_id, rec in candidates:
         final_score = round(
@@ -551,28 +600,36 @@ def get_recommendations(
             + rec.behavioral_score * behavioral_weight,
             6,
         )
-        if final_score <= 0:
-            continue
-        scored.append((
-            final_score,
-            db_id,
-            rec.model_copy(update={"recommendation_score": final_score}),
-        ))
 
-    # 9. Deduplicate by group — keep highest final_score per group.
-    #    When diversity_enabled, skip dedup here; the diversity-aware selection
-    #    in step 11 enforces max-1-per-group from the full ranked pool instead.
-    if diversity_enabled:
-        by_group: dict[str, tuple[float, int, RecommendationRead]] = {
-            f"{db_id}": (final_score, db_id, rec)
-            for final_score, db_id, rec in scored
-        }
-    else:
-        by_group: dict[str, tuple[float, int, RecommendationRead]] = {}
-        for final_score, db_id, rec in scored:
-            key = rec.group_id if rec.group_id else rec.product_id
-            if key not in by_group or final_score > by_group[key][0]:
-                by_group[key] = (final_score, db_id, rec)
+        eff_score = final_score
+        fallback_explanation = ""
+        if fallback_behavior != "none":
+            eff_score, fallback_explanation = _compute_effective_score(
+                rec, final_score, algorithm, fallback_behavior,
+            )
+
+        if eff_score <= 0:
+            continue
+
+        update: dict = {"recommendation_score": final_score}
+        if fallback_explanation:
+            update["explanation"] = (
+                f"{rec.explanation}; {fallback_explanation}" if rec.explanation else fallback_explanation
+            )
+
+        scored.append((eff_score, db_id, rec.model_copy(update=update)))
+
+    logger.warning("DEBUG scored after step 8: %d", len(scored))
+    for es, _did, r in scored[:5]:
+        logger.warning("  scored: product=%s direct=%.4f rec=%.4f eff=%.4f", r.product_id, r.direct_score, r.recommendation_score, es)
+
+    # 9. Build candidate pool — all scored candidates, keyed by db_id.
+    #    Group uniqueness is NOT enforced here; it is only enforced during
+    #    final selection (step 12) when max_per_group is set.
+    by_group: dict[str, tuple[float, int, RecommendationRead]] = {
+        f"{db_id}": (final_score, db_id, rec)
+        for final_score, db_id, rec in scored
+    }
 
     # 10. Apply slot filters — remove candidates that don't match all filters.
     #     If filtering empties the set and fallback_mode is "relax_filters",
@@ -605,22 +662,45 @@ def get_recommendations(
         return key
 
     ranked = sorted(by_group.values(), key=_sort_key)
+    logger.warning("DEBUG ranked count: %d (max_scan_depth=%s, min_score_threshold=%s)",
+                   len(ranked), max_scan_depth, min_score_threshold)
 
-    # 12. Selection with refill — single pass over the ranked pool.
-    #     Skips excluded products (cross-slot) and duplicate groups (diversity).
-    #     Continues scanning past skipped candidates until top_n or pool exhausted.
-    _excluded = excluded_product_ids or set()
-    seen_groups: set[str] = set()
+    # 12. Selection with scan cap — single pass over the ranked pool.
+    #     Skips excluded products (cross-slot) and over-represented groups (diversity).
+    #     Continues scanning past skipped candidates until top_n results are
+    #     selected OR max_scan_depth candidates have been inspected.
+    _excluded_pids = excluded_product_ids or set()
+    _excluded_gids = excluded_group_ids or set()
+    selected_product_ids: set[str] = set()
+    group_usage: dict[str, int] = {}
     results: list[RecommendationRead] = []
+    scanned_count = 0
 
-    for _, _, rec in ranked:
-        if rec.product_id in _excluded:
+    for eff_score, _, rec in ranked:
+        if max_scan_depth is not None and scanned_count >= max_scan_depth:
+            logger.warning("DEBUG scan depth limit hit at %d", scanned_count)
+            break
+
+        scanned_count += 1
+
+        logger.warning(
+            "DEBUG candidate #%d product=%s direct=%.4f rec=%.4f eff=%.4f threshold=%s",
+            scanned_count, rec.product_id, rec.direct_score, rec.recommendation_score, eff_score, min_score_threshold,
+        )
+
+        if min_score_threshold is not None and eff_score < min_score_threshold:
             continue
-        if diversity_enabled:
-            gkey = rec.group_id if rec.group_id else rec.product_id
-            if gkey in seen_groups:
+        if rec.product_id in selected_product_ids:
+            continue
+        if rec.product_id in _excluded_pids:
+            continue
+        if rec.group_id and rec.group_id in _excluded_gids:
+            continue
+        if max_per_group is not None and rec.group_id is not None:
+            if group_usage.get(rec.group_id, 0) >= max_per_group:
                 continue
-            seen_groups.add(gkey)
+            group_usage[rec.group_id] = group_usage.get(rec.group_id, 0) + 1
+        selected_product_ids.add(rec.product_id)
         results.append(rec)
         if len(results) >= top_n:
             break

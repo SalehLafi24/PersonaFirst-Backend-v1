@@ -335,10 +335,10 @@ def test_fallback_items_can_compete_in_ranking(client, db):
     assert data_boosted[1]["recommendation_source"] == "direct"
 
 
-def test_fallback_in_same_group_competes_with_direct(client, db):
+def test_same_group_both_returned_ranked_by_weight(client, db):
     """
-    A popular product from the same group as a direct match can win the group
-    deduplication when popularity_weight is high enough.
+    Two products in the same group with different signal types.
+    Without diversity, both are returned ranked by weighted score.
     """
     ws = make_workspace(client, "V6-11", "v6-11")
     wid = ws["id"]
@@ -353,18 +353,19 @@ def test_fallback_in_same_group_competes_with_direct(client, db):
     seed_product(db, wid, "prod_b", "SKU-B", "Popular B", group_id="g1")
     seed_purchase(db, wid, "other_cust", "prod_b", quantity=200)
 
-    # Default: prod_a wins group (0.05 > 0)
+    # Default (popularity_weight=0): only prod_a scores > 0 (0.05), prod_b has pop but weight 0
     data_default = client.get(f"/workspaces/{wid}/recommendations/cust_1").json()
     assert len(data_default) == 1
     assert data_default[0]["product_id"] == "prod_a"
 
-    # popularity_weight=1.0: prod_b wins group (200 > 0.05), only 1 product per group
+    # popularity_weight=1.0: both score > 0, prod_b wins on score (200 vs 0.05)
     data_boosted = client.get(
         f"/workspaces/{wid}/recommendations/cust_1?popularity_weight=1.0"
     ).json()
-    assert len(data_boosted) == 1
+    assert len(data_boosted) == 2
     assert data_boosted[0]["product_id"] == "prod_b"
     assert data_boosted[0]["recommendation_source"] == "popular"
+    assert data_boosted[1]["product_id"] == "prod_a"
 
 
 # ---------------------------------------------------------------------------
