@@ -271,14 +271,18 @@ def _compute_effective_score(
         if fallback_behavior == "direct":
             return rec.direct_score, "Behavioral signal unavailable; fell back to direct score."
         if fallback_behavior == "balanced":
-            eff = rec.direct_score + rec.relationship_score + rec.behavioral_score
+            eff = (0.5 * rec.direct_score
+                   + 0.3 * rec.relationship_score
+                   + 0.2 * rec.behavioral_score)
             return eff, "Behavioral signal unavailable; fell back to balanced fallback score."
 
     if algorithm == "relationship_only" and rec.relationship_score <= 0:
         if fallback_behavior == "direct":
             return rec.direct_score, "Relationship signal unavailable; fell back to direct score."
         if fallback_behavior == "balanced":
-            eff = rec.direct_score + rec.relationship_score + rec.behavioral_score
+            eff = (0.5 * rec.direct_score
+                   + 0.3 * rec.relationship_score
+                   + 0.2 * rec.behavioral_score)
             return eff, "Relationship signal unavailable; fell back to balanced fallback score."
 
     return final_score, ""
@@ -616,12 +620,15 @@ def get_recommendations(
             update["explanation"] = (
                 f"{rec.explanation}; {fallback_explanation}" if rec.explanation else fallback_explanation
             )
+            update["recommendation_source"] = f"fallback_{fallback_behavior}"
 
         scored.append((eff_score, db_id, rec.model_copy(update=update)))
 
     logger.warning("DEBUG scored after step 8: %d", len(scored))
     for es, _did, r in scored[:5]:
-        logger.warning("  scored: product=%s direct=%.4f rec=%.4f eff=%.4f", r.product_id, r.direct_score, r.recommendation_score, es)
+        delta = round(es - r.recommendation_score, 6)
+        logger.warning("  scored: product=%s direct=%.4f rec=%.4f eff=%.4f delta=%.4f fallback_used=%s",
+                       r.product_id, r.direct_score, r.recommendation_score, es, delta, delta > 0)
 
     # 9. Build candidate pool — all scored candidates, keyed by db_id.
     #    Group uniqueness is NOT enforced here; it is only enforced during
@@ -683,9 +690,11 @@ def get_recommendations(
 
         scanned_count += 1
 
+        fallback_delta = round(eff_score - rec.recommendation_score, 6)
         logger.warning(
-            "DEBUG candidate #%d product=%s direct=%.4f rec=%.4f eff=%.4f threshold=%s",
-            scanned_count, rec.product_id, rec.direct_score, rec.recommendation_score, eff_score, min_score_threshold,
+            "DEBUG candidate #%d product=%s direct=%.4f rec=%.4f eff=%.4f threshold=%s delta=%.4f",
+            scanned_count, rec.product_id, rec.direct_score, rec.recommendation_score,
+            eff_score, min_score_threshold, fallback_delta,
         )
 
         if min_score_threshold is not None and eff_score < min_score_threshold:

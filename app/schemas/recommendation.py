@@ -22,6 +22,43 @@ class SlotFilter(BaseModel):
         return v
 
 
+class SlotAudienceConfig(BaseModel):
+    """Audience / visibility filters.
+
+    Schema-only in this phase — these filters describe who should see this
+    slot, not which products are eligible.  Runtime enforcement is a future
+    step; the schema is defined now so clients can start sending it.
+    """
+    filters: list[SlotFilter] = []
+
+
+class SlotStrategyConfig(BaseModel):
+    """Strategy: how the slot makes scoring decisions."""
+    algorithm: str | None = None
+    fallback_behavior: str | None = None
+
+
+class SlotConstraintsConfig(BaseModel):
+    """Product-level candidate pool filters.
+
+    Reuses the existing SlotFilter logic — maps directly to the flat
+    ``filters`` field used by the execution engine.
+    """
+    filters: list[SlotFilter] = []
+
+
+class SlotControlsConfig(BaseModel):
+    """Execution / tuning controls."""
+    top_n: int | None = None
+    diversity_mode: str | None = None
+
+
+class SlotExclusionConfig(BaseModel):
+    """Cross-slot coordination settings."""
+    exclude_previous_slots: bool | None = None
+    exclusion_level: str | None = None
+
+
 class SlotConfig(BaseModel):
     slot_id: str
     algorithm: str
@@ -33,6 +70,58 @@ class SlotConfig(BaseModel):
     diversity_enabled: bool = False
     diversity_mode: str = "off"
     fallback_behavior: str = "none"
+
+    # Nested structure (optional).  When present, nested values override flat
+    # equivalents via ``_flatten_nested_fields`` below.  Parsed and stored so
+    # clients can round-trip them, but the execution path reads flat fields.
+    audience: SlotAudienceConfig | None = None
+    strategy: SlotStrategyConfig | None = None
+    constraints: SlotConstraintsConfig | None = None
+    controls: SlotControlsConfig | None = None
+    exclusion: SlotExclusionConfig | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _flatten_nested_fields(cls, values):
+        """Translate nested Slot config into flat fields before validation.
+
+        When both nested and flat are provided, nested takes precedence.
+        Nested ``None`` values leave flat fields untouched.  Nested
+        ``constraints.filters`` overrides flat ``filters`` even when empty,
+        since an explicit empty list is a meaningful "no constraints" signal.
+        Nested ``audience.filters`` is parsed but not mapped to execution
+        (schema-only in this phase).
+        """
+        if not isinstance(values, dict):
+            return values
+
+        strategy = values.get("strategy")
+        if isinstance(strategy, dict):
+            if strategy.get("algorithm") is not None:
+                values["algorithm"] = strategy["algorithm"]
+            if strategy.get("fallback_behavior") is not None:
+                values["fallback_behavior"] = strategy["fallback_behavior"]
+
+        controls = values.get("controls")
+        if isinstance(controls, dict):
+            if controls.get("top_n") is not None:
+                values["top_n"] = controls["top_n"]
+            if controls.get("diversity_mode") is not None:
+                values["diversity_mode"] = controls["diversity_mode"]
+
+        constraints = values.get("constraints")
+        if isinstance(constraints, dict):
+            if "filters" in constraints:
+                values["filters"] = constraints["filters"]
+
+        exclusion = values.get("exclusion")
+        if isinstance(exclusion, dict):
+            if exclusion.get("exclude_previous_slots") is not None:
+                values["exclude_previous_slots"] = exclusion["exclude_previous_slots"]
+            if exclusion.get("exclusion_level") is not None:
+                values["exclusion_level"] = exclusion["exclusion_level"]
+
+        return values
 
     @model_validator(mode="after")
     def _resolve_diversity_compat(self) -> "SlotConfig":
