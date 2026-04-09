@@ -57,6 +57,35 @@ def _behavior_instructions(attr: AttributeDefinition) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Shared section helpers
+# ---------------------------------------------------------------------------
+
+def _output_section() -> list[str]:
+    """Standard OUTPUT section injected into every prompt (FIX 2, FIX 3)."""
+    return [
+        "",
+        "OUTPUT",
+        "Respond with valid JSON only. No markdown fences. No explanation outside the JSON.",
+        "Evidence must quote or clearly reference specific phrases or fields from the object data."
+        " Do not provide generic or inferred evidence.",
+        "If evidence is insufficient, return null rather than guessing.",
+        _OUTPUT_SCHEMA,
+    ]
+
+
+def _allowed_values_lines(attr: AttributeDefinition) -> list[str]:
+    """Standard allowed_values anchor for inference-capable classes (FIX 5)."""
+    if not attr.allowed_values:
+        return []
+    return [
+        f"  Allowed     : {json.dumps(attr.allowed_values)}",
+        "  When allowed_values are provided, treat them as the primary value space.",
+        "  Always attempt to map to the closest valid allowed value.",
+        "  Only deviate if no reasonable mapping exists.",
+    ]
+
+
+# ---------------------------------------------------------------------------
 # Class-specific prompt builders
 # ---------------------------------------------------------------------------
 
@@ -69,9 +98,12 @@ def _build_descriptive_literal_prompt(attr: AttributeDefinition, obj: dict) -> s
         f'You are extracting the attribute "{attr.name}" from a {attr.object_type}.',
         "",
         "TASK",
-        "Extract only values that are explicitly stated in the object data.",
-        "Do NOT infer, guess, or interpret beyond what is literally written.",
-        "If the value is not clearly present in the data, return null.",
+        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
+        "",
+        "CLASS BEHAVIOR",
+        "  - Extract only values that are explicitly stated in the object data.",
+        "  - Do not infer, guess, or interpret beyond what is literally written.",
+        "  - If the value is not clearly present in the data, return null.",
         "",
         "ATTRIBUTE",
         f"  Name        : {attr.name}",
@@ -82,7 +114,9 @@ def _build_descriptive_literal_prompt(attr: AttributeDefinition, obj: dict) -> s
     if attr.allowed_values:
         lines += [
             f"  Allowed     : {json.dumps(attr.allowed_values)}",
-            "  Only return a value from this list. Anything outside it must be null.",
+            "  When allowed_values are provided, treat them as the primary value space.",
+            "  Always attempt to map to the closest valid allowed value.",
+            "  Only deviate if no reasonable mapping exists.",
         ]
 
     behavior_lines = _behavior_instructions(attr)
@@ -94,11 +128,8 @@ def _build_descriptive_literal_prompt(attr: AttributeDefinition, obj: dict) -> s
         "",
         "OBJECT DATA",
         json.dumps(obj, indent=2, ensure_ascii=False),
-        "",
-        "OUTPUT",
-        "Respond with valid JSON only. No markdown fences. No explanation outside the JSON.",
-        _OUTPUT_SCHEMA,
     ]
+    lines += _output_section()
 
     return "\n".join(lines)
 
@@ -106,21 +137,19 @@ def _build_descriptive_literal_prompt(attr: AttributeDefinition, obj: dict) -> s
 def _build_contextual_semantic_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
     Allows semantic inference from context, descriptions, and implied meaning.
-    Conservative when the flag is set; broader reasoning otherwise.
+    Conservative by default; does not deviate from allowed_values when provided.
     """
-    conservatism_note = (
-        "Apply conservative reasoning — only infer when the evidence is reasonably strong."
-        if attr.behavior.prefer_conservative_inference
-        else "You may use broader semantic reasoning to infer the value from context."
-    )
-
     lines = [
         f'You are inferring the attribute "{attr.name}" for a {attr.object_type}.',
         "",
         "TASK",
-        "Read and semantically interpret the object data to determine the attribute value.",
-        "You may reason from context, descriptions, synonyms, and implied meaning.",
-        conservatism_note,
+        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
+        "",
+        "CLASS BEHAVIOR",
+        "  - Focus on intended use, context, and implied meaning.",
+        "  - Do not rely only on literal matches.",
+        "  - Prefer clear semantic signals over weak associations.",
+        "  - Remain conservative — if evidence is weak, return null.",
         "",
         "ATTRIBUTE",
         f"  Name        : {attr.name}",
@@ -129,9 +158,9 @@ def _build_contextual_semantic_prompt(attr: AttributeDefinition, obj: dict) -> s
     ]
 
     if attr.allowed_values:
+        lines += _allowed_values_lines(attr)
         lines += [
-            f"  Allowed     : {json.dumps(attr.allowed_values)}",
-            "  Map your inference to the closest matching value from this list.",
+            "  Do not invent new values outside the allowed_values set when it is provided.",
         ]
 
     behavior_lines = _behavior_instructions(attr)
@@ -143,12 +172,8 @@ def _build_contextual_semantic_prompt(attr: AttributeDefinition, obj: dict) -> s
         "",
         "OBJECT DATA",
         json.dumps(obj, indent=2, ensure_ascii=False),
-        "",
-        "OUTPUT",
-        "Respond with valid JSON only. No markdown fences. No explanation outside the JSON.",
-        "Populate evidence with the specific phrases or fields that led to your inference.",
-        _OUTPUT_SCHEMA,
     ]
+    lines += _output_section()
 
     return "\n".join(lines)
 
@@ -162,10 +187,12 @@ def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
         f'You are assessing compatibility for the attribute "{attr.name}" on a {attr.object_type}.',
         "",
         "TASK",
-        "Determine whether this object is compatible with or suitable for the context described",
-        "by this attribute. Use only available evidence to support your assessment.",
-        "Do NOT claim compatibility unless the evidence clearly supports it.",
-        "Partial or uncertain compatibility should be reflected in a lower confidence score.",
+        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
+        "",
+        "CLASS BEHAVIOR",
+        "  - Assess suitability based only on available evidence.",
+        "  - Do not claim compatibility unless evidence clearly supports it.",
+        "  - Partial or uncertain compatibility must be reflected in a lower confidence score.",
         "",
         "ATTRIBUTE",
         f"  Name        : {attr.name}",
@@ -173,11 +200,7 @@ def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
         f"  Evidence    : {', '.join(attr.evidence_sources)}",
     ]
 
-    if attr.allowed_values:
-        lines += [
-            f"  Allowed     : {json.dumps(attr.allowed_values)}",
-            "  Select the most appropriate compatibility classification from this list.",
-        ]
+    lines += _allowed_values_lines(attr)
 
     behavior_lines = _behavior_instructions(attr)
     if behavior_lines:
@@ -193,12 +216,8 @@ def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
         "",
         "OBJECT DATA",
         json.dumps(obj, indent=2, ensure_ascii=False),
-        "",
-        "OUTPUT",
-        "Respond with valid JSON only. No markdown fences. No explanation outside the JSON.",
-        "Populate evidence with the specific fields or statements that informed your assessment.",
-        _OUTPUT_SCHEMA,
     ]
+    lines += _output_section()
 
     return "\n".join(lines)
 
@@ -212,10 +231,12 @@ def _build_taxonomy_discovery_prompt(attr: AttributeDefinition, obj: dict) -> st
         f'You are discovering taxonomy values for the attribute "{attr.name}" on a {attr.object_type}.',
         "",
         "TASK",
-        "The value space for this attribute does not yet fully exist.",
-        "Your primary goal is to PROPOSE appropriate values based on the object data.",
-        "Do not assume a fixed taxonomy. Reason from the object's characteristics to",
-        "suggest meaningful, reusable values that could apply across similar objects.",
+        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
+        "",
+        "CLASS BEHAVIOR",
+        "  - The value space for this attribute does not yet fully exist.",
+        "  - Propose meaningful, reusable values based on the object's characteristics.",
+        "  - Do not assume a fixed taxonomy.",
         "",
         "ATTRIBUTE",
         f"  Name        : {attr.name}",
@@ -226,6 +247,7 @@ def _build_taxonomy_discovery_prompt(attr: AttributeDefinition, obj: dict) -> st
     if attr.allowed_values:
         lines += [
             f"  Known values: {json.dumps(attr.allowed_values)}",
+            "  When allowed_values are provided, treat them as the primary value space.",
             "  You may reuse existing values, extend them, or propose entirely new ones.",
             "  Include all relevant values (new AND reused) in proposed_values.",
         ]
@@ -250,11 +272,8 @@ def _build_taxonomy_discovery_prompt(attr: AttributeDefinition, obj: dict) -> st
         "",
         "OBJECT DATA",
         json.dumps(obj, indent=2, ensure_ascii=False),
-        "",
-        "OUTPUT",
-        "Respond with valid JSON only. No markdown fences. No explanation outside the JSON.",
-        _OUTPUT_SCHEMA,
     ]
+    lines += _output_section()
 
     return "\n".join(lines)
 
