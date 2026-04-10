@@ -85,97 +85,235 @@ def _allowed_values_lines(attr: AttributeDefinition) -> list[str]:
     ]
 
 
+def _normalize_obj(obj: dict) -> dict:
+    """Replace newline characters in string values to prevent prompt line-break issues."""
+    result = {}
+    for k, v in obj.items():
+        if isinstance(v, str):
+            result[k] = v.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
+        elif isinstance(v, dict):
+            result[k] = _normalize_obj(v)
+        elif isinstance(v, list):
+            result[k] = [
+                item.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
+                if isinstance(item, str) else item
+                for item in v
+            ]
+        else:
+            result[k] = v
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Class-specific prompt builders
 # ---------------------------------------------------------------------------
 
 def _build_descriptive_literal_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
-    Strictest class. Only extract values that are explicitly present in the data.
-    No inference. Prefer null over speculation.
+    Strictest class. Only extract values explicitly present in the data.
+    No inference. Uses the standardised divider-based prompt format.
     """
-    lines = [
-        f'You are extracting the attribute "{attr.name}" from a {attr.object_type}.',
-        "",
-        "TASK",
-        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
-        "",
-        "CLASS BEHAVIOR",
-        "  - Extract only values that are explicitly stated in the object data.",
-        "  - Do not infer, guess, or interpret beyond what is literally written.",
-        "  - If the value is not clearly present in the data, return null.",
-        "",
-        "ATTRIBUTE",
-        f"  Name        : {attr.name}",
-        f"  Description : {attr.description}",
-        f"  Evidence    : {', '.join(attr.evidence_sources)}",
-    ]
-
     if attr.allowed_values:
-        lines += [
-            f"  Allowed     : {json.dumps(attr.allowed_values)}",
-            "  When allowed_values are provided, treat them as the primary value space.",
-            "  Always attempt to map to the closest valid allowed value.",
-            "  Only deviate if no reasonable mapping exists.",
-        ]
+        allowed_block = "\n".join(f"- {v}" for v in attr.allowed_values)
+    else:
+        allowed_block = "(none provided)"
 
-    behavior_lines = _behavior_instructions(attr)
-    if behavior_lines:
-        lines += ["", "CONSTRAINTS"]
-        lines += [f"  - {line}" for line in behavior_lines]
+    obj_json = json.dumps(_normalize_obj(obj), indent=2, ensure_ascii=False)
 
-    lines += [
-        "",
-        "OBJECT DATA",
-        json.dumps(obj, indent=2, ensure_ascii=False),
-    ]
-    lines += _output_section()
+    return f"""\
+You are an attribute extraction engine.
 
-    return "\n".join(lines)
+You are determining the value(s) of a single attribute for a product.
+
+--------------------------------
+ATTRIBUTE CONTEXT
+--------------------------------
+Attribute name: {attr.name}
+Class: descriptive_literal
+Description: {attr.description}
+
+Allowed values:
+{allowed_block}
+
+Rules:
+- Extract only values that are explicitly stated in the object data.
+- Do not infer from product type, category, style, function, brand, or common sense.
+- Do not guess.
+- If allowed_values are provided:
+    - Only return values from the allowed_values list.
+    - If an explicitly stated value is a clear variant of an allowed value, map it to that allowed value.
+    - The mapping must be direct and unambiguous (e.g., "blush pink" → "pink").
+    - Do not map vague, poetic, or indirect language to an allowed value.
+- If no explicit value is clearly stated, return no values.
+
+--------------------------------
+CLASS BEHAVIOR
+--------------------------------
+- This is a strict extraction task, not an inference task.
+- Only include values directly supported by exact text or very close textual matches.
+- Do not convert vague or poetic wording into attribute values.
+- If multiple explicit values are present and allowed, include all of them.
+- When in doubt, exclude the value.
+
+--------------------------------
+OBJECT DATA
+--------------------------------
+{obj_json}
+
+--------------------------------
+OUTPUT FORMAT (STRICT)
+--------------------------------
+Return valid JSON only.
+
+{{
+  "attribute_name": "string",
+  "attribute_class": "descriptive_literal",
+  "values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"],
+      "reasoning_mode": "explicit"
+    }}
+  ],
+  "proposed_values": [],
+  "warnings": ["string"]
+}}
+
+--------------------------------
+OUTPUT RULES
+--------------------------------
+- Each value must have its own confidence and evidence.
+- Evidence must quote exact or near-exact text from the object data.
+- reasoning_mode must always be "explicit"
+- proposed_values must be empty
+- All returned values must be from the allowed_values list when provided.
+- When a value is mapped to an allowed value, evidence must still reference the original source wording.
+- If signals are ambiguous or conflicting, return:
+    values = []
+    warnings = ["ambiguous_evidence"]
+
+- Else if no values are found, return:
+    values = []
+    warnings = ["no_supported_value_found"]
+
+- If multiple strong explicit values are found:
+    include all of them
+    add warning: "multiple_strong_values_detected"
+
+- Confidence guidelines:
+    0.95–1.00 = exact or near-exact match
+    0.85–0.94 = slightly indirect but explicit
+    below 0.85 = do not include
+
+--------------------------------
+FINAL RULE
+--------------------------------
+Return JSON only. No explanation."""
 
 
 def _build_contextual_semantic_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
     Allows semantic inference from context, descriptions, and implied meaning.
-    Conservative by default; does not deviate from allowed_values when provided.
+    Conservative by default. Uses the standardised divider-based prompt format.
     """
-    lines = [
-        f'You are inferring the attribute "{attr.name}" for a {attr.object_type}.',
-        "",
-        "TASK",
-        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
-        "",
-        "CLASS BEHAVIOR",
-        "  - Focus on intended use, context, and implied meaning.",
-        "  - Do not rely only on literal matches.",
-        "  - Prefer clear semantic signals over weak associations.",
-        "  - Remain conservative — if evidence is weak, return null.",
-        "",
-        "ATTRIBUTE",
-        f"  Name        : {attr.name}",
-        f"  Description : {attr.description}",
-        f"  Evidence    : {', '.join(attr.evidence_sources)}",
-    ]
-
     if attr.allowed_values:
-        lines += _allowed_values_lines(attr)
-        lines += [
-            "  Do not invent new values outside the allowed_values set when it is provided.",
-        ]
+        allowed_block = "\n".join(f"- {v}" for v in attr.allowed_values)
+    else:
+        allowed_block = "(none provided)"
 
-    behavior_lines = _behavior_instructions(attr)
-    if behavior_lines:
-        lines += ["", "CONSTRAINTS"]
-        lines += [f"  - {line}" for line in behavior_lines]
+    obj_json = json.dumps(_normalize_obj(obj), indent=2, ensure_ascii=False)
 
-    lines += [
-        "",
-        "OBJECT DATA",
-        json.dumps(obj, indent=2, ensure_ascii=False),
-    ]
-    lines += _output_section()
+    return f"""\
+You are an attribute extraction engine.
 
-    return "\n".join(lines)
+You are determining the value(s) of a single attribute for a product.
+
+--------------------------------
+ATTRIBUTE CONTEXT
+--------------------------------
+Attribute name: {attr.name}
+Class: contextual_semantic
+Description: {attr.description}
+
+Allowed values:
+{allowed_block}
+
+Rules:
+- Only select values from the allowed_values list.
+- Do not invent new values.
+- Map to the closest valid value when evidence strongly supports it.
+- If no value is clearly supported, return no values.
+- Only include values that are directly supported as a clear intended use, context, or meaning of the product.
+- Do not include a value just because the product has general performance, comfort, or technical features.
+
+--------------------------------
+CLASS BEHAVIOR
+--------------------------------
+- You may infer from product name, description, and attributes.
+- Use semantic meaning, not just literal matches.
+- Remain conservative — weak or ambiguous signals should not produce a value.
+- If multiple values are clearly and independently supported, you may return multiple values.
+- Do not include weak, secondary, or speculative matches.
+
+--------------------------------
+OBJECT DATA
+--------------------------------
+{obj_json}
+
+--------------------------------
+OUTPUT FORMAT (STRICT)
+--------------------------------
+Return valid JSON only.
+
+{{
+  "attribute_name": "string",
+  "attribute_class": "contextual_semantic",
+  "values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"],
+      "reasoning_mode": "inferred"
+    }}
+  ],
+  "proposed_values": [],
+  "warnings": ["string"]
+}}
+
+--------------------------------
+OUTPUT RULES
+--------------------------------
+- Each value must have its own confidence and evidence.
+- Evidence must quote or clearly reference exact phrases from the object data.
+- Only include values with strong support as a primary or clearly intended use.
+- Values with confidence below 0.80 must not be included.
+- All returned values must be from the allowed_values list.
+- Each returned value must be independently supported by its own evidence.
+- If signals are ambiguous or conflicting, return:
+    values = []
+    warnings = ["ambiguous_evidence"]
+
+- Else if no values are found, return:
+    values = []
+    warnings = ["no_supported_value_found"]
+
+- If multiple strong values are found:
+    include all of them
+    add warning: "multiple_strong_values_detected"
+
+- Confidence guidelines:
+    0.90–1.00 = very strong support
+    0.80–0.89 = strong inferred support
+    below 0.80 = do not include
+
+- reasoning_mode must always be "inferred"
+- proposed_values must be empty
+
+--------------------------------
+FINAL RULE
+--------------------------------
+Return JSON only. No explanation."""
 
 
 def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
