@@ -37,6 +37,10 @@ _DEFAULT_RELATIONSHIP_WEIGHT: float = 1.0
 _DEFAULT_POPULARITY_WEIGHT: float = 0.0
 _DEFAULT_BEHAVIORAL_WEIGHT: float = 0.0
 
+# Multiplier applied to compatibility_signal attributes.
+# Makes suitability/fit matches weigh more than categorical preference matches.
+_COMPATIBILITY_SCORE_MULTIPLIER: float = 1.5
+
 # ---------------------------------------------------------------------------
 # Algorithm presets — each maps to weights + a tie-break priority.
 #
@@ -229,6 +233,57 @@ def _is_functionally_suppressed(
 
 
 # ---------------------------------------------------------------------------
+# Targeting-mode helpers
+#
+# class_name    = HOW an attribute value was generated (enrichment strategy)
+# targeting_mode = HOW an attribute is used during recommendation scoring
+#
+#   categorical_affinity  — soft preference signal; accumulates into direct_score
+#   compatibility_signal  — suitability/fit; heavier weight; own contribution bucket
+#   categorical_filter    — hard gate when filter_context is provided; no score otherwise
+#   descriptive_metadata  — not scored; available for display / analytics only
+# ---------------------------------------------------------------------------
+
+def _get_targeting_mode(
+    attribute_id: str,
+    attribute_targeting_modes: dict[str, str] | None,
+) -> str:
+    """Return the targeting_mode for an attribute.
+
+    Defaults to 'categorical_affinity' when no mapping is provided, preserving
+    existing recommendation behaviour for all unclassified attributes.
+    """
+    if attribute_targeting_modes is None:
+        return "categorical_affinity"
+    return attribute_targeting_modes.get(attribute_id, "categorical_affinity")
+
+
+def _apply_categorical_filters(
+    product_db_id: int,
+    attrs_by_product: dict[int, list],
+    filter_context: dict[str, list[str]],
+    attribute_targeting_modes: dict[str, str],
+) -> bool:
+    """Return True if the product passes all categorical_filter constraints.
+
+    For each attribute whose targeting_mode is 'categorical_filter', if
+    filter_context specifies allowed values for that attribute the product must
+    carry a matching value.  Attributes with no filter_context entry are skipped
+    (no constraint imposed).  This function is a no-op when filter_context is
+    None — callers must guard before calling.
+    """
+    for attr in attrs_by_product.get(product_db_id, []):
+        if _get_targeting_mode(attr.attribute_id, attribute_targeting_modes) != "categorical_filter":
+            continue
+        allowed = filter_context.get(attr.attribute_id)
+        if allowed is None:
+            continue  # No constraint specified for this attribute
+        if attr.attribute_value not in allowed:
+            return False
+    return True
+
+
+# ---------------------------------------------------------------------------
 # Main recommendation logic
 # ---------------------------------------------------------------------------
 
@@ -309,6 +364,8 @@ def get_recommendations(
     min_score_threshold: float | None = None,
     excluded_product_ids: set[str] | None = None,
     excluded_group_ids: set[str] | None = None,
+    attribute_targeting_modes: dict[str, str] | None = None,
+    filter_context: dict[str, list[str]] | None = None,
 ) -> tuple[list[RecommendationRead], bool]:
     logger.warning("DEBUG get_recommendations called: workspace=%s customer=%s", workspace_id, customer_id)
     if reference_date is None:
@@ -455,25 +512,68 @@ def get_recommendations(
         if _is_functionally_suppressed(product, attrs_by_product, suppressed_functional_sigs):
             continue
 
+        # categorical_filter pre-check: hard-exclude products that fail filter
+        # constraints when filter_context is explicitly provided.
+        # Without filter_context, categorical_filter attributes are silent (no gate,
+        # no score) — they do not act as affinity boosts.
+        if filter_context and attribute_targeting_modes:
+            if not _apply_categorical_filters(
+                product.id, attrs_by_product, filter_context, attribute_targeting_modes
+            ):
+                continue
+
         # Direct + relationship scoring
+        # Contributions are separated by targeting_mode before being combined.
         matched: list[MatchedAttribute] = []
         has_core_match = False
+        affinity_contribution: float = 0.0      # categorical_affinity — soft preference
+        compatibility_contribution: float = 0.0  # compatibility_signal — suitability/fit
+        # categorical_filter    → filter_exclusion: handled as pre-scoring gate above
+        # descriptive_metadata  → metadata_ignored: not scored
 
         if affinity_map:
             for attr in attrs_by_product[product.id]:
                 key = (attr.attribute_id, attr.attribute_value)
-                if key in affinity_map:
-                    weight = get_attribute_weight(attr.attribute_id)
-                    matched.append(
-                        MatchedAttribute(
-                            attribute_id=attr.attribute_id,
-                            attribute_value=attr.attribute_value,
-                            score=affinity_map[key],
-                            weight=weight,
-                        )
-                    )
+                if key not in affinity_map:
+                    continue
+
+                aff_score = affinity_map[key]
+                weight = get_attribute_weight(attr.attribute_id)
+                mode = _get_targeting_mode(attr.attribute_id, attribute_targeting_modes)
+
+                if mode == "categorical_affinity":
+                    # Soft preference signal — accumulates into direct_score
+                    affinity_contribution += aff_score * weight
+                    matched.append(MatchedAttribute(
+                        attribute_id=attr.attribute_id,
+                        attribute_value=attr.attribute_value,
+                        score=aff_score,
+                        weight=weight,
+                        targeting_mode=mode,
+                    ))
                     if attr.attribute_id in CORE_ATTRS:
                         has_core_match = True
+
+                elif mode == "compatibility_signal":
+                    # Suitability/fit — heavier weight, own contribution bucket
+                    compatibility_contribution += aff_score * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    matched.append(MatchedAttribute(
+                        attribute_id=attr.attribute_id,
+                        attribute_value=attr.attribute_value,
+                        score=aff_score,
+                        weight=weight,
+                        targeting_mode=mode,
+                    ))
+                    if attr.attribute_id in CORE_ATTRS:
+                        has_core_match = True
+
+                elif mode == "categorical_filter":
+                    pass  # filter_exclusion — no scoring contribution
+
+                # descriptive_metadata: metadata_ignored — not scored
+
+        affinity_contribution = round(affinity_contribution, 6)
+        compatibility_contribution = round(compatibility_contribution, 6)
 
         attr_set: frozenset[tuple[str, str]] = frozenset(
             (a.attribute_id, a.attribute_value) for a in attrs_by_product[product.id]
@@ -489,7 +589,7 @@ def get_recommendations(
         relationship_score = round(sum(m.contribution for m in rel_matches), 6)
 
         matched.sort(key=lambda m: (-(m.score * m.weight), m.attribute_id, m.attribute_value))
-        direct_score = round(sum(m.score * m.weight for m in matched), 6)
+        direct_score = affinity_contribution  # categorical_affinity contributions only
 
         # Popularity for this product (workspace-wide)
         pop_score = popularity.get(product.id, 0.0)
@@ -502,6 +602,7 @@ def get_recommendations(
         # Skip if no signal at all
         if (
             direct_score == 0.0
+            and compatibility_contribution == 0.0
             and relationship_score == 0.0
             and pop_score == 0.0
             and behavioral_score == 0.0
@@ -522,7 +623,7 @@ def get_recommendations(
         # Determine source label — only include a signal if it actually contributed
         # (score > 0 AND weight > 0). "popular" is a fallback when nothing else fires.
         sources = []
-        if direct_score > 0 and direct_weight > 0:
+        if (direct_score + compatibility_contribution) > 0 and direct_weight > 0:
             sources.append("direct")
         if relationship_score > 0 and relationship_weight > 0:
             sources.append("relationship")
@@ -574,6 +675,8 @@ def get_recommendations(
                 group_id=product.group_id,
                 matched_attributes=matched,
                 direct_score=direct_score,
+                affinity_contribution=affinity_contribution,
+                compatibility_contribution=compatibility_contribution,
                 relationship_score=relationship_score,
                 popularity_score=pop_score,
                 behavioral_score=behavioral_score,
@@ -598,7 +701,7 @@ def get_recommendations(
     scored: list[tuple[float, int, RecommendationRead]] = []
     for db_id, rec in candidates:
         final_score = round(
-            rec.direct_score * direct_weight
+            (rec.direct_score + rec.compatibility_contribution) * direct_weight
             + rec.relationship_score * relationship_weight
             + rec.popularity_score * popularity_weight
             + rec.behavioral_score * behavioral_weight,

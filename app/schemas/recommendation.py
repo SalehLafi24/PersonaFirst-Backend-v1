@@ -204,6 +204,7 @@ class MatchedAttribute(BaseModel):
     attribute_value: str
     score: float    # raw affinity score
     weight: float   # attribute weight applied during scoring (1.0 / 0.5 / 0.2)
+    targeting_mode: str | None = None  # how this attribute is used in scoring
 
 
 class RelationshipMatch(BaseModel):
@@ -241,10 +242,12 @@ class RecommendationRead(BaseModel):
     name: str
     group_id: str | None
     matched_attributes: list[MatchedAttribute]
-    direct_score: float
+    direct_score: float                # categorical_affinity contributions only
     relationship_score: float
     popularity_score: float
     behavioral_score: float
+    affinity_contribution: float = 0.0        # categorical_affinity: soft preference signal
+    compatibility_contribution: float = 0.0   # compatibility_signal: suitability/fit signal
     recommendation_score: float
     recommendation_source: str          # e.g. "direct" | "behavioral" | "direct+behavioral" | "popular"
     explanation: str
