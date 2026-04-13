@@ -25,6 +25,15 @@ class AttributeBehavior(BaseModel):
     can_propose_values: bool = False
     multi_value_allowed: bool = False
     prefer_conservative_inference: bool = True
+    # When ordered_values is True, value_order defines the canonical scale used
+    # to compute mismatch severity in compatibility scoring. The list is treated
+    # as an ordered axis from low → high.
+    value_order: list[str] | None = None
+    # When True, the recommendation engine penalises products whose value for
+    # this attribute clearly mismatches the customer's compatibility signal.
+    # When False (default), only positive matches contribute — preserving
+    # pre-existing compatibility behaviour for callers that don't opt in.
+    negative_scoring_enabled: bool = False
 
 
 class AttributeDefinition(BaseModel):
@@ -64,3 +73,36 @@ class EnrichmentResult(BaseModel):
     confidence: float
     evidence: list[str]
     proposed_values: list[str] | None = None
+
+
+# ---------------------------------------------------------------------------
+# Multi-source enrichment schema
+#
+# Used by the visual enrichment service and the text/visual merge service.
+# Kept parallel to (not replacing) EnrichmentResult so that existing text
+# enrichment callers continue to work unchanged.
+# ---------------------------------------------------------------------------
+
+
+class EnrichmentSource(str, Enum):
+    TEXT = "text"
+    VISUAL = "visual"
+    MERGED = "merged"
+
+
+class EnrichedValue(BaseModel):
+    value: Any
+    confidence: float
+    evidence: list[str] = []
+    reasoning_mode: str | None = None
+    source: EnrichmentSource
+    contributing_sources: list[EnrichmentSource] = []
+
+
+class EnrichmentOutput(BaseModel):
+    attribute_name: str
+    attribute_class: str
+    values: list[EnrichedValue] = []
+    proposed_values: list[str] = []
+    warnings: list[str] = []
+    source: EnrichmentSource

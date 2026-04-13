@@ -1,0 +1,218 @@
+[
+  {
+    "product_id": "P001",
+    "sku": "BRA-HI-BLK",
+    "name": "High Impact Running Bra",
+    "category": "bras",
+    "price": 72,
+    "description": "Black high impact sports bra with maximum support for running and HIIT. Adjustable straps and compression fit.",
+    "catalog_attributes": {
+      "material": "nylon blend",
+      "fit": "compression"
+    }
+  },
+  {
+    "product_id": "P002",
+    "sku": "BRA-MED-NVY",
+    "name": "Studio Support Bra",
+    "category": "bras",
+    "price": 64,
+    "description": "Navy medium support sports bra designed for studio workouts, training, and everyday movement.",
+    "catalog_attributes": {
+      "material": "performance knit",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P003",
+    "sku": "BRA-LOW-PNK",
+    "name": "Soft Lounge Bra",
+    "category": "bras",
+    "price": 48,
+    "description": "Blush pink soft-touch bra with low support for lounging, yoga, and recovery days.",
+    "catalog_attributes": {
+      "material": "modal blend",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P004",
+    "sku": "LEG-RUN-BLK",
+    "name": "Performance Run Leggings",
+    "category": "leggings",
+    "price": 88,
+    "description": "Black compression leggings engineered for running with secure waistband and sweat-wicking fabric.",
+    "catalog_attributes": {
+      "material": "polyamide",
+      "fit": "compression"
+    }
+  },
+  {
+    "product_id": "P005",
+    "sku": "LEG-YOGA-GRN",
+    "name": "Flow Yoga Leggings",
+    "category": "leggings",
+    "price": 79,
+    "description": "Deep green high-waist leggings for yoga and pilates with soft stretch fabric and gentle hold.",
+    "catalog_attributes": {
+      "material": "soft stretch knit",
+      "fit": "slim"
+    }
+  },
+  {
+    "product_id": "P006",
+    "sku": "LEG-TRVL-NVY",
+    "name": "Packable Travel Leggings",
+    "category": "leggings",
+    "price": 82,
+    "description": "Navy lightweight leggings made for travel days and casual movement with wrinkle-resistant fabric.",
+    "catalog_attributes": {
+      "material": "travel knit",
+      "fit": "slim"
+    }
+  },
+  {
+    "product_id": "P007",
+    "sku": "TEE-TRAIL-RED",
+    "name": "Trail Merino Tee",
+    "category": "tops",
+    "price": 58,
+    "description": "Red merino tee designed for hiking, backpacking, and long travel days. Odor-resistant and packable.",
+    "catalog_attributes": {
+      "material": "merino wool",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P008",
+    "sku": "TEE-FORMAL-WHT",
+    "name": "Structured White Tee",
+    "category": "tops",
+    "price": 44,
+    "description": "White structured tee with clean lines suitable for smart casual and travel styling.",
+    "catalog_attributes": {
+      "material": "cotton",
+      "fit": "slim"
+    }
+  },
+  {
+    "product_id": "P009",
+    "sku": "JKT-TRVL-BEG",
+    "name": "Packable Travel Jacket",
+    "category": "jackets",
+    "price": 110,
+    "description": "Beige packable jacket designed for airport layering, city travel, and light outdoor use.",
+    "catalog_attributes": {
+      "material": "nylon",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P010",
+    "sku": "JKT-TRAIL-GRY",
+    "name": "Trail Shell Jacket",
+    "category": "jackets",
+    "price": 128,
+    "description": "Grey lightweight shell jacket built for outdoor running, wind protection, and trail travel.",
+    "catalog_attributes": {
+      "material": "ripstop shell",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P011",
+    "sku": "DRS-FORMAL-RED",
+    "name": "Formal Evening Dress",
+    "category": "dresses",
+    "price": 155,
+    "description": "Red slim formal evening dress with elegant structure for dinners, events, and formal occasions.",
+    "catalog_attributes": {
+      "material": "crepe",
+      "fit": "slim"
+    }
+  },
+  {
+    "product_id": "P012",
+    "sku": "DRS-CAS-BLU",
+    "name": "Blue Day Dress",
+    "category": "dresses",
+    "price": 92,
+    "description": "Blue casual day dress for brunch, city walks, and easy travel styling.",
+    "catalog_attributes": {
+      "material": "linen blend",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P013",
+    "sku": "SET-LOUNGE-GRY",
+    "name": "Grey Lounge Set",
+    "category": "sets",
+    "price": 96,
+    "description": "Grey matching lounge set with relaxed silhouette for home, travel, and recovery days.",
+    "catalog_attributes": {
+      "material": "cotton fleece",
+      "fit": "oversized"
+    }
+  },
+  {
+    "product_id": "P014",
+    "sku": "SET-TRAIN-BLK",
+    "name": "Training Set Black",
+    "category": "sets",
+    "price": 118,
+    "description": "Black two-piece training set for gym sessions and high-energy movement with body-hugging fit.",
+    "catalog_attributes": {
+      "material": "performance knit",
+      "fit": "compression"
+    }
+  },
+  {
+    "product_id": "P015",
+    "sku": "BRA-CONFLICT",
+    "name": "Light Compression Bra",
+    "category": "bras",
+    "price": 52,
+    "description": "Lightweight bra with light compression and moderate support for low-impact sessions.",
+    "catalog_attributes": {
+      "material": "seamless knit",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P016",
+    "sku": "BRA-SPARSE",
+    "name": "Everyday Soft Bra",
+    "category": "bras",
+    "price": 46,
+    "description": "Comfortable bra for everyday wear.",
+    "catalog_attributes": {
+      "material": "soft knit",
+      "fit": "regular"
+    }
+  },
+  {
+    "product_id": "P017",
+    "sku": "TOP-CONFLICT",
+    "name": "Occasion Conflict Top",
+    "category": "tops",
+    "price": 68,
+    "description": "Formal evening top styled in a bright outdoor caf\u00e9 campaign shoot.",
+    "catalog_attributes": {
+      "material": "satin touch",
+      "fit": "slim"
+    }
+  },
+  {
+    "product_id": "P018",
+    "sku": "LEG-DUAL",
+    "name": "Reversible Leggings",
+    "category": "leggings",
+    "price": 84,
+    "description": "Reversible leggings with black on one side and blush pink on the other for yoga and lounge wear.",
+    "catalog_attributes": {
+      "material": "double knit",
+      "fit": "slim"
+    }
+  }
+]

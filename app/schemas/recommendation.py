@@ -223,6 +223,19 @@ class BehavioralMatch(BaseModel):
     contribution: float         # = strength; accumulated into behavioral_score
 
 
+class SignalSummary(BaseModel):
+    """Lightweight explanation metadata for a recommendation.
+
+    Summarises the inputs that drove the multi-source signal layer so that
+    clients can surface a one-shot explanation without re-deriving anything.
+    Populated alongside product_signal_strength / match_confidence.
+    """
+    matched_attribute_count: int
+    compatibility_positive: float
+    compatibility_negative: float
+    conflict_indicators: list[str] = []
+
+
 class SlotResponse(BaseModel):
     slot_id: str
     algorithm: str
@@ -246,10 +259,20 @@ class RecommendationRead(BaseModel):
     relationship_score: float
     popularity_score: float
     behavioral_score: float
-    affinity_contribution: float = 0.0        # categorical_affinity: soft preference signal
-    compatibility_contribution: float = 0.0   # compatibility_signal: suitability/fit signal
+    affinity_contribution: float = 0.0                 # categorical_affinity: soft preference signal
+    compatibility_positive_contribution: float = 0.0   # compatibility_signal: positive suitability/fit
+    compatibility_negative_contribution: float = 0.0   # compatibility_signal: penalty for mismatched values
+    contextual_negative_contribution: float = 0.0     # contextual_semantic: mismatch penalty (occasion/activity)
+    low_signal_penalty: float = 0.0                   # penalty for weak product enrichment coverage
     recommendation_score: float
     recommendation_source: str          # e.g. "direct" | "behavioral" | "direct+behavioral" | "popular"
     explanation: str
     relationship_matches: list[RelationshipMatch]
     behavioral_matches: list[BehavioralMatch]
+    # Multi-source signal strength (additive / observational). None when the
+    # caller has not fed enrichment outputs through the signal pipeline — keeps
+    # existing recommendation_score behavior unchanged for legacy callers.
+    product_signal_strength: float | None = None
+    customer_signal_strength: float | None = None
+    match_confidence: float | None = None
+    signal_summary: SignalSummary | None = None

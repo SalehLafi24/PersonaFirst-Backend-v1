@@ -320,44 +320,103 @@ def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
     Infers suitability or compatibility. Avoids unsupported claims.
     Confidence must reflect strength of evidence, not assumed compatibility.
+    Uses the standardised divider-based prompt format.
     """
-    lines = [
-        f'You are assessing compatibility for the attribute "{attr.name}" on a {attr.object_type}.',
-        "",
-        "TASK",
-        f'Determine the value of the attribute "{attr.name}" for the given {attr.object_type}.',
-        "",
-        "CLASS BEHAVIOR",
-        "  - Assess suitability based only on available evidence.",
-        "  - Do not claim compatibility unless evidence clearly supports it.",
-        "  - Partial or uncertain compatibility must be reflected in a lower confidence score.",
-        "",
-        "ATTRIBUTE",
-        f"  Name        : {attr.name}",
-        f"  Description : {attr.description}",
-        f"  Evidence    : {', '.join(attr.evidence_sources)}",
-    ]
+    if attr.allowed_values:
+        allowed_block = "\n".join(f"- {v}" for v in attr.allowed_values)
+    else:
+        allowed_block = "(none provided)"
 
-    lines += _allowed_values_lines(attr)
+    obj_json = json.dumps(_normalize_obj(obj), indent=2, ensure_ascii=False)
 
-    behavior_lines = _behavior_instructions(attr)
-    if behavior_lines:
-        lines += ["", "CONSTRAINTS"]
-        lines += [f"  - {line}" for line in behavior_lines]
+    return f"""\
+You are an attribute extraction engine.
 
-    lines += [
-        "",
-        "SCORING GUIDANCE",
-        "  confidence >= 0.8 : strong evidence supports the value",
-        "  confidence 0.5–0.79: moderate evidence, some inference required",
-        "  confidence < 0.5  : weak or ambiguous — consider null instead",
-        "",
-        "OBJECT DATA",
-        json.dumps(obj, indent=2, ensure_ascii=False),
-    ]
-    lines += _output_section()
+You are determining the value(s) of a single attribute for a product.
 
-    return "\n".join(lines)
+--------------------------------
+ATTRIBUTE CONTEXT
+--------------------------------
+Attribute name: {attr.name}
+Class: compatibility
+Description: {attr.description}
+
+Allowed values:
+{allowed_block}
+
+Rules:
+- Explicit suitability statements have the highest priority.
+- Indirect clues such as compression level, comfort language, activity type, or use context must not override an explicit suitability statement on their own.
+- Treat indirect clues as supporting context, not as a stronger source of truth than an explicit suitability statement.
+- Only treat the evidence as ambiguous if:
+    - there are multiple explicit suitability statements pointing to different allowed values, or
+    - the object data explicitly negates or directly contradicts the explicit suitability statement.
+- If an explicit suitability statement is present and there is no direct contradiction, use it.
+
+--------------------------------
+CLASS BEHAVIOR
+--------------------------------
+- This is a suitability assessment task, not a literal extraction task.
+- Judge how well the product is functionally suited to each candidate value.
+- Use semantic and contextual signals from the object data, not literal-text matching alone.
+- Confidence must reflect the strength of evidence, not the assumed compatibility.
+- If multiple values are independently and strongly supported, you may return more than one.
+- If signals are weak or ambiguous, return no values.
+
+--------------------------------
+OBJECT DATA
+--------------------------------
+{obj_json}
+
+--------------------------------
+OUTPUT FORMAT (STRICT)
+--------------------------------
+Return valid JSON only.
+
+{{
+  "attribute_name": "string",
+  "attribute_class": "compatibility",
+  "values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"],
+      "reasoning_mode": "suitability"
+    }}
+  ],
+  "proposed_values": [],
+  "warnings": ["string"]
+}}
+
+--------------------------------
+OUTPUT RULES
+--------------------------------
+- Each value must have its own confidence and evidence.
+- Evidence must quote or clearly reference exact phrases from the object data.
+- All returned values must be from the allowed_values list when provided.
+- reasoning_mode must always be "suitability"
+- proposed_values must be empty
+- If signals are ambiguous or conflicting AND there is no usable explicit suitability statement, return:
+    values = []
+    warnings = ["ambiguous_evidence"]
+
+- Else if no values are clearly supported, return:
+    values = []
+    warnings = ["no_supported_value_found"]
+
+- If multiple strong values are found:
+    include all of them
+    add warning: "multiple_strong_values_detected"
+
+- Confidence guidelines:
+    0.80–1.00 = strong evidence supports the value
+    0.50–0.79 = moderate evidence, some inference required
+    below 0.50 = weak or ambiguous — do not include
+
+--------------------------------
+FINAL RULE
+--------------------------------
+Return JSON only. No explanation."""
 
 
 def _build_taxonomy_discovery_prompt(attr: AttributeDefinition, obj: dict) -> str:

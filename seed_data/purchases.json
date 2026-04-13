@@ -1,0 +1,250 @@
+[
+  {
+    "order_id": "O1001",
+    "customer_id": "C001",
+    "product_id": "P001",
+    "order_date": "2026-01-05",
+    "quantity": 1,
+    "revenue": 72
+  },
+  {
+    "order_id": "O1002",
+    "customer_id": "C001",
+    "product_id": "P004",
+    "order_date": "2026-01-12",
+    "quantity": 1,
+    "revenue": 88
+  },
+  {
+    "order_id": "O1003",
+    "customer_id": "C001",
+    "product_id": "P014",
+    "order_date": "2026-01-24",
+    "quantity": 1,
+    "revenue": 118
+  },
+  {
+    "order_id": "O1004",
+    "customer_id": "C001",
+    "product_id": "P010",
+    "order_date": "2026-02-05",
+    "quantity": 1,
+    "revenue": 128
+  },
+  {
+    "order_id": "O1005",
+    "customer_id": "C001",
+    "product_id": "P002",
+    "order_date": "2026-02-26",
+    "quantity": 1,
+    "revenue": 64
+  },
+  {
+    "order_id": "O1006",
+    "customer_id": "C001",
+    "product_id": "P001",
+    "order_date": "2026-03-10",
+    "quantity": 1,
+    "revenue": 72
+  },
+  {
+    "order_id": "O1007",
+    "customer_id": "C001",
+    "product_id": "P004",
+    "order_date": "2026-03-31",
+    "quantity": 1,
+    "revenue": 88
+  },
+  {
+    "order_id": "O1008",
+    "customer_id": "C002",
+    "product_id": "P003",
+    "order_date": "2026-01-05",
+    "quantity": 1,
+    "revenue": 48
+  },
+  {
+    "order_id": "O1009",
+    "customer_id": "C002",
+    "product_id": "P005",
+    "order_date": "2026-01-12",
+    "quantity": 1,
+    "revenue": 79
+  },
+  {
+    "order_id": "O1010",
+    "customer_id": "C002",
+    "product_id": "P018",
+    "order_date": "2026-01-24",
+    "quantity": 1,
+    "revenue": 84
+  },
+  {
+    "order_id": "O1011",
+    "customer_id": "C002",
+    "product_id": "P002",
+    "order_date": "2026-02-09",
+    "quantity": 1,
+    "revenue": 64
+  },
+  {
+    "order_id": "O1012",
+    "customer_id": "C002",
+    "product_id": "P005",
+    "order_date": "2026-03-02",
+    "quantity": 1,
+    "revenue": 79
+  },
+  {
+    "order_id": "O1013",
+    "customer_id": "C002",
+    "product_id": "P003",
+    "order_date": "2026-03-14",
+    "quantity": 1,
+    "revenue": 48
+  },
+  {
+    "order_id": "O1014",
+    "customer_id": "C003",
+    "product_id": "P006",
+    "order_date": "2026-01-05",
+    "quantity": 1,
+    "revenue": 82
+  },
+  {
+    "order_id": "O1015",
+    "customer_id": "C003",
+    "product_id": "P007",
+    "order_date": "2026-01-21",
+    "quantity": 1,
+    "revenue": 58
+  },
+  {
+    "order_id": "O1016",
+    "customer_id": "C003",
+    "product_id": "P008",
+    "order_date": "2026-01-28",
+    "quantity": 1,
+    "revenue": 44
+  },
+  {
+    "order_id": "O1017",
+    "customer_id": "C003",
+    "product_id": "P009",
+    "order_date": "2026-02-18",
+    "quantity": 1,
+    "revenue": 110
+  },
+  {
+    "order_id": "O1018",
+    "customer_id": "C003",
+    "product_id": "P012",
+    "order_date": "2026-03-11",
+    "quantity": 1,
+    "revenue": 92
+  },
+  {
+    "order_id": "O1019",
+    "customer_id": "C003",
+    "product_id": "P013",
+    "order_date": "2026-03-27",
+    "quantity": 1,
+    "revenue": 96
+  },
+  {
+    "order_id": "O1020",
+    "customer_id": "C003",
+    "product_id": "P006",
+    "order_date": "2026-04-12",
+    "quantity": 1,
+    "revenue": 82
+  },
+  {
+    "order_id": "O1021",
+    "customer_id": "C004",
+    "product_id": "P011",
+    "order_date": "2026-01-05",
+    "quantity": 1,
+    "revenue": 155
+  },
+  {
+    "order_id": "O1022",
+    "customer_id": "C004",
+    "product_id": "P017",
+    "order_date": "2026-01-17",
+    "quantity": 1,
+    "revenue": 68
+  },
+  {
+    "order_id": "O1023",
+    "customer_id": "C004",
+    "product_id": "P011",
+    "order_date": "2026-02-02",
+    "quantity": 1,
+    "revenue": 155
+  },
+  {
+    "order_id": "O1024",
+    "customer_id": "C004",
+    "product_id": "P008",
+    "order_date": "2026-02-09",
+    "quantity": 1,
+    "revenue": 44
+  },
+  {
+    "order_id": "O1025",
+    "customer_id": "C004",
+    "product_id": "P012",
+    "order_date": "2026-02-21",
+    "quantity": 1,
+    "revenue": 92
+  },
+  {
+    "order_id": "O1026",
+    "customer_id": "C005",
+    "product_id": "P003",
+    "order_date": "2026-01-05",
+    "quantity": 1,
+    "revenue": 48
+  },
+  {
+    "order_id": "O1027",
+    "customer_id": "C005",
+    "product_id": "P013",
+    "order_date": "2026-01-21",
+    "quantity": 1,
+    "revenue": 96
+  },
+  {
+    "order_id": "O1028",
+    "customer_id": "C005",
+    "product_id": "P016",
+    "order_date": "2026-02-11",
+    "quantity": 1,
+    "revenue": 46
+  },
+  {
+    "order_id": "O1029",
+    "customer_id": "C005",
+    "product_id": "P018",
+    "order_date": "2026-02-23",
+    "quantity": 1,
+    "revenue": 84
+  },
+  {
+    "order_id": "O1030",
+    "customer_id": "C005",
+    "product_id": "P013",
+    "order_date": "2026-03-02",
+    "quantity": 1,
+    "revenue": 96
+  },
+  {
+    "order_id": "O1031",
+    "customer_id": "C005",
+    "product_id": "P003",
+    "order_date": "2026-03-23",
+    "quantity": 1,
+    "revenue": 48
+  }
+]

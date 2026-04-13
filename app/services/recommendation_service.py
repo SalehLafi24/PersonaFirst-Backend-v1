@@ -13,6 +13,7 @@ from app.models.customer_attribute_affinity import CustomerAttributeAffinity
 from app.models.customer_purchase import CustomerPurchase
 from app.models.product import Product, ProductAttribute
 from app.models.product_behavior_relationship import ProductBehaviorRelationship
+from app.schemas.attribute_enrichment import AttributeBehavior
 from app.schemas.recommendation import (
     BehavioralMatch,
     MatchedAttribute,
@@ -40,6 +41,17 @@ _DEFAULT_BEHAVIORAL_WEIGHT: float = 0.0
 # Multiplier applied to compatibility_signal attributes.
 # Makes suitability/fit matches weigh more than categorical preference matches.
 _COMPATIBILITY_SCORE_MULTIPLIER: float = 1.5
+
+# Contextual semantic mismatch penalty — applies only to occasion/activity.
+# Conservative multiplier: a mismatch on occasion/activity reduces the score
+# but much less aggressively than a compatibility mismatch.
+_CONTEXTUAL_MISMATCH_ATTRS: frozenset[str] = frozenset({"occasion", "activity"})
+_CONTEXTUAL_MISMATCH_MULTIPLIER: float = 0.3
+
+# Low-signal penalty — demotes products with weak enrichment coverage.
+# Applied after all other scoring, using product_signal_strength from the
+# multi-source signal layer.  Products without signal data are unaffected.
+_LOW_SIGNAL_PENALTY_WEIGHT: float = 0.1
 
 # ---------------------------------------------------------------------------
 # Algorithm presets — each maps to weights + a tie-break priority.
@@ -258,6 +270,46 @@ def _get_targeting_mode(
     return attribute_targeting_modes.get(attribute_id, "categorical_affinity")
 
 
+def _ordered_mismatch_severity(
+    product_value: str,
+    customer_values: dict[str, float],
+    value_order: list[str],
+) -> float:
+    """Severity of a mismatch on an ordered compatibility scale, in [0.0, 1.0].
+
+    Distance is measured between the product's index in ``value_order`` and the
+    closest customer signal value's index. Severity = closest_distance / max_distance,
+    where max_distance is ``len(value_order) - 1``.
+
+    Returns 0.0 (no penalty) when:
+      - the ordered scale has fewer than 2 entries (no distance is meaningful),
+      - the product value is not in ``value_order``, or
+      - none of the customer's signal values are in ``value_order``.
+
+    The function is intentionally generic — it knows nothing about specific
+    attribute names. ``value_order`` is the only thing that defines the axis.
+    """
+    if len(value_order) < 2:
+        return 0.0
+    try:
+        product_idx = value_order.index(product_value)
+    except ValueError:
+        return 0.0
+
+    customer_indices: list[int] = []
+    for cv in customer_values:
+        try:
+            customer_indices.append(value_order.index(cv))
+        except ValueError:
+            continue
+    if not customer_indices:
+        return 0.0
+
+    closest_distance = min(abs(product_idx - ci) for ci in customer_indices)
+    max_distance = len(value_order) - 1
+    return closest_distance / max_distance
+
+
 def _apply_categorical_filters(
     product_db_id: int,
     attrs_by_product: dict[int, list],
@@ -366,6 +418,10 @@ def get_recommendations(
     excluded_group_ids: set[str] | None = None,
     attribute_targeting_modes: dict[str, str] | None = None,
     filter_context: dict[str, list[str]] | None = None,
+    attribute_behaviors: dict[str, AttributeBehavior] | None = None,
+    customer_signal_strength: float | None = None,
+    product_enrichment_outputs: dict | None = None,
+    tiebreak_by_match_confidence: bool = False,
 ) -> tuple[list[RecommendationRead], bool]:
     logger.warning("DEBUG get_recommendations called: workspace=%s customer=%s", workspace_id, customer_id)
     if reference_date is None:
@@ -419,11 +475,18 @@ def get_recommendations(
     # 4. Build affinity map and relationship contributions
     affinity_map: dict[tuple[str, str], float] = {}
     rel_contributions: dict[tuple[str, str], list[RelationshipMatch]] = defaultdict(list)
+    # customer_signals_by_attr inverts affinity_map by attribute_id so the
+    # negative compatibility pass can look up "what value(s) does this customer
+    # signal for attribute X?" without scanning the full affinity list per
+    # product. Empty when no affinities exist.
+    customer_signals_by_attr: dict[str, dict[str, float]] = defaultdict(dict)
 
     if affinities:
         affinity_map = {
             (a.attribute_id, a.attribute_value): a.score for a in affinities
         }
+        for (attr_id, attr_val), score in affinity_map.items():
+            customer_signals_by_attr[attr_id][attr_val] = score
 
         approved_rels = (
             db.query(AttributeValueRelationship)
@@ -526,8 +589,14 @@ def get_recommendations(
         # Contributions are separated by targeting_mode before being combined.
         matched: list[MatchedAttribute] = []
         has_core_match = False
-        affinity_contribution: float = 0.0      # categorical_affinity — soft preference
-        compatibility_contribution: float = 0.0  # compatibility_signal — suitability/fit
+        affinity_contribution: float = 0.0                  # categorical_affinity — soft preference
+        compatibility_positive_contribution: float = 0.0    # compatibility_signal — match
+        compatibility_negative_contribution: float = 0.0    # compatibility_signal — mismatch penalty
+        # Track which compatibility-signal attribute_ids were matched positively
+        # on this product, so the negative pass can skip them — a positive match
+        # always wins over any concurrent mismatch on the same attribute.
+        positively_matched_compat_attrs: set[str] = set()
+        positively_matched_contextual_attrs: set[str] = set()
         # categorical_filter    → filter_exclusion: handled as pre-scoring gate above
         # descriptive_metadata  → metadata_ignored: not scored
 
@@ -553,10 +622,13 @@ def get_recommendations(
                     ))
                     if attr.attribute_id in CORE_ATTRS:
                         has_core_match = True
+                    if attr.attribute_id in _CONTEXTUAL_MISMATCH_ATTRS:
+                        positively_matched_contextual_attrs.add(attr.attribute_id)
 
                 elif mode == "compatibility_signal":
-                    # Suitability/fit — heavier weight, own contribution bucket
-                    compatibility_contribution += aff_score * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    # Suitability/fit — heavier weight, positive bucket
+                    compatibility_positive_contribution += aff_score * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    positively_matched_compat_attrs.add(attr.attribute_id)
                     matched.append(MatchedAttribute(
                         attribute_id=attr.attribute_id,
                         attribute_value=attr.attribute_value,
@@ -572,8 +644,105 @@ def get_recommendations(
 
                 # descriptive_metadata: metadata_ignored — not scored
 
+        # Negative compatibility pass — opt-in via attribute_behaviors.
+        # For each attribute the customer has a compatibility signal for, if
+        # the product carries explicit value(s) for that attribute and none of
+        # them match any customer signal value, accumulate a penalty into
+        # compatibility_negative_contribution.
+        #
+        # Generic by design: nothing here references specific attribute names.
+        # Only attribute_targeting_modes (which attribute is a compatibility
+        # signal) and attribute_behaviors (whether to penalise + how to weight
+        # the penalty) drive the behaviour.
+        #
+        # Skipped automatically when:
+        #   - attribute_behaviors is None (backward compat — original positive-only path)
+        #   - the attribute has no AttributeBehavior entry
+        #   - negative_scoring_enabled is False on that behavior
+        #   - the product carries no explicit value for the attribute (insufficient data → neutral)
+        #   - the product already produced a positive match on the same attribute
+        if attribute_behaviors and customer_signals_by_attr:
+            for attr_id, customer_signals in customer_signals_by_attr.items():
+                if attr_id in positively_matched_compat_attrs:
+                    continue
+                behavior = attribute_behaviors.get(attr_id)
+                if behavior is None or not behavior.negative_scoring_enabled:
+                    continue
+                if _get_targeting_mode(attr_id, attribute_targeting_modes) != "compatibility_signal":
+                    continue
+
+                product_values_for_attr = [
+                    a.attribute_value
+                    for a in attrs_by_product[product.id]
+                    if a.attribute_id == attr_id
+                ]
+                if not product_values_for_attr:
+                    continue  # neutral — insufficient data, do not penalise
+                # If any product value is in the customer signal set, this is
+                # really a positive match the upstream loop should have caught.
+                # Skip to be safe.
+                if any(pv in customer_signals for pv in product_values_for_attr):
+                    continue
+
+                weight = get_attribute_weight(attr_id)
+                # Use the strongest customer signal score as the penalty basis,
+                # so the magnitude of the penalty scales with how strongly the
+                # customer signalled the attribute in the first place.
+                basis = max(customer_signals.values())
+
+                if behavior.ordered_values and behavior.value_order:
+                    # Distance-based: take the smallest mismatch distance
+                    # across the product's values. The product is "as close
+                    # as possible" to the customer's preferred value.
+                    severities = [
+                        _ordered_mismatch_severity(pv, customer_signals, behavior.value_order)
+                        for pv in product_values_for_attr
+                    ]
+                    severity = min(severities) if severities else 0.0
+                    if severity > 0.0:
+                        compatibility_negative_contribution += (
+                            basis * weight * _COMPATIBILITY_SCORE_MULTIPLIER * severity
+                        )
+                else:
+                    # Unordered: flat penalty for any explicit mismatch.
+                    compatibility_negative_contribution += (
+                        basis * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    )
+
+        # Contextual semantic mismatch pass — occasion / activity only.
+        # If the customer has affinity signal for an attribute and the product
+        # carries explicit value(s) for it but NONE of them match, apply a
+        # conservative penalty proportional to the customer's strongest signal.
+        # Skipped when the attribute already matched positively on this product.
+        contextual_negative_contribution: float = 0.0
+        if customer_signals_by_attr:
+            for attr_id in _CONTEXTUAL_MISMATCH_ATTRS:
+                if attr_id in positively_matched_contextual_attrs:
+                    continue
+                customer_signals = customer_signals_by_attr.get(attr_id)
+                if not customer_signals:
+                    continue
+                if _get_targeting_mode(attr_id, attribute_targeting_modes) != "categorical_affinity":
+                    continue
+
+                product_values_for_attr = [
+                    a.attribute_value
+                    for a in attrs_by_product[product.id]
+                    if a.attribute_id == attr_id
+                ]
+                if not product_values_for_attr:
+                    continue  # no data → neutral, do not penalise
+                if any(pv in customer_signals for pv in product_values_for_attr):
+                    continue  # at least one value matches — not a mismatch
+
+                weight = get_attribute_weight(attr_id)
+                basis = max(customer_signals.values())
+                contextual_negative_contribution += basis * weight * _CONTEXTUAL_MISMATCH_MULTIPLIER
+
         affinity_contribution = round(affinity_contribution, 6)
-        compatibility_contribution = round(compatibility_contribution, 6)
+        compatibility_positive_contribution = round(compatibility_positive_contribution, 6)
+        compatibility_negative_contribution = round(compatibility_negative_contribution, 6)
+        contextual_negative_contribution = round(contextual_negative_contribution, 6)
 
         attr_set: frozenset[tuple[str, str]] = frozenset(
             (a.attribute_id, a.attribute_value) for a in attrs_by_product[product.id]
@@ -599,10 +768,13 @@ def get_recommendations(
         beh_matches.sort(key=lambda m: (-m.contribution, m.source_product_id))
         behavioral_score = round(sum(m.contribution for m in beh_matches), 6)
 
-        # Skip if no signal at all
+        # Skip if no positive signal at all. The negative compatibility bucket
+        # is intentionally NOT included here — a product with only a penalty
+        # and no positive signal has nothing to recommend it, and the
+        # meaningfulness gate below would filter it anyway.
         if (
             direct_score == 0.0
-            and compatibility_contribution == 0.0
+            and compatibility_positive_contribution == 0.0
             and relationship_score == 0.0
             and pop_score == 0.0
             and behavioral_score == 0.0
@@ -622,8 +794,11 @@ def get_recommendations(
 
         # Determine source label — only include a signal if it actually contributed
         # (score > 0 AND weight > 0). "popular" is a fallback when nothing else fires.
+        # Note: only the positive compatibility bucket counts as a "direct"
+        # source — a pure penalty doesn't surface a product, it only modifies
+        # how an already-surfaced product ranks.
         sources = []
-        if (direct_score + compatibility_contribution) > 0 and direct_weight > 0:
+        if (direct_score + compatibility_positive_contribution) > 0 and direct_weight > 0:
             sources.append("direct")
         if relationship_score > 0 and relationship_weight > 0:
             sources.append("relationship")
@@ -676,7 +851,9 @@ def get_recommendations(
                 matched_attributes=matched,
                 direct_score=direct_score,
                 affinity_contribution=affinity_contribution,
-                compatibility_contribution=compatibility_contribution,
+                compatibility_positive_contribution=compatibility_positive_contribution,
+                compatibility_negative_contribution=compatibility_negative_contribution,
+                contextual_negative_contribution=contextual_negative_contribution,
                 relationship_score=relationship_score,
                 popularity_score=pop_score,
                 behavioral_score=behavioral_score,
@@ -700,8 +877,17 @@ def get_recommendations(
     #    the response always reflects the original weighted final_score.
     scored: list[tuple[float, int, RecommendationRead]] = []
     for db_id, rec in candidates:
+        # Final score: positive direct + positive compatibility contributions,
+        # MINUS the compatibility and contextual penalty buckets. The negative
+        # buckets are stored as non-negative magnitudes on RecommendationRead
+        # and subtracted here.
         final_score = round(
-            (rec.direct_score + rec.compatibility_contribution) * direct_weight
+            (
+                rec.direct_score
+                + rec.compatibility_positive_contribution
+                - rec.compatibility_negative_contribution
+                - rec.contextual_negative_contribution
+            ) * direct_weight
             + rec.relationship_score * relationship_weight
             + rec.popularity_score * popularity_weight
             + rec.behavioral_score * behavioral_weight,
@@ -816,5 +1002,49 @@ def get_recommendations(
         results.append(rec)
         if len(results) >= top_n:
             break
+
+    # 13. Starter-mode multi-source signal layer. Additive and opt-in:
+    #     only runs when the caller passes signal inputs. When nothing is
+    #     passed, `results` is returned exactly as built above.
+    if (
+        customer_signal_strength is not None
+        or product_enrichment_outputs is not None
+        or tiebreak_by_match_confidence
+    ):
+        from app.services.multi_source_signal_service import apply_multi_source_signals
+
+        results = apply_multi_source_signals(
+            results,
+            customer_signal_strength=customer_signal_strength,
+            product_enrichment_outputs=product_enrichment_outputs,
+            tiebreak_by_match_confidence=tiebreak_by_match_confidence,
+        )
+
+    # 14. Low-signal penalty — demote products with weak enrichment coverage.
+    #     Uses product_signal_strength populated by step 13.  Products with
+    #     no enrichment data (None) are treated as 0.0 — maximum penalty —
+    #     so unenriched products never outrank enriched ones by default.
+    #     Re-sorts afterward so rankings reflect the adjusted scores.
+    any_penalty = False
+    for i, rec in enumerate(results):
+        effective_strength = rec.product_signal_strength if rec.product_signal_strength is not None else 0.0
+        penalty = round(
+            (1.0 - effective_strength) * _LOW_SIGNAL_PENALTY_WEIGHT, 6
+        )
+        if penalty > 0:
+            new_score = round(rec.recommendation_score - penalty, 6)
+            results[i] = rec.model_copy(update={
+                "low_signal_penalty": penalty,
+                "recommendation_score": new_score,
+            })
+            any_penalty = True
+
+    if any_penalty:
+        results.sort(
+            key=lambda r: (
+                -r.recommendation_score,
+                -(r.match_confidence if r.match_confidence is not None else -1.0),
+            ),
+        )
 
     return results, fallback_applied

@@ -1,0 +1,148 @@
+[
+  {
+    "name": "color",
+    "object_type": "product",
+    "class_name": "descriptive_literal",
+    "value_mode": "multi",
+    "allowed_values": [
+      "black",
+      "white",
+      "red",
+      "blue",
+      "green",
+      "grey",
+      "pink",
+      "beige",
+      "navy"
+    ],
+    "description": "The explicit color or colors of the product as stated in text or visible in images.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": false,
+      "ordered_values": false,
+      "can_propose_values": false,
+      "multi_value_allowed": true,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "occasion",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "multi",
+    "allowed_values": [
+      "casual",
+      "formal",
+      "athletic",
+      "travel",
+      "lounge"
+    ],
+    "description": "The primary occasion or context the product is best suited for.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": false,
+      "multi_value_allowed": true,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "activity",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "multi",
+    "allowed_values": [
+      "running",
+      "training",
+      "yoga",
+      "pilates",
+      "lounge",
+      "travel"
+    ],
+    "description": "The activity or usage context the product is primarily suited for.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": false,
+      "multi_value_allowed": true,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "support_level",
+    "object_type": "product",
+    "class_name": "compatibility",
+    "value_mode": "single",
+    "allowed_values": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "description": "The support intensity this product is functionally suited to provide.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": false,
+      "ordered_values": true,
+      "can_propose_values": false,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "negative_scoring_enabled": true
+    },
+    "targeting_mode": "compatibility_signal"
+  },
+  {
+    "name": "fit_type",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "single",
+    "allowed_values": [
+      "slim",
+      "regular",
+      "oversized",
+      "compression"
+    ],
+    "description": "The overall garment fit implied by the product information.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": false,
+      "ordered_values": false,
+      "can_propose_values": false,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  }
+]
