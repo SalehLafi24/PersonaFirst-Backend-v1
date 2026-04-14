@@ -422,6 +422,7 @@ def get_recommendations(
     customer_signal_strength: float | None = None,
     product_enrichment_outputs: dict | None = None,
     tiebreak_by_match_confidence: bool = False,
+    disable_purchase_suppression_for_eval: bool = False,
 ) -> tuple[list[RecommendationRead], bool]:
     logger.warning("DEBUG get_recommendations called: workspace=%s customer=%s", workspace_id, customer_id)
     if reference_date is None:
@@ -439,12 +440,21 @@ def get_recommendations(
         popularity_weight = _DEFAULT_POPULARITY_WEIGHT
         # behavioral_weight stays 0.0
 
-    # 1. Build suppression sets
-    suppressed_product_ids, suppressed_group_keys, suppressed_functional_sigs = (
-        _build_suppression_sets(db, workspace_id, customer_id, reference_date)
-    )
-    logger.warning("DEBUG suppressed: products=%d groups=%d sigs=%d",
-                   len(suppressed_product_ids), len(suppressed_group_keys), len(suppressed_functional_sigs))
+    # 1. Build suppression sets.
+    # Evaluation mode: skip purchase-based suppression entirely so the engine
+    # can be scored on raw relevance. Production default keeps all existing
+    # suppression behavior unchanged.
+    if disable_purchase_suppression_for_eval:
+        suppressed_product_ids: set[str] = set()
+        suppressed_group_keys: set[str] = set()
+        suppressed_functional_sigs: set[frozenset] = set()
+        logger.warning("DEBUG suppression disabled (evaluation mode)")
+    else:
+        suppressed_product_ids, suppressed_group_keys, suppressed_functional_sigs = (
+            _build_suppression_sets(db, workspace_id, customer_id, reference_date)
+        )
+        logger.warning("DEBUG suppressed: products=%d groups=%d sigs=%d",
+                       len(suppressed_product_ids), len(suppressed_group_keys), len(suppressed_functional_sigs))
 
     # 2. Load all products and attributes
     products = db.query(Product).filter(Product.workspace_id == workspace_id).all()
