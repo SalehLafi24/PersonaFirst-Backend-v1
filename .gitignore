@@ -31,3 +31,6 @@ htmlcov/
 
 # Claude Code worktrees
 .claude/worktrees/
+
+# Node
+node_modules/

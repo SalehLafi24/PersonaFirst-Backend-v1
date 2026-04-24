@@ -28,6 +28,7 @@ from app.schemas.attribute_enrichment import (
     EnrichedValue,
     EnrichmentOutput,
     EnrichmentSource,
+    ProposedValue,
 )
 
 
@@ -134,8 +135,28 @@ def merge_enrichment_outputs(
         raise ValueError("visual_output must have source=EnrichmentSource.VISUAL")
 
     warnings: set[str] = set(text_output.warnings) | set(visual_output.warnings)
-    proposed: list[str] = sorted(
-        {*(text_output.proposed_values or []), *(visual_output.proposed_values or [])}
+    # Merge structured proposed_values by value. When both sides propose the
+    # same value, take the higher confidence and union the evidence.
+    _merged_proposed: dict[str, ProposedValue] = {}
+    for pv in (
+        list(text_output.proposed_values or [])
+        + list(visual_output.proposed_values or [])
+    ):
+        existing = _merged_proposed.get(pv.value)
+        if existing is None:
+            _merged_proposed[pv.value] = ProposedValue(
+                value=pv.value,
+                confidence=pv.confidence,
+                evidence=list(pv.evidence),
+            )
+        else:
+            _merged_proposed[pv.value] = ProposedValue(
+                value=pv.value,
+                confidence=max(existing.confidence, pv.confidence),
+                evidence=list({*existing.evidence, *pv.evidence}),
+            )
+    proposed: list[ProposedValue] = sorted(
+        _merged_proposed.values(), key=lambda p: p.value
     )
 
     def _build(

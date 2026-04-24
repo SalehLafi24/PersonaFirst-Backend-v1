@@ -176,7 +176,13 @@ Return valid JSON only.
       "reasoning_mode": "explicit"
     }}
   ],
-  "proposed_values": [],
+  "proposed_values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"]
+    }}
+  ],
   "warnings": ["string"]
 }}
 
@@ -186,9 +192,21 @@ OUTPUT RULES
 - Each value must have its own confidence and evidence.
 - Evidence must quote exact or near-exact text from the object data.
 - reasoning_mode must always be "explicit"
-- proposed_values must be empty
-- All returned values must be from the allowed_values list when provided.
+- All returned `values` must be from the allowed_values list when provided.
 - When a value is mapped to an allowed value, evidence must still reference the original source wording.
+
+PROPOSED VALUES (taxonomy evolution)
+- If an allowed_values list is provided AND the object data explicitly names
+  a value that is clearly outside that list, add it to `proposed_values`
+  instead of `values`. Do NOT include it in `values`.
+- Never invent, guess, or loosely infer proposed values. Only propose values
+  that are literally present in the object data.
+- Each proposed value must have:
+    - confidence >= 0.8 (the wording in the data must be unambiguous)
+    - evidence that quotes the exact phrase or field from the object data
+- Proposed values must never duplicate or overlap with `values` — they are
+  strictly for values the allowed list does not cover yet.
+- If no such candidates exist, return proposed_values = [].
 - If signals are ambiguous or conflicting, return:
     values = []
     warnings = ["ambiguous_evidence"]
@@ -212,15 +230,155 @@ FINAL RULE
 Return JSON only. No explanation."""
 
 
+def _contextual_semantic_rules(has_allowed: bool, can_propose: bool) -> str:
+    if has_allowed:
+        return (
+            "- Only select values from the allowed_values list.\n"
+            "- Do not invent new values for `values`.\n"
+            "- Map to the closest valid value when evidence strongly supports it.\n"
+            "- If no value is clearly supported, return `values = []`.\n"
+            "- Only include values that are directly supported as a clear intended use, context, or meaning of the product.\n"
+            "- Do not include a value just because the product has general performance, comfort, or technical features."
+        )
+    if can_propose:
+        return (
+            "- No allowed_values are defined for this attribute yet.\n"
+            "- `values` MUST be returned as an empty list in every case.\n"
+            "- Your task is to populate `proposed_values` with evidence-backed candidates.\n"
+            "- Only propose values that are directly supported as a clear intended use, context, or meaning of the product.\n"
+            "- Do not propose a value just because the product has general performance, comfort, or technical features.\n"
+            "- If no candidate is clearly supported, return `proposed_values = []`."
+        )
+    return (
+        "- No allowed_values are defined and value proposal is disabled for this attribute.\n"
+        "- `values` MUST be returned as an empty list.\n"
+        "- `proposed_values` MUST be returned as an empty list.\n"
+        "- Do not infer, guess, or invent any value."
+    )
+
+
+def _contextual_semantic_enforcement(has_allowed: bool) -> str:
+    if has_allowed:
+        return "- All returned values must be from the allowed_values list."
+    return "- `values` must be an empty list (no allowed_values are defined for this attribute)."
+
+
+def _contextual_semantic_proposed(has_allowed: bool, can_propose: bool) -> str:
+    if has_allowed and can_propose:
+        return (
+            "PROPOSED VALUES (taxonomy evolution)\n"
+            "- If an allowed_values list is provided AND the object data clearly names a\n"
+            "  distinct use case, context, or meaning that is NOT covered by any allowed\n"
+            "  value, add that candidate to `proposed_values` instead of mapping it to a\n"
+            "  weaker allowed value.\n"
+            "- Only propose values that are explicitly supported by wording in the data.\n"
+            "  Do not invent, guess, or loosely infer.\n"
+            "- Each proposed value must have:\n"
+            "    - confidence >= 0.8\n"
+            "    - evidence that quotes the exact phrase(s) or field(s) from the data\n"
+            "- Proposed values must never duplicate any entry in `values` — they are\n"
+            "  strictly for meanings the allowed list does not yet cover.\n"
+            "- If no such candidates exist, return proposed_values = []."
+        )
+    if has_allowed and not can_propose:
+        return (
+            "PROPOSED VALUES\n"
+            "- Value proposal is disabled for this attribute.\n"
+            "- Always return proposed_values = []."
+        )
+    if not has_allowed and can_propose:
+        return (
+            "PROPOSED VALUES (primary output — allowed_values is empty)\n"
+            "- No allowed_values exist for this known attribute yet. Value discovery is\n"
+            "  the goal of this call.\n"
+            "- Populate `proposed_values` with values that are clearly supported by the\n"
+            "  object data as a primary or clearly intended use, context, or meaning of\n"
+            "  the product.\n"
+            "- Only propose values that are explicitly supported by wording in the data.\n"
+            "  Do not invent, guess, or loosely infer.\n"
+            "- Each proposed value must have:\n"
+            "    - confidence >= 0.8\n"
+            "    - evidence that quotes the exact phrase(s) or field(s) from the data\n"
+            "- Proposed values must be concise, lowercase, and reusable across objects.\n"
+            "- `values` must remain an empty list in this call.\n"
+            "- If no candidate is clearly supported, return proposed_values = []."
+        )
+    return (
+        "PROPOSED VALUES\n"
+        "- No allowed_values are defined and value proposal is disabled.\n"
+        "- Always return proposed_values = []."
+    )
+
+
+_ATOMICITY_BLOCK = """\
+--------------------------------
+ATOMICITY RULES (apply to both `values` and `proposed_values`)
+--------------------------------
+- Every value you return MUST be atomic — a single concept expressed as one
+  token or a short, unambiguous noun phrase.
+- Do NOT return compound, ranged, alternated, or multi-concept values.
+  Examples of INVALID output:
+      "low to moderate"     (ranged)
+      "medium to high"      (ranged)
+      "yoga/training"       (alternated)
+      "indoor/outdoor"      (alternated)
+      "low and medium"      (combined)
+- If two or more distinct concepts are each independently and strongly
+  supported, return each as its OWN entry in the output list. Never merge
+  them into a single string.
+- Prefer skipping (empty output) over emitting a low-confidence or
+  speculative value."""
+
+
+_WORKOUT_INTENSITY_VOCAB_BLOCK = """\
+--------------------------------
+CANONICAL VOCABULARY (workout_intensity)
+--------------------------------
+- The canonical vocabulary for workout_intensity is exactly:
+      low | moderate | high
+- Every proposed value MUST be exactly one of: low, moderate, high.
+- Do not return synonyms, adjacent terms, or scale variants. Map them to
+  the closest canonical level:
+      "light", "gentle", "easy", "restorative"  ->  low
+      "medium"                                  ->  moderate
+      "intense", "vigorous", "extreme", "hard"  ->  high
+- Do not emit ranged or compound values such as "low to moderate" or
+  "moderate to high". If the signal is genuinely between two canonical
+  levels, choose the SINGLE best-supported level and add the warning:
+      "ambiguous_intensity_signal"
+- If evidence is weak or absent, return proposed_values = [] rather than
+  guessing."""
+
+
+def _contextual_semantic_vocabulary_block(attr: AttributeDefinition) -> str:
+    """Return an attribute-specific canonical-vocabulary block, or empty string."""
+    if attr.name == "workout_intensity":
+        return "\n\n" + _WORKOUT_INTENSITY_VOCAB_BLOCK
+    return ""
+
+
 def _build_contextual_semantic_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
     Allows semantic inference from context, descriptions, and implied meaning.
     Conservative by default. Uses the standardised divider-based prompt format.
+
+    Branches by (has_allowed_values, can_propose_values) to keep the prompt
+    coherent when the known attribute has an empty allowed_values list — in
+    that case `values` stays empty and discovery happens through
+    `proposed_values` instead.
     """
-    if attr.allowed_values:
-        allowed_block = "\n".join(f"- {v}" for v in attr.allowed_values)
-    else:
-        allowed_block = "(none provided)"
+    has_allowed = bool(attr.allowed_values)
+    can_propose = bool(attr.behavior.can_propose_values)
+
+    allowed_block = (
+        "\n".join(f"- {v}" for v in attr.allowed_values)
+        if has_allowed else "(none provided)"
+    )
+
+    rules_block = _contextual_semantic_rules(has_allowed, can_propose)
+    enforcement_line = _contextual_semantic_enforcement(has_allowed)
+    proposed_block = _contextual_semantic_proposed(has_allowed, can_propose)
+    vocabulary_block = _contextual_semantic_vocabulary_block(attr)
 
     obj_json = json.dumps(_normalize_obj(obj), indent=2, ensure_ascii=False)
 
@@ -240,12 +398,7 @@ Allowed values:
 {allowed_block}
 
 Rules:
-- Only select values from the allowed_values list.
-- Do not invent new values.
-- Map to the closest valid value when evidence strongly supports it.
-- If no value is clearly supported, return no values.
-- Only include values that are directly supported as a clear intended use, context, or meaning of the product.
-- Do not include a value just because the product has general performance, comfort, or technical features.
+{rules_block}
 
 --------------------------------
 CLASS BEHAVIOR
@@ -255,6 +408,8 @@ CLASS BEHAVIOR
 - Remain conservative — weak or ambiguous signals should not produce a value.
 - If multiple values are clearly and independently supported, you may return multiple values.
 - Do not include weak, secondary, or speculative matches.
+
+{_ATOMICITY_BLOCK}{vocabulary_block}
 
 --------------------------------
 OBJECT DATA
@@ -277,7 +432,13 @@ Return valid JSON only.
       "reasoning_mode": "inferred"
     }}
   ],
-  "proposed_values": [],
+  "proposed_values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"]
+    }}
+  ],
   "warnings": ["string"]
 }}
 
@@ -288,7 +449,7 @@ OUTPUT RULES
 - Evidence must quote or clearly reference exact phrases from the object data.
 - Only include values with strong support as a primary or clearly intended use.
 - Values with confidence below 0.80 must not be included.
-- All returned values must be from the allowed_values list.
+{enforcement_line}
 - Each returned value must be independently supported by its own evidence.
 - If signals are ambiguous or conflicting, return:
     values = []
@@ -308,7 +469,8 @@ OUTPUT RULES
     below 0.80 = do not include
 
 - reasoning_mode must always be "inferred"
-- proposed_values must be empty
+
+{proposed_block}
 
 --------------------------------
 FINAL RULE
@@ -384,7 +546,13 @@ Return valid JSON only.
       "reasoning_mode": "suitability"
     }}
   ],
-  "proposed_values": [],
+  "proposed_values": [
+    {{
+      "value": "string",
+      "confidence": 0.0,
+      "evidence": ["string"]
+    }}
+  ],
   "warnings": ["string"]
 }}
 
@@ -393,9 +561,21 @@ OUTPUT RULES
 --------------------------------
 - Each value must have its own confidence and evidence.
 - Evidence must quote or clearly reference exact phrases from the object data.
-- All returned values must be from the allowed_values list when provided.
+- All returned `values` must be from the allowed_values list when provided.
 - reasoning_mode must always be "suitability"
-- proposed_values must be empty
+
+PROPOSED VALUES (taxonomy evolution)
+- If an allowed_values list is provided AND the object data carries an
+  explicit suitability statement for a distinct level/category that the
+  allowed list does not cover, add it to `proposed_values` instead of
+  forcing it onto the closest allowed value.
+- Only propose values that are literally stated or unambiguously implied
+  by explicit wording in the data. Never invent or guess.
+- Each proposed value must have:
+    - confidence >= 0.8
+    - evidence that quotes the exact phrase(s) from the data
+- Proposed values must never duplicate any entry in `values`.
+- If no such candidates exist, return proposed_values = [].
 - If signals are ambiguous or conflicting AND there is no usable explicit suitability statement, return:
     values = []
     warnings = ["ambiguous_evidence"]
@@ -491,17 +671,39 @@ _BUILDERS = {
 # Public API
 # ---------------------------------------------------------------------------
 
-def get_prompt_for_attribute(attribute: AttributeDefinition, obj: dict) -> str:
-    """
-    Build a Claude-ready prompt for extracting or inferring the given attribute
-    from the provided object data.
+def get_prompt_for_attribute(
+    attribute: AttributeDefinition,
+    obj: dict,
+    *,
+    db=None,
+    workspace_id: int | None = None,
+) -> str:
+    """Build a Claude-ready prompt for extracting or inferring the given
+    attribute from the provided object data.
 
-    Dispatches to a class-specific builder based on attribute.class_name.
-    Each builder differs in strictness, inference allowance, and taxonomy behavior.
+    When *db* and *workspace_id* are supplied, the allowed_values are
+    loaded dynamically from the ``attribute_allowed_values`` table. If
+    no DB-backed rows exist for this workspace + attribute, the static
+    ``attribute.allowed_values`` list is used as the fallback — so every
+    existing call site keeps working without changes.
 
-    Returns a plain string prompt ready to be sent as a user message to Claude.
-    The prompt instructs Claude to respond with a single JSON object matching
-    EnrichmentResult's structure.
+    Returns a plain string prompt ready to be sent as a user message to
+    Claude.
     """
-    builder = _BUILDERS[attribute.class_name]
-    return builder(attribute, obj)
+    effective_attr = attribute
+    if db is not None and workspace_id is not None:
+        from app.services.attribute_taxonomy_service import get_allowed_values
+
+        db_values = get_allowed_values(
+            db,
+            workspace_id,
+            attribute.name,
+            default_values=attribute.allowed_values,
+        )
+        if db_values != (attribute.allowed_values or []):
+            effective_attr = attribute.model_copy(
+                update={"allowed_values": db_values or None}
+            )
+
+    builder = _BUILDERS[effective_attr.class_name]
+    return builder(effective_attr, obj)

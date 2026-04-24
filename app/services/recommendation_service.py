@@ -27,7 +27,7 @@ from app.schemas.recommendation import (
 # ---------------------------------------------------------------------------
 
 FUNCTIONAL_SIGNATURE_ATTRS: frozenset[str] = frozenset({"type", "activity"})
-CORE_ATTRS: frozenset[str] = frozenset({"type", "activity", "category"})
+CORE_ATTRS: frozenset[str] = frozenset({"type", "activity", "activity_type", "category"})
 DESCRIPTIVE_ATTRS: frozenset[str] = frozenset({"color", "brand"})
 
 # Default weights — relationship=1.0 preserves pre-V6 recommendation_score values
@@ -42,16 +42,63 @@ _DEFAULT_BEHAVIORAL_WEIGHT: float = 0.0
 # Makes suitability/fit matches weigh more than categorical preference matches.
 _COMPATIBILITY_SCORE_MULTIPLIER: float = 1.5
 
-# Contextual semantic mismatch penalty — applies only to occasion/activity.
-# Conservative multiplier: a mismatch on occasion/activity reduces the score
+# Contextual semantic mismatch penalty — applies to occasion, activity,
+# and environment. Conservative multiplier: a mismatch reduces the score
 # but much less aggressively than a compatibility mismatch.
-_CONTEXTUAL_MISMATCH_ATTRS: frozenset[str] = frozenset({"occasion", "activity"})
+_CONTEXTUAL_MISMATCH_ATTRS: frozenset[str] = frozenset({
+    "occasion", "activity", "environment",
+})
 _CONTEXTUAL_MISMATCH_MULTIPLIER: float = 0.3
+
+# Complementary compatibility attributes — inverted scoring logic.
+# Normal compatibility: match = positive, mismatch = negative.
+# Complementary:        match = negative (duplicate), mismatch = positive
+#                       (the customer already owns this role and benefits
+#                       from a different one).
+# Today this covers layering_role only: a customer with a base layer
+# should see mid/outer recommendations, not more base layers.
+_COMPLEMENTARY_COMPAT_ATTRS: frozenset[str] = frozenset({"layering_role"})
 
 # Low-signal penalty — demotes products with weak enrichment coverage.
 # Applied after all other scoring, using product_signal_strength from the
 # multi-source signal layer.  Products without signal data are unaffected.
 _LOW_SIGNAL_PENALTY_WEIGHT: float = 0.1
+
+# Diversity shaping — soft category/group re-rank applied AFTER scoring,
+# penalties, halo, and suppression. Rank #1 is never touched; ranks 2..N are
+# re-picked greedily from a small look-ahead window, with a multiplicative
+# penalty on repeated categories. The closeness rule prevents diversity from
+# overriding a clear score winner: shaping only activates for candidates
+# within DIVERSITY_CLOSENESS_RATIO of the window leader.
+DIVERSITY_SCAN_WINDOW: int = 5
+CATEGORY_REPEAT_PENALTY: float = 0.15
+MAX_CATEGORY_REPEAT_EFFECT: float = 0.45
+DIVERSITY_CLOSENESS_RATIO: float = 0.85
+
+# Similarity-halo fallback — kicks in only when purchase suppression has
+# removed the strongest candidates. Suppressed products are still scored so
+# the engine can detect "a much better match was removed" and boost remaining
+# products that share key attributes with the top suppressed ones.
+#
+# HALO_ATTR_WEIGHTS gives per-attribute influence: category dominates, fit is
+# only a tiebreaker. Overlap is normalized by the number of attributes the
+# halo considers so a single strong match cannot dwarf the base score.
+#
+# The trigger is guarded by a ratio so normal ranking is untouched whenever a
+# reasonably strong unsuppressed candidate already exists.
+HALO_ATTR_WEIGHTS: dict[str, float] = {
+    "category": 1.0,
+    "occasion": 0.9,
+    "activity": 0.8,
+    "support_level": 0.7,
+    "fit_type": 0.5,
+    "fit": 0.3,
+}
+_SIMILARITY_FALLBACK_TRIGGER_RATIO: float = 1.25
+_SIMILARITY_FALLBACK_MIN_SUPPRESSED_SCORE: float = 0.5
+_SIMILARITY_HALO_TOP_K: int = 2
+HALO_BASE_WEIGHT: float = 0.5
+HALO_MAX_RATIO: float = 0.75
 
 # ---------------------------------------------------------------------------
 # Algorithm presets — each maps to weights + a tie-break priority.
@@ -395,6 +442,83 @@ def _compute_effective_score(
     return final_score, ""
 
 
+def _diversity_key(rec: RecommendationRead) -> str:
+    """Pick the key used to detect category repetition during diversity shaping.
+
+    Prefers an explicit `category` matched attribute (what the engine scored
+    against); falls back to `group_id` (populated for all products in the
+    starter dataset); finally uses the product_id so a missing group never
+    causes false repeats.
+    """
+    for m in rec.matched_attributes:
+        if m.attribute_id == "category":
+            return f"cat::{m.attribute_value}"
+    if rec.group_id:
+        return f"grp::{rec.group_id}"
+    return f"pid::{rec.product_id}"
+
+
+def _apply_diversity_shaping(
+    results: list[RecommendationRead],
+) -> tuple[list[RecommendationRead], list[tuple[str, int, int]]]:
+    """Soft-diversity re-rank the top-N list.
+
+    - Rank #1 is locked in place.
+    - For ranks 2..N, greedily pick from a look-ahead window of the next
+      DIVERSITY_SCAN_WINDOW candidates. Within the window, candidates whose
+      raw score is >= window_top * DIVERSITY_CLOSENESS_RATIO are "close
+      enough" for shaping; they get a multiplicative penalty based on how
+      many times their category has already appeared in the selected list.
+      Out-of-band candidates are ranked by raw score.
+    - `recommendation_score` is never mutated; only list order changes.
+
+    Returns the re-ranked list AND a debug log of (product_id, old_rank,
+    new_rank) tuples for movements (old_rank != new_rank).
+    """
+    if len(results) <= 1:
+        return results, []
+
+    original_order = {rec.product_id: i for i, rec in enumerate(results)}
+
+    locked = [results[0]]
+    remaining: list[RecommendationRead] = list(results[1:])
+    seen_keys: dict[str, int] = {_diversity_key(results[0]): 1}
+
+    while remaining:
+        window = remaining[:DIVERSITY_SCAN_WINDOW]
+        window_top = max(r.recommendation_score for r in window)
+        threshold = window_top * DIVERSITY_CLOSENESS_RATIO
+
+        best_idx = 0
+        best_adjusted = float("-inf")
+        for i, rec in enumerate(window):
+            repeats = seen_keys.get(_diversity_key(rec), 0)
+            if rec.recommendation_score >= threshold:
+                factor = 1.0 - min(
+                    repeats * CATEGORY_REPEAT_PENALTY, MAX_CATEGORY_REPEAT_EFFECT
+                )
+                adjusted = rec.recommendation_score * factor
+            else:
+                adjusted = rec.recommendation_score
+            # Stable tiebreak: earlier original position wins when adjusted
+            # scores tie, preserving raw-score order for equal candidates.
+            if adjusted > best_adjusted:
+                best_adjusted = adjusted
+                best_idx = i
+
+        chosen = remaining.pop(best_idx)
+        locked.append(chosen)
+        key = _diversity_key(chosen)
+        seen_keys[key] = seen_keys.get(key, 0) + 1
+
+    movements: list[tuple[str, int, int]] = []
+    for new_idx, rec in enumerate(locked):
+        old_idx = original_order[rec.product_id]
+        if new_idx != old_idx:
+            movements.append((rec.product_id, old_idx, new_idx))
+    return locked, movements
+
+
 def get_recommendations(
     db: Session,
     workspace_id: int,
@@ -423,6 +547,7 @@ def get_recommendations(
     product_enrichment_outputs: dict | None = None,
     tiebreak_by_match_confidence: bool = False,
     disable_purchase_suppression_for_eval: bool = False,
+    disable_diversity_shaping: bool = False,
 ) -> tuple[list[RecommendationRead], bool]:
     logger.warning("DEBUG get_recommendations called: workspace=%s customer=%s", workspace_id, customer_id)
     if reference_date is None:
@@ -573,17 +698,22 @@ def get_recommendations(
             )
 
     # 7. Single loop — score every product
-    candidates: list[tuple[int, RecommendationRead]] = []
+    # Suppressed products are still scored (and tagged) so the similarity-halo
+    # fallback in step 8b can mine their attributes.  They are dropped from
+    # the pipeline before ranking, so suppression semantics are unchanged.
+    candidates: list[tuple[int, RecommendationRead, bool]] = []
 
     for product in products:
-        # Suppression checks
+        # Purchase-based suppression: tag but keep scoring.
+        is_suppressed = False
         if product.product_id in suppressed_product_ids:
-            continue
-        group_key = product.group_id if product.group_id else product.product_id
-        if group_key in suppressed_group_keys:
-            continue
-        if _is_functionally_suppressed(product, attrs_by_product, suppressed_functional_sigs):
-            continue
+            is_suppressed = True
+        else:
+            group_key = product.group_id if product.group_id else product.product_id
+            if group_key in suppressed_group_keys:
+                is_suppressed = True
+            elif _is_functionally_suppressed(product, attrs_by_product, suppressed_functional_sigs):
+                is_suppressed = True
 
         # categorical_filter pre-check: hard-exclude products that fail filter
         # constraints when filter_context is explicitly provided.
@@ -636,8 +766,13 @@ def get_recommendations(
                         positively_matched_contextual_attrs.add(attr.attribute_id)
 
                 elif mode == "compatibility_signal":
-                    # Suitability/fit — heavier weight, positive bucket
-                    compatibility_positive_contribution += aff_score * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    contribution = aff_score * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    if attr.attribute_id in _COMPLEMENTARY_COMPAT_ATTRS:
+                        # Complementary: same value = duplicate = penalty.
+                        compatibility_negative_contribution += contribution
+                    else:
+                        # Normal: same value = good match = positive.
+                        compatibility_positive_contribution += contribution
                     positively_matched_compat_attrs.add(attr.attribute_id)
                     matched.append(MatchedAttribute(
                         attribute_id=attr.attribute_id,
@@ -700,7 +835,13 @@ def get_recommendations(
                 # customer signalled the attribute in the first place.
                 basis = max(customer_signals.values())
 
-                if behavior.ordered_values and behavior.value_order:
+                if attr_id in _COMPLEMENTARY_COMPAT_ATTRS:
+                    # Complementary: mismatch = the product has a DIFFERENT
+                    # role than what the customer already owns = positive.
+                    compatibility_positive_contribution += (
+                        basis * weight * _COMPATIBILITY_SCORE_MULTIPLIER
+                    )
+                elif behavior.ordered_values and behavior.value_order:
                     # Distance-based: take the smallest mismatch distance
                     # across the product's values. The product is "as close
                     # as possible" to the customer's preferred value.
@@ -873,6 +1014,7 @@ def get_recommendations(
                 relationship_matches=rel_matches,
                 behavioral_matches=beh_matches,
             ),
+            is_suppressed,
         ))
 
     logger.warning("DEBUG candidates after step 7: %d", len(candidates))
@@ -885,8 +1027,8 @@ def get_recommendations(
     #    effective_score is stored as the tuple's first element and used for
     #    ranking (step 11) and threshold (step 12).  recommendation_score in
     #    the response always reflects the original weighted final_score.
-    scored: list[tuple[float, int, RecommendationRead]] = []
-    for db_id, rec in candidates:
+    scored_all: list[tuple[float, int, RecommendationRead, bool]] = []
+    for db_id, rec, is_suppressed in candidates:
         # Final score: positive direct + positive compatibility contributions,
         # MINUS the compatibility and contextual penalty buckets. The negative
         # buckets are stored as non-negative magnitudes on RecommendationRead
@@ -921,9 +1063,138 @@ def get_recommendations(
             )
             update["recommendation_source"] = f"fallback_{fallback_behavior}"
 
-        scored.append((eff_score, db_id, rec.model_copy(update=update)))
+        scored_all.append((eff_score, db_id, rec.model_copy(update=update), is_suppressed))
 
-    logger.warning("DEBUG scored after step 8: %d", len(scored))
+    # 8b. Similarity-halo fallback.
+    #
+    # Split into unsuppressed (what we actually rank) and suppressed (what was
+    # removed).  When the top suppressed score meaningfully beats the top
+    # unsuppressed score, mine the top-K suppressed products for key attribute
+    # values and add a per-attribute boost to unsuppressed candidates that
+    # share them.  Normal ranking is unaffected whenever the trigger doesn't
+    # fire — so this is inert unless suppression actually removed strong
+    # candidates.
+    scored: list[tuple[float, int, RecommendationRead]] = [
+        (s, d, r) for s, d, r, sup in scored_all if not sup
+    ]
+    scored_suppressed: list[tuple[float, int, RecommendationRead]] = [
+        (s, d, r) for s, d, r, sup in scored_all if sup
+    ]
+
+    similarity_fallback_triggered = False
+    if scored and scored_suppressed:
+        top_unsup = max(s for s, _, _ in scored)
+        top_sup = max(s for s, _, _ in scored_suppressed)
+        if (
+            top_sup >= _SIMILARITY_FALLBACK_MIN_SUPPRESSED_SCORE
+            and top_sup > top_unsup * _SIMILARITY_FALLBACK_TRIGGER_RATIO
+        ):
+            similarity_fallback_triggered = True
+            top_sup_sorted = sorted(scored_suppressed, key=lambda t: -t[0])[
+                :_SIMILARITY_HALO_TOP_K
+            ]
+            # Pre-enrich the top suppressed recs with multi-source signals so
+            # match_confidence / product_signal_strength are populated at halo
+            # time. Step 13 runs after this on the unsuppressed list; we need
+            # the values earlier, only for the halo sources.
+            if customer_signal_strength is not None or product_enrichment_outputs is not None:
+                from app.services.multi_source_signal_service import (
+                    apply_multi_source_signals,
+                )
+                enriched = apply_multi_source_signals(
+                    [r for _s, _d, r in top_sup_sorted],
+                    customer_signal_strength=customer_signal_strength,
+                    product_enrichment_outputs=product_enrichment_outputs,
+                    tiebreak_by_match_confidence=False,
+                )
+                top_sup_sorted = [
+                    (s, d, er)
+                    for (s, d, _orig), er in zip(top_sup_sorted, enriched)
+                ]
+            # Weight each suppressed source by its score relative to the top,
+            # so the strongest removed match dominates the halo. Per-attribute
+            # HALO_ATTR_WEIGHTS scale contribution by how diagnostic each
+            # attribute is (category dominates, fit is a tiebreaker).
+            norm = top_sup_sorted[0][0] or 1.0
+            halo_weights: dict[tuple[str, str], float] = {}
+            halo_source_products: list[str] = []
+            weighted_conf_sum = 0.0
+            src_weight_sum = 0.0
+            for s_score, _s_db, s_rec in top_sup_sorted:
+                halo_source_products.append(s_rec.product_id)
+                src_weight = s_score / norm
+                src_conf = s_rec.match_confidence
+                if src_conf is None:
+                    src_conf = s_rec.product_signal_strength
+                if src_conf is None:
+                    src_conf = 0.5
+                weighted_conf_sum += src_weight * src_conf
+                src_weight_sum += src_weight
+                for m in s_rec.matched_attributes:
+                    attr_w = HALO_ATTR_WEIGHTS.get(m.attribute_id)
+                    if attr_w is None:
+                        continue
+                    key = (m.attribute_id, m.attribute_value)
+                    halo_weights[key] = halo_weights.get(key, 0.0) + src_weight * attr_w
+
+            suppressed_confidence = (
+                weighted_conf_sum / src_weight_sum if src_weight_sum > 0 else 0.5
+            )
+            num_halo_attrs = len(HALO_ATTR_WEIGHTS)
+
+            logger.warning(
+                "DEBUG similarity fallback triggered: top_sup=%.4f top_unsup=%.4f"
+                " sources=%s halo_pairs=%d suppressed_confidence=%.4f",
+                top_sup, top_unsup, halo_source_products, len(halo_weights),
+                suppressed_confidence,
+            )
+
+            boosted: list[tuple[float, int, RecommendationRead]] = []
+            for eff_score, db_id, rec in scored:
+                candidate_pairs = {
+                    (m.attribute_id, m.attribute_value) for m in rec.matched_attributes
+                }
+                overlap_sum = sum(
+                    halo_weights.get(pair, 0.0) for pair in candidate_pairs
+                )
+                if overlap_sum <= 0:
+                    boosted.append((eff_score, db_id, rec))
+                    continue
+                overlap_weight = overlap_sum / num_halo_attrs
+                base_score = eff_score
+                raw_boost = overlap_weight * HALO_BASE_WEIGHT * suppressed_confidence
+                capped_boost = round(min(raw_boost, base_score * HALO_MAX_RATIO), 6)
+                logger.warning(
+                    "DEBUG halo candidate=%s base_score=%.4f overlap_weight=%.4f"
+                    " raw_boost=%.4f capped_boost=%.4f suppressed_confidence=%.4f"
+                    " sources=%s",
+                    rec.product_id, base_score, overlap_weight, raw_boost,
+                    capped_boost, suppressed_confidence, halo_source_products,
+                )
+                new_final = round(rec.recommendation_score + capped_boost, 6)
+                new_eff = round(eff_score + capped_boost, 6)
+                suffix = (
+                    f"similarity_fallback_boost={capped_boost}"
+                    f" (from {','.join(halo_source_products)}"
+                    f" conf={round(suppressed_confidence, 4)})"
+                )
+                new_explanation = (
+                    f"{rec.explanation}; {suffix}" if rec.explanation else suffix
+                )
+                boosted.append((
+                    new_eff,
+                    db_id,
+                    rec.model_copy(update={
+                        "recommendation_score": new_final,
+                        "explanation": new_explanation,
+                    }),
+                ))
+            scored = boosted
+
+    logger.warning(
+        "DEBUG scored after step 8: unsuppressed=%d suppressed=%d halo=%s",
+        len(scored), len(scored_suppressed), similarity_fallback_triggered,
+    )
     for es, _did, r in scored[:5]:
         delta = round(es - r.recommendation_score, 6)
         logger.warning("  scored: product=%s direct=%.4f rec=%.4f eff=%.4f delta=%.4f fallback_used=%s",
@@ -1056,5 +1327,17 @@ def get_recommendations(
                 -(r.match_confidence if r.match_confidence is not None else -1.0),
             ),
         )
+
+    # 15. Soft diversity shaping. Runs last so it operates on the final
+    #     ranked list, after scoring, halo, suppression, and penalties.
+    #     Rank #1 is preserved; ranks 2..N are re-picked with a category
+    #     repetition penalty, gated by a closeness band.
+    if not disable_diversity_shaping:
+        results, diversity_movements = _apply_diversity_shaping(results)
+        if diversity_movements:
+            logger.warning(
+                "DEBUG diversity shaping moved %d products: %s",
+                len(diversity_movements), diversity_movements,
+            )
 
     return results, fallback_applied

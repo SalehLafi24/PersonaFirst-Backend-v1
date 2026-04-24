@@ -24,12 +24,13 @@ from app.schemas.attribute_enrichment import (
     EnrichedValue,
     EnrichmentOutput,
     EnrichmentSource,
+    ProposedValue,
 )
 from app.services.attribute_enrichment_service import get_prompt_for_attribute
 
 ROOT = Path(__file__).resolve().parent.parent
 SEED_DIR = ROOT / "seed_data"
-TARGET_PRODUCT_IDS = ["P001", "P015", "P016", "P018"]
+TARGET_PRODUCT_IDS = ["P001", "P007", "P015", "P016", "P018"]
 
 
 def _load_json(name: str):
@@ -115,7 +116,13 @@ MODEL_OUTPUTS: dict[str, dict[str, dict]] = {
                     "reasoning_mode": "inferred",
                 },
             ],
-            "proposed_values": [],
+            "proposed_values": [
+                {
+                    "value": "hiit",
+                    "confidence": 0.95,
+                    "evidence": ["\"running and HIIT\""],
+                },
+            ],
             "warnings": ["multiple_strong_values_detected"],
         },
         "support_level": {
@@ -150,6 +157,199 @@ MODEL_OUTPUTS: dict[str, dict[str, dict]] = {
                 }
             ],
             "proposed_values": [],
+            "warnings": [],
+        },
+        "mom_stage": {
+            "attribute_name": "mom_stage",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "workout_intensity": {
+            "attribute_name": "workout_intensity",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "high",
+                    "confidence": 0.96,
+                    "evidence": [
+                        "\"high impact sports bra\"",
+                        "\"running and HIIT\"",
+                    ],
+                },
+            ],
+            "warnings": [],
+        },
+        "travel_friendly": {
+            "attribute_name": "travel_friendly",
+            "attribute_class": "compatibility",
+            "values": [
+                {
+                    "value": "low",
+                    "confidence": 0.82,
+                    "evidence": ["No travel-specific features mentioned"],
+                    "reasoning_mode": "suitability",
+                }
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "activity_type": {
+            "attribute_name": "activity_type",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "running",
+                    "confidence": 0.96,
+                    "evidence": ["\"maximum support for running\""],
+                },
+                {
+                    "value": "hiit",
+                    "confidence": 0.95,
+                    "evidence": ["\"running and HIIT\""],
+                },
+            ],
+            "warnings": [],
+        },
+    },
+    # -------------------------------------------------------------------
+    # P007 — Trail Merino Tee  (taxonomy-evolution test case:
+    #   description names activities not in allowed_values)
+    # -------------------------------------------------------------------
+    "P007": {
+        "color": {
+            "attribute_name": "color",
+            "attribute_class": "descriptive_literal",
+            "values": [
+                {
+                    "value": "red",
+                    "confidence": 0.98,
+                    "evidence": ["\"Red merino tee\""],
+                    "reasoning_mode": "explicit",
+                }
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "occasion": {
+            "attribute_name": "occasion",
+            "attribute_class": "contextual_semantic",
+            "values": [
+                {
+                    "value": "travel",
+                    "confidence": 0.93,
+                    "evidence": ["\"long travel days\""],
+                    "reasoning_mode": "inferred",
+                },
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "activity": {
+            "attribute_name": "activity",
+            "attribute_class": "contextual_semantic",
+            "values": [
+                {
+                    "value": "travel",
+                    "confidence": 0.9,
+                    "evidence": ["\"long travel days\""],
+                    "reasoning_mode": "inferred",
+                },
+            ],
+            "proposed_values": [
+                {
+                    "value": "hiking",
+                    "confidence": 0.96,
+                    "evidence": [
+                        "\"designed for hiking, backpacking, and long travel days\""
+                    ],
+                },
+                {
+                    "value": "backpacking",
+                    "confidence": 0.94,
+                    "evidence": [
+                        "\"designed for hiking, backpacking, and long travel days\""
+                    ],
+                },
+            ],
+            "warnings": [],
+        },
+        "support_level": {
+            "attribute_name": "support_level",
+            "attribute_class": "compatibility",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "fit_type": {
+            "attribute_name": "fit_type",
+            "attribute_class": "contextual_semantic",
+            "values": [
+                {
+                    "value": "regular",
+                    "confidence": 0.9,
+                    "evidence": ["fit: regular"],
+                    "reasoning_mode": "inferred",
+                }
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "mom_stage": {
+            "attribute_name": "mom_stage",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "workout_intensity": {
+            "attribute_name": "workout_intensity",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "travel_friendly": {
+            "attribute_name": "travel_friendly",
+            "attribute_class": "compatibility",
+            "values": [
+                {
+                    "value": "high",
+                    "confidence": 0.95,
+                    "evidence": [
+                        "\"packable\"",
+                        "\"long travel days\"",
+                        "\"Odor-resistant and packable\"",
+                    ],
+                    "reasoning_mode": "suitability",
+                }
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "activity_type": {
+            "attribute_name": "activity_type",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "hiking",
+                    "confidence": 0.96,
+                    "evidence": [
+                        "\"designed for hiking, backpacking, and long travel days\"",
+                    ],
+                },
+                {
+                    "value": "backpacking",
+                    "confidence": 0.94,
+                    "evidence": [
+                        "\"designed for hiking, backpacking, and long travel days\"",
+                    ],
+                },
+            ],
             "warnings": [],
         },
     },
@@ -216,6 +416,40 @@ MODEL_OUTPUTS: dict[str, dict[str, dict]] = {
             "proposed_values": [],
             "warnings": [],
         },
+        "mom_stage": {
+            "attribute_name": "mom_stage",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "workout_intensity": {
+            "attribute_name": "workout_intensity",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "low",
+                    "confidence": 0.88,
+                    "evidence": ["\"moderate support for low-impact sessions\""],
+                },
+            ],
+            "warnings": [],
+        },
+        "travel_friendly": {
+            "attribute_name": "travel_friendly",
+            "attribute_class": "compatibility",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "activity_type": {
+            "attribute_name": "activity_type",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
     },
     # -------------------------------------------------------------------
     # P016 — Everyday Soft Bra  (sparse test case)
@@ -269,6 +503,34 @@ MODEL_OUTPUTS: dict[str, dict[str, dict]] = {
             ],
             "proposed_values": [],
             "warnings": [],
+        },
+        "mom_stage": {
+            "attribute_name": "mom_stage",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "workout_intensity": {
+            "attribute_name": "workout_intensity",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "travel_friendly": {
+            "attribute_name": "travel_friendly",
+            "attribute_class": "compatibility",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "activity_type": {
+            "attribute_name": "activity_type",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
         },
     },
     # -------------------------------------------------------------------
@@ -356,8 +618,99 @@ MODEL_OUTPUTS: dict[str, dict[str, dict]] = {
             "proposed_values": [],
             "warnings": [],
         },
+        "mom_stage": {
+            "attribute_name": "mom_stage",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [],
+            "warnings": ["no_supported_value_found"],
+        },
+        "workout_intensity": {
+            "attribute_name": "workout_intensity",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "low",
+                    "confidence": 0.86,
+                    "evidence": ["\"for yoga and lounge wear\""],
+                },
+            ],
+            "warnings": [],
+        },
+        "travel_friendly": {
+            "attribute_name": "travel_friendly",
+            "attribute_class": "compatibility",
+            "values": [
+                {
+                    "value": "low",
+                    "confidence": 0.80,
+                    "evidence": ["No travel-specific features mentioned"],
+                    "reasoning_mode": "suitability",
+                }
+            ],
+            "proposed_values": [],
+            "warnings": [],
+        },
+        "activity_type": {
+            "attribute_name": "activity_type",
+            "attribute_class": "contextual_semantic",
+            "values": [],
+            "proposed_values": [
+                {
+                    "value": "yoga",
+                    "confidence": 0.96,
+                    "evidence": ["\"for yoga and lounge wear\""],
+                },
+            ],
+            "warnings": [],
+        },
     },
 }
+
+
+def _parse_proposed_values(
+    raw_proposed: list,
+    allowed_values: list[str] | None,
+    value_keys: set,
+) -> list[ProposedValue]:
+    """Validate and shape raw proposed_values into ProposedValue objects.
+
+    Enforces the taxonomy-evolution contract:
+      - structured dict items only (skip bare strings — those would be
+        un-evidenced guesses and violate the no-invention rule)
+      - confidence >= 0.8
+      - non-empty evidence list
+      - value is NOT already in allowed_values (never shadow the taxonomy)
+      - value does NOT collide with any entry already in `values`
+    Silently drops items that fail the contract. This keeps upstream models
+    honest without letting malformed proposals pollute the output.
+    """
+    allowed_set = {v.lower() for v in (allowed_values or [])}
+    out: list[ProposedValue] = []
+    for item in raw_proposed or []:
+        if not isinstance(item, dict):
+            continue
+        value = item.get("value")
+        if not isinstance(value, str) or not value.strip():
+            continue
+        if value.lower() in allowed_set:
+            continue
+        if value in value_keys:
+            continue
+        try:
+            confidence = float(item.get("confidence", 0.0))
+        except (TypeError, ValueError):
+            continue
+        if confidence < 0.8:
+            continue
+        evidence = [e for e in (item.get("evidence") or []) if isinstance(e, str) and e.strip()]
+        if not evidence:
+            continue
+        out.append(
+            ProposedValue(value=value, confidence=confidence, evidence=evidence)
+        )
+    return out
 
 
 def _build_text_enrichment_output(
@@ -378,11 +731,17 @@ def _build_text_enrichment_output(
                 contributing_sources=[EnrichmentSource.TEXT],
             )
         )
+    value_keys = {v.value for v in values if isinstance(v.value, str)}
+    proposed_values = _parse_proposed_values(
+        raw.get("proposed_values") or [],
+        attribute.allowed_values,
+        value_keys,
+    )
     return EnrichmentOutput(
         attribute_name=raw.get("attribute_name") or attribute.name,
         attribute_class=raw.get("attribute_class") or attribute.class_name,
         values=values,
-        proposed_values=list(raw.get("proposed_values") or []),
+        proposed_values=proposed_values,
         warnings=list(raw.get("warnings") or []),
         source=EnrichmentSource.TEXT,
     )

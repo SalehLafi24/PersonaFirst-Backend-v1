@@ -1,0 +1,4572 @@
+[
+  {
+    "product_id": "W9784R",
+    "style_code": "W9784R",
+    "name": "Airlift Ribbed Jump Start V-Neck Bra",
+    "clean_description": "train, bras & tops, bras, activities, barre, cardio, airlift, ribbed, jump, start, neck, bra",
+    "functional_categories": [
+      "Train",
+      "Bras & Tops",
+      "Bras",
+      "Activities",
+      "Barre",
+      "Cardio"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "barre",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Barre",
+              "keywords: barre",
+              "description: barre"
+            ]
+          },
+          {
+            "value": "cardio",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Cardio",
+              "keywords: cardio",
+              "description: cardio"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Barre",
+              "keywords: barre"
+            ]
+          },
+          {
+            "value": "moderate",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Cardio",
+              "keywords: cardio"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Barre, Cardio",
+              "keywords: barre, cardio",
+              "description: train, bras & tops, bras, activities, barre, cardio"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9784R",
+              "name: Airlift Ribbed Jump Start V-Neck Bra",
+              "functional_categories: Train, Bras & Tops, Bras",
+              "keywords: bras, cardio, barre"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9808R",
+    "style_code": "W9808R",
+    "name": "Tennis Club Sweater Knit Bra",
+    "clean_description": "bras & tops, tennis, club, sweater, knit, bra",
+    "functional_categories": [
+      "Bras & Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "tennis",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Tennis Club Sweater Knit Bra",
+              "description: bras & tops, tennis, club, sweater, knit, bra",
+              "keywords: tennis"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Tennis Club Sweater Knit Bra",
+              "keywords: tennis, club, sweater, knit",
+              "description: tennis, club, sweater, knit, bra"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Tennis Club Sweater Knit Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M2066R",
+    "style_code": "M2066R",
+    "name": "Conquer Muscle Tank",
+    "clean_description": "tops, performance, tank tops, activities, yoga, conquer, muscle, tank",
+    "functional_categories": [
+      "Tops",
+      "Performance",
+      "Tank Tops",
+      "Activities",
+      "Yoga"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: activities, yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: activities, yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: activities, yoga"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Conquer Muscle Tank",
+              "tank tops",
+              "performance",
+              "yoga"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M2069R",
+    "style_code": "M2069R",
+    "name": "Society Raw Edge Tank",
+    "clean_description": "tank tops, activity, activities, yoga, tops, train, society, raw, edge, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Activity",
+      "Activities",
+      "Yoga",
+      "Tops",
+      "Train"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: yoga"
+            ]
+          },
+          {
+            "value": "training",
+            "confidence": 0.88,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: train"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: yoga"
+            ]
+          },
+          {
+            "value": "moderate",
+            "confidence": 0.81,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "keywords: train",
+              "functional_categories: Train"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Tank Tops",
+              "yoga",
+              "train",
+              "Society Raw Edge Tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3079R",
+    "style_code": "M3079R",
+    "name": "Triumph Long Sleeve Tee",
+    "clean_description": "long sleeves, tops, activity, train, activities, explore, triumph, long, sleeve, tee",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops",
+      "Activity",
+      "Train",
+      "Activities",
+      "Explore"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "training",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: train"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "keywords: activity, activities"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.72,
+            "evidence": [
+              "Long Sleeve Tee",
+              "Tops",
+              "Activity",
+              "Train"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          },
+          {
+            "value": "mid",
+            "confidence": 0.68,
+            "evidence": [
+              "Long Sleeve Tee",
+              "Activities",
+              "Explore",
+              "Train"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3089R",
+    "style_code": "M3089R",
+    "name": "Impel Sweatshirt",
+    "clean_description": "outerwear, impel, sweatshirt, sweatshirts & hoodies",
+    "functional_categories": [
+      "Outerwear",
+      "Sweatshirts & Hoodies"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Outerwear",
+              "keywords: outerwear",
+              "description: outerwear, impel, sweatshirt"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3108R",
+    "style_code": "M3108R",
+    "name": "Triumph Crew Neck Sweatshirt - Unisex",
+    "clean_description": "outerwear, activity, activities, lounge, triumph, crew, neck, sweatshirt, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activity",
+      "Activities",
+      "Lounge"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge",
+              "keywords: lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "mid",
+            "confidence": 0.82,
+            "evidence": [
+              "Triumph Crew Neck Sweatshirt",
+              "functional_categories: Sweatshirts & Hoodies",
+              "functional_categories: Outerwear"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3109R",
+    "style_code": "M3109R",
+    "name": "Triumph Hoodie - Unisex",
+    "clean_description": "outerwear, triumph, hoodie, jacket & coverups, sweatshirts & hoodies, jackets & coverups",
+    "functional_categories": [
+      "Jacket & Coverups",
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Jackets & Coverups"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Outerwear, Jacket & Coverups, Jackets & Coverups",
+              "description: outerwear, jacket & coverups",
+              "keywords: outerwear",
+              "name: Triumph Hoodie - Unisex (hoodie as outerwear garment)"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3148R",
+    "style_code": "M3148R",
+    "name": "Micro Waffle Fast Break Henley",
+    "clean_description": "long sleeves, activities, lounge, tops, micro, waffle, fast, break, henley",
+    "functional_categories": [
+      "Long Sleeves",
+      "Activities",
+      "Lounge",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: 'Lounge'",
+              "keywords: 'lounge'",
+              "keywords: 'lounge shop'",
+              "description: 'lounge'"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.72,
+            "evidence": [
+              "Micro Waffle Fast Break Henley",
+              "long sleeves",
+              "lounge",
+              "activities"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          },
+          {
+            "value": "mid",
+            "confidence": 0.68,
+            "evidence": [
+              "Micro Waffle Fast Break Henley",
+              "long sleeves",
+              "activities",
+              "lounge"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8195R",
+    "style_code": "W8195R",
+    "name": "Euphoria Long Sleeve Bodysuit",
+    "clean_description": "bodysuits, euphoria, long, sleeve, bodysuit, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Bodysuits"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Euphoria Long Sleeve Bodysuit",
+              "functional_categories: Bodysuits",
+              "Onesies & Dresses"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3156R",
+    "style_code": "M3156R",
+    "name": "Core Hooded Runner",
+    "clean_description": "long sleeves, performance, train, run, activity, activities, explore, tops, core, hooded, runner",
+    "functional_categories": [
+      "Long Sleeves",
+      "Performance",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Explore",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "running",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Core Hooded Runner",
+              "functional_categories: Run",
+              "keywords: run, runner"
+            ]
+          },
+          {
+            "value": "training",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Train, Run",
+              "keywords: train, run, activity, activities",
+              "name: Core Hooded Runner",
+              "description: train, run, activity"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "outdoor",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Core Hooded Runner",
+              "functional_categories: Run, Explore",
+              "keywords: run, explore, runner"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Core Hooded Runner",
+              "functional_categories: Run, Train, Activity, Performance",
+              "keywords: hooded, runner, performance, run, train"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8197R",
+    "style_code": "W8197R",
+    "name": "Airbrush Racing Onesie",
+    "clean_description": "airbrush, racing, onesie, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "racing",
+            "confidence": 0.85,
+            "evidence": [
+              "name: 'Airbrush Racing Onesie'",
+              "keywords: 'racing'",
+              "description: 'airbrush, racing, onesie, onesies & dresses'"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Airbrush Racing Onesie",
+              "functional_categories: Onesies & Dresses",
+              "airbrush fabric typically used for compression and close-to-skin fit"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8200R",
+    "style_code": "W8200R",
+    "name": "Run It Back Dress",
+    "clean_description": "run, dress, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Day-to-Night Looks"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "running",
+            "confidence": 0.92,
+            "evidence": [
+              "product_id: W8200R",
+              "name: Run It Back Dress",
+              "description: run, dress, onesies & dresses, day-to-night looks",
+              "keywords: run"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Run It Back Dress",
+              "description: run, dress, onesies & dresses, day-to-night looks",
+              "keywords: run"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "outdoor",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Run It Back Dress",
+              "description: run, dress",
+              "keywords: run"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Run It Back Dress",
+              "functional_categories: Onesies & Dresses",
+              "description: run, dress, onesies & dresses, day-to-night looks"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8201R",
+    "style_code": "W8201R",
+    "name": "Goddess Ribbed Short Sleeve Dress",
+    "clean_description": "goddess, ribbed, short, sleeve, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Onesies & Dresses",
+              "name: Goddess Ribbed Short Sleeve Dress",
+              "keywords: essentials"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Onesies & Dresses",
+              "name: Goddess Ribbed Short Sleeve Dress",
+              "description: goddess, ribbed, short, sleeve, dress, onesies & dresses"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8207R",
+    "style_code": "W8207R",
+    "name": "Goddess Ribbed Go-To Dress",
+    "clean_description": "goddess, ribbed, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "product_id: W8207R",
+              "name: Goddess Ribbed Go-To Dress",
+              "functional_categories: Onesies & Dresses",
+              "brand: Alo Yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Onesies & Dresses",
+              "name: Goddess Ribbed Go-To Dress",
+              "description: goddess, ribbed, dress, onesies & dresses"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8208R",
+    "style_code": "W8208R",
+    "name": "Goddess Ribbed Spaghetti Strap Dress",
+    "clean_description": "goddess, ribbed, spaghetti, strap, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Goddess Ribbed Spaghetti Strap Dress",
+              "functional_categories: Onesies & Dresses",
+              "dress"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8227R",
+    "style_code": "W8227R",
+    "name": "Mesh Plaid Mock Neck Bodysuit",
+    "clean_description": "bodysuits, mesh, plaid, mock, neck, bodysuit, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Bodysuits",
+      "Day-to-Night Looks"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "Day-to-Night Looks",
+              "day-to-night looks",
+              "Bodysuits",
+              "Onesies & Dresses"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Mesh Plaid Mock Neck Bodysuit",
+              "bodysuits",
+              "mock neck",
+              "mesh"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3216R",
+    "style_code": "M3216R",
+    "name": "Renown Sleeveless Hoodie",
+    "clean_description": "outerwear, activities, lounge, bone, renown, sleeveless, hoodie, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activities",
+      "Lounge"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge",
+              "keywords: lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Outerwear",
+              "keywords: outerwear",
+              "description: outerwear"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M1224R",
+    "style_code": "M1224R",
+    "name": "Double Take Short Sleeve",
+    "clean_description": "short sleeves, tops, double, take, short, sleeve",
+    "functional_categories": [
+      "Short Sleeves",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "short sleeves",
+              "tops",
+              "Double Take Short Sleeve"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3218R",
+    "style_code": "M3218R",
+    "name": "Conquer Reform Mock Neck Long Sleeve",
+    "clean_description": "long sleeves, tops, conquer, reform, mock, neck, long, sleeve",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.72,
+            "evidence": [
+              "mock neck",
+              "long sleeve",
+              "Conquer Reform Mock Neck Long Sleeve"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9682R",
+    "style_code": "W9682R",
+    "name": "Power Move High Impact Bra",
+    "clean_description": "bras & tops, activities, cardio, train, run, power, move, high, impact, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Cardio",
+      "Train",
+      "Run"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "cardio",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Cardio",
+              "keywords: cardio",
+              "description: cardio"
+            ]
+          },
+          {
+            "value": "training",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: train"
+            ]
+          },
+          {
+            "value": "running",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Run",
+              "keywords: run",
+              "description: run"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "high",
+            "confidence": 0.92,
+            "evidence": [
+              "name: Power Move High Impact Bra",
+              "keywords: high, impact",
+              "functional_categories: Cardio, Train, Run"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9682R",
+              "name: Power Move High Impact Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9688R",
+    "style_code": "W9688R",
+    "name": "Foil Airlift Advantage Bra",
+    "clean_description": "bras & tops, activities, yoga, train, run, airlift, body enhance, advantage, bra, signature fabrics, active movement, transitional dressing",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Train",
+      "Run",
+      "Signature Fabrics",
+      "Airlift",
+      "Body Enhance",
+      "Active Movement",
+      "Transitional Dressing"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories includes 'Yoga'",
+              "keywords includes 'yoga'",
+              "description includes 'yoga'",
+              "brand is 'Alo Yoga'"
+            ]
+          },
+          {
+            "value": "train",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories includes 'Train'",
+              "keywords includes 'train'",
+              "description includes 'train'"
+            ]
+          },
+          {
+            "value": "run",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories includes 'Run'",
+              "keywords includes 'run'",
+              "description includes 'run'"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga",
+              "description: yoga",
+              "keywords: yoga"
+            ]
+          },
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Train",
+              "description: train",
+              "keywords: train"
+            ]
+          },
+          {
+            "value": "high",
+            "confidence": 0.8,
+            "evidence": [
+              "functional_categories: Run",
+              "description: run",
+              "keywords: run"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "activities: yoga, train",
+              "functional_categories: Yoga, Train",
+              "transitional dressing"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "bras & tops",
+              "Bra",
+              "Active Movement",
+              "Transitional Dressing",
+              "activities, yoga, train, run"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M1229R",
+    "style_code": "M1229R",
+    "name": "Open-Knit Polo",
+    "clean_description": "tops, short sleeves, open, knit, polo",
+    "functional_categories": [
+      "Tops",
+      "Short Sleeves"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Open-Knit Polo",
+              "tops",
+              "polo",
+              "short sleeves"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3224R",
+    "style_code": "M3224R",
+    "name": "Scholar Crew Neck Sweater - Unisex",
+    "clean_description": "outerwear, activities, lounge, crew, neck, sweater, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activities",
+      "Lounge"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge",
+              "keywords: lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories includes 'Outerwear'",
+              "description includes 'outerwear'",
+              "keywords include 'outerwear'",
+              "product is a 'Crew Neck Sweater' categorized under 'Sweatshirts & Hoodies'"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8230R",
+    "style_code": "W8230R",
+    "name": "Euphoria Long Sleeve Dress",
+    "clean_description": "euphoria, long, sleeve, dress, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Day-to-Night Looks"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Day-to-Night Looks",
+              "product category: Onesies & Dresses",
+              "description: day-to-night looks"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Euphoria Long Sleeve Dress",
+              "Onesies & Dresses",
+              "Day-to-Night Looks"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9702R",
+    "style_code": "W9702R",
+    "name": "Airlift Winter Warm Cropped Supermoto Tank",
+    "clean_description": "bras & tops, tank tops, best sets, airlift, winter, warm, cropped, supermoto, tank, day-to-night looks",
+    "functional_categories": [
+      "Bras & Tops",
+      "Tank Tops",
+      "Day-to-Night Looks",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "studio",
+              "Alo Yoga",
+              "tank tops",
+              "bras & tops",
+              "day-to-night looks"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Airlift Winter Warm Cropped Supermoto Tank",
+              "tank tops",
+              "Bras & Tops",
+              "day-to-night looks"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M1235R",
+    "style_code": "M1235R",
+    "name": "Coastal Terry Button Up",
+    "clean_description": "tops, short sleeves, coastal, terry, button",
+    "functional_categories": [
+      "Tops",
+      "Short Sleeves"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Coastal Terry Button Up",
+              "button",
+              "Short Sleeves",
+              "tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9706R",
+    "style_code": "W9706R",
+    "name": "Run It Back Bra",
+    "clean_description": "bras & tops, best sets, activities, barre, pilates, bras, run, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Barre",
+      "Pilates",
+      "Bras",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "barre",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories includes 'Barre'",
+              "keywords includes 'barre'",
+              "description includes 'barre'"
+            ]
+          },
+          {
+            "value": "pilates",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories includes 'Pilates'",
+              "keywords includes 'pilates'",
+              "description includes 'pilates'"
+            ]
+          },
+          {
+            "value": "run",
+            "confidence": 0.92,
+            "evidence": [
+              "product name is 'Run It Back Bra'",
+              "keywords includes 'run'",
+              "description includes 'run'"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Barre, Pilates",
+              "description: barre, pilates"
+            ]
+          },
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Run It Back Bra",
+              "keywords: run",
+              "description: run"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "activities: barre, pilates",
+              "functional_categories: Barre, Pilates"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9706R",
+              "name: Run It Back Bra",
+              "functional_categories: Bras & Tops, Bras",
+              "description: bras & tops, barre, pilates, bras, run, bra",
+              "keywords: bras & tops, bras"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9715R",
+    "style_code": "W9715R",
+    "name": "Alosoft All Night Tank",
+    "clean_description": "bras & tops, tank tops, best sets, alosoft, all, night, tank",
+    "functional_categories": [
+      "Bras & Tops",
+      "Tank Tops",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Alosoft All Night Tank",
+              "keywords: alosoft, all, night, tank",
+              "functional_categories: Bras & Tops, Tank Tops"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9715R",
+              "name: Alosoft All Night Tank",
+              "functional_categories: Bras & Tops, Tank Tops",
+              "keywords: alosoft, essentials"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M1243R",
+    "style_code": "M1243R",
+    "name": "Sports Club Sweater Knit Polo",
+    "clean_description": "short sleeves, tops, sports, club, sweater, knit, polo",
+    "functional_categories": [
+      "Short Sleeves",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "name: Sports Club Sweater Knit Polo",
+              "description: sports, club, sweater, knit, polo",
+              "keywords: sports, club, sweater, knit, polo"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Sports Club Sweater Knit Polo",
+              "sweater",
+              "polo",
+              "Short Sleeves"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9629R",
+    "style_code": "W9629R",
+    "name": "Airbrush Socialite Bandeau",
+    "clean_description": "bras & tops, luxe lounge, airbrush, vacation edit, body enhance, socialite, bandeau, signature fabrics",
+    "functional_categories": [
+      "Bras & Tops",
+      "Luxe Lounge",
+      "Signature Fabrics",
+      "Airbrush",
+      "Vacation Edit",
+      "Body Enhance"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Luxe Lounge",
+              "keywords: lounge shop, luxe lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8231R",
+    "style_code": "W8231R",
+    "name": "Alosoft Melody Full Length Bootcut Onesie",
+    "clean_description": "alosoft, melody, full, length, bootcut, onesie, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Onesies & Dresses",
+              "name: Alosoft Melody Full Length Bootcut Onesie",
+              "keywords: alosoft"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9721R",
+    "style_code": "W9721R",
+    "name": "Waffle Weekend Escape Bra",
+    "clean_description": "bras & tops, best sets, activities, lounge, waffle, weekend, escape, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Lounge",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge",
+              "keywords: lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Waffle Weekend Escape Bra",
+              "functional_categories: Lounge",
+              "keywords: lounge, weekend, escape",
+              "description: activities, lounge, waffle, weekend, escape, bra"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9721R",
+              "name: Waffle Weekend Escape Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bras & tops, lounge, essentials"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3225R",
+    "style_code": "M3225R",
+    "name": "Double Take Long Sleeve",
+    "clean_description": "long sleeves, tops, double, take, long, sleeve",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.65,
+            "evidence": [
+              "Double Take Long Sleeve",
+              "long sleeves",
+              "tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          },
+          {
+            "value": "mid",
+            "confidence": 0.6,
+            "evidence": [
+              "Double Take Long Sleeve",
+              "long sleeves",
+              "tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W8234R",
+    "style_code": "W8234R",
+    "name": "Striped Mesh Synergy Long Sleeve Dress",
+    "clean_description": "striped, mesh, synergy, long, sleeve, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.82,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Onesies & Dresses",
+              "name: Striped Mesh Synergy Long Sleeve Dress",
+              "description: onesies & dresses"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "Striped Mesh Synergy Long Sleeve Dress",
+              "functional_categories: Onesies & Dresses",
+              "dress"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M5131R",
+    "style_code": "M5131R",
+    "name": "Block Pant",
+    "clean_description": "pants, bottoms, block, pant, on-trend trousers",
+    "functional_categories": [
+      "Pants",
+      "Bottoms",
+      "On-Trend Trousers"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Pants, Bottoms, On-Trend Trousers",
+              "name: Block Pant",
+              "description: pants, bottoms, block, pant, on-trend trousers"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9724R",
+    "style_code": "W9724R",
+    "name": "Airlift Strength Bra",
+    "clean_description": "bras & tops, best sets, activities, yoga, pilates, airlift, strength, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Airlift Strength Bra",
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: activities, yoga"
+            ]
+          },
+          {
+            "value": "pilates",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Pilates",
+              "keywords: pilates",
+              "description: pilates"
+            ]
+          },
+          {
+            "value": "strength",
+            "confidence": 0.9,
+            "evidence": [
+              "name: Airlift Strength Bra",
+              "keywords: strength",
+              "description: strength"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Airlift Strength Bra",
+              "keywords: strength",
+              "functional_categories: Yoga, Pilates"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "activities: yoga, pilates",
+              "functional_categories: Yoga, Pilates"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9724R",
+              "name: Airlift Strength Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9634R",
+    "style_code": "W9634R",
+    "name": "Wellness Bra",
+    "clean_description": "bras & tops, activities, yoga, run, wellness, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Run"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: yoga",
+              "brand: Alo Yoga"
+            ]
+          },
+          {
+            "value": "run",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Run",
+              "keywords: run",
+              "description: run"
+            ]
+          },
+          {
+            "value": "wellness",
+            "confidence": 0.9,
+            "evidence": [
+              "name: Wellness Bra",
+              "keywords: wellness",
+              "description: wellness"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Wellness Bra",
+              "keywords: wellness",
+              "functional_categories: Yoga",
+              "keywords: yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "activities: yoga",
+              "functional_categories: Yoga",
+              "keywords: yoga"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product_id: W9634R",
+              "name: Wellness Bra",
+              "functional_categories: Bras & Tops",
+              "description: bras & tops, activities, yoga, run, wellness, bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3227R",
+    "style_code": "M3227R",
+    "name": "Scholar Cardigan Sweater - Unisex",
+    "clean_description": "best sets, activities, lounge, outerwear, cardigan, sweater, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Activities",
+      "Lounge",
+      "Outerwear",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "description: best sets, activities, lounge, outerwear, cardigan, sweater, sweatshirts & hoodies",
+              "keywords: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "description: lounge",
+              "keywords: lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "outer",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories includes 'Outerwear'",
+              "keywords include 'outerwear'",
+              "description includes 'outerwear, cardigan'",
+              "product is a cardigan sweater, typically worn as an outer layer"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M2028R",
+    "style_code": "M2028R",
+    "name": "Triumph Tank",
+    "clean_description": "tank tops, performance, yoga, train, run, activity, activities, cardio, tops, triumph, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Performance",
+      "Yoga",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Cardio",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: yoga",
+              "brand: Alo Yoga"
+            ]
+          },
+          {
+            "value": "training",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: train"
+            ]
+          },
+          {
+            "value": "running",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Run",
+              "keywords: run",
+              "description: run"
+            ]
+          },
+          {
+            "value": "cardio",
+            "confidence": 0.9,
+            "evidence": [
+              "functional_categories: Cardio",
+              "keywords: cardio",
+              "description: cardio"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga"
+            ]
+          },
+          {
+            "value": "moderate",
+            "confidence": 0.87,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: train"
+            ]
+          },
+          {
+            "value": "high",
+            "confidence": 0.88,
+            "evidence": [
+              "functional_categories: Run, Cardio",
+              "keywords: run, cardio",
+              "description: run, cardio"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: yoga"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          },
+          {
+            "value": "outdoor",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Run",
+              "keywords: run",
+              "description: run"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "tank tops",
+              "performance",
+              "yoga, train, run, activity, cardio",
+              "Triumph Tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9730R",
+    "style_code": "W9730R",
+    "name": "Seamless Ribbed Favorite Bra Tank",
+    "clean_description": "bras & tops, activities, yoga, pilates, seamless, ribbed, favorite, bra, tank",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "brand: Alo Yoga",
+              "description: activities, yoga"
+            ]
+          },
+          {
+            "value": "pilates",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Pilates",
+              "keywords: pilates",
+              "description: pilates"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga, Pilates",
+              "keywords: yoga, pilates",
+              "description: activities, yoga, pilates"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga, Pilates",
+              "keywords: yoga, pilates",
+              "description: activities, yoga, pilates"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Seamless Ribbed Favorite Bra Tank",
+              "bra tank",
+              "yoga, pilates",
+              "Bras & Tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9740R",
+    "style_code": "W9740R",
+    "name": "Molded Engage Bra",
+    "clean_description": "activities, train, molded, engage, bra",
+    "functional_categories": [
+      "Activities",
+      "Train"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "training",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: activities, train"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train",
+              "description: activities, train"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Molded Engage Bra",
+              "functional_categories: Train",
+              "activities, train"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M2033R",
+    "style_code": "M2033R",
+    "name": "The Triumph Muscle Tank",
+    "clean_description": "tank tops, performance, yoga, train, run, activity, activities, cardio, tops, the, triumph, muscle, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Performance",
+      "Yoga",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Cardio",
+      "Tops"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "brand: Alo Yoga"
+            ]
+          },
+          {
+            "value": "training",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Train",
+              "keywords: train"
+            ]
+          },
+          {
+            "value": "running",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Run",
+              "keywords: run"
+            ]
+          },
+          {
+            "value": "cardio",
+            "confidence": 0.9,
+            "evidence": [
+              "functional_categories: Cardio",
+              "keywords: cardio"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "moderate",
+            "confidence": 0.82,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga"
+            ]
+          },
+          {
+            "value": "high",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Cardio, Train, Run",
+              "keywords: cardio, train, run"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "yoga",
+              "train",
+              "cardio",
+              "performance"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "tank tops",
+              "performance",
+              "yoga, train, run, activity, cardio",
+              "muscle tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9744R",
+    "style_code": "W9744R",
+    "name": "Alosoft Head Start Bra",
+    "clean_description": "bras & tops, best sets, activities, yoga, pilates, alosoft, head, start, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "brand: Alo Yoga",
+              "description: activities, yoga"
+            ]
+          },
+          {
+            "value": "pilates",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Pilates",
+              "keywords: pilates",
+              "description: pilates"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Yoga, Pilates",
+              "keywords: yoga, pilates",
+              "description: activities, yoga, pilates"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "activities: yoga, pilates",
+              "functional_categories: Yoga, Pilates"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Alosoft Head Start Bra",
+              "functional_categories: Bras & Tops",
+              "activities: yoga, pilates"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9636R",
+    "style_code": "W9636R",
+    "name": "Cashmere Jet Set Bra",
+    "clean_description": "bras & tops, best sets, bras, cashmere, jet, set, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Bras",
+      "Best Sets"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Cashmere Jet Set Bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras, essentials"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "M3229R",
+    "style_code": "M3229R",
+    "name": "Cashmere Reform Long Sleeve - Unisex",
+    "clean_description": "tops, long sleeves, cashmere, reform, long, sleeve",
+    "functional_categories": [
+      "Tops",
+      "Long Sleeves"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.85,
+            "evidence": [
+              "brand: Alo Yoga",
+              "keywords: alo yoga"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [],
+        "warnings": [
+          "no_supported_value_found"
+        ],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.72,
+            "evidence": [
+              "Cashmere Reform Long Sleeve",
+              "functional_categories: Tops, Long Sleeves",
+              "cashmere material typically used for base or mid layers"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          },
+          {
+            "value": "mid",
+            "confidence": 0.68,
+            "evidence": [
+              "Cashmere Reform Long Sleeve",
+              "cashmere material suitable for mid-layer insulation",
+              "long sleeve design typical of mid-layer garments"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9647R",
+    "style_code": "W9647R",
+    "name": "Seamless Luxe Terry Cuddle Bra",
+    "clean_description": "bras & tops, cherry cola, bras, seamless, luxe, terry, cuddle, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Cherry Cola",
+      "Bras"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.85,
+            "evidence": [
+              "keywords: 'lounge shop'",
+              "name: 'Cuddle Bra'",
+              "description: 'cuddle, bra'"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "name: Seamless Luxe Terry Cuddle Bra",
+              "keywords: cuddle, lounge shop",
+              "functional_categories: Bras & Tops"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "lounge shop",
+              "cuddle",
+              "bra"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "product name: 'Seamless Luxe Terry Cuddle Bra'",
+              "functional_categories: 'Bras & Tops', 'Bras'",
+              "keywords: 'bras', 'seamless'",
+              "description: 'bras & tops, bras'"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9653R",
+    "style_code": "W9653R",
+    "name": "Alosoft Molded Showcase Bra",
+    "clean_description": "activities, yoga, bras & tops, luxe lounge, alosoft, vacation edit, bras, molded, showcase, bra, signature fabrics",
+    "functional_categories": [
+      "Activities",
+      "Yoga",
+      "Signature Fabrics",
+      "Bras & Tops",
+      "Luxe Lounge",
+      "Alosoft",
+      "Vacation Edit",
+      "Bras"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "yoga",
+            "confidence": 0.95,
+            "evidence": [
+              "brand: Alo Yoga",
+              "functional_categories: Yoga",
+              "keywords: yoga",
+              "description: activities, yoga, bras & tops"
+            ]
+          },
+          {
+            "value": "lounge",
+            "confidence": 0.88,
+            "evidence": [
+              "functional_categories: Luxe Lounge",
+              "keywords: luxe lounge, lounge shop",
+              "description: luxe lounge"
+            ]
+          }
+        ],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "yoga",
+              "luxe lounge",
+              "lounge shop",
+              "Alosoft"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "yoga",
+              "luxe lounge",
+              "lounge shop"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Bras & Tops",
+              "Bras",
+              "molded",
+              "yoga"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  },
+  {
+    "product_id": "W9654R",
+    "style_code": "W9654R",
+    "name": "Cashmere Plush Waffle V-Neck Bra",
+    "clean_description": "bras & tops, activities, lounge, toasted almond, cashmere, plush, waffle, neck, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Lounge",
+      "Toasted Almond"
+    ],
+    "attributes": {
+      "activity_type": {
+        "attribute_name": "activity_type",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "lounge",
+            "confidence": 0.92,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge",
+              "keywords: lounge shop",
+              "description: lounge"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "workout_intensity": {
+        "attribute_name": "workout_intensity",
+        "attribute_class": "contextual_semantic",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "low",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "name: Cashmere Plush Waffle V-Neck Bra",
+              "keywords: cashmere, plush"
+            ]
+          }
+        ],
+        "warnings": [],
+        "source": "text"
+      },
+      "environment": {
+        "attribute_name": "environment",
+        "attribute_class": "contextual_semantic",
+        "values": [
+          {
+            "value": "indoor",
+            "confidence": 0.85,
+            "evidence": [
+              "functional_categories: Lounge",
+              "keywords: lounge, lounge shop",
+              "description: activities, lounge"
+            ],
+            "reasoning_mode": "inferred",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "layering_role": {
+        "attribute_name": "layering_role",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "base",
+            "confidence": 0.85,
+            "evidence": [
+              "Bras & Tops",
+              "lounge",
+              "essentials",
+              "V-Neck Bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      }
+    }
+  }
+]

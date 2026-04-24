@@ -67,12 +67,25 @@ class EnrichmentRequest(BaseModel):
     obj: dict
 
 
+class ProposedValue(BaseModel):
+    """A taxonomy-evolution candidate.
+
+    Emitted when the model finds a value that is clearly supported by the
+    object data but does NOT exist in the attribute's allowed_values list.
+    These never flow into `values` — they surface as suggestions for
+    extending the taxonomy.
+    """
+    value: str
+    confidence: float
+    evidence: list[str] = []
+
+
 class EnrichmentResult(BaseModel):
     attribute_name: str
     value: Any
     confidence: float
     evidence: list[str]
-    proposed_values: list[str] | None = None
+    proposed_values: list[ProposedValue] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -103,6 +116,6 @@ class EnrichmentOutput(BaseModel):
     attribute_name: str
     attribute_class: str
     values: list[EnrichedValue] = []
-    proposed_values: list[str] = []
+    proposed_values: list[ProposedValue] = []
     warnings: list[str] = []
     source: EnrichmentSource

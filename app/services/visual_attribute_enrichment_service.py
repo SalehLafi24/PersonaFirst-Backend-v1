@@ -20,6 +20,7 @@ from app.schemas.attribute_enrichment import (
     EnrichedValue,
     EnrichmentOutput,
     EnrichmentSource,
+    ProposedValue,
 )
 
 
@@ -340,19 +341,38 @@ _VISUAL_BUILDERS = {
 def get_visual_prompt_for_attribute(
     attribute: AttributeDefinition,
     visual: VisualInput,
+    *,
+    db=None,
+    workspace_id: int | None = None,
 ) -> str:
     """Build a Claude-ready multimodal prompt for visually extracting the
     given attribute from the provided image reference.
 
-    Dispatches to a class-specific builder based on attribute.class_name.
-    taxonomy_discovery is intentionally not supported for visual enrichment.
+    When *db* and *workspace_id* are supplied, allowed_values are loaded
+    dynamically from the DB taxonomy. Falls back to the static definition.
     """
     if attribute.class_name == "taxonomy_discovery":
         raise NotImplementedError(
             "Visual taxonomy discovery is not currently supported."
         )
-    builder = _VISUAL_BUILDERS[attribute.class_name]
-    return builder(attribute, visual)
+
+    effective_attr = attribute
+    if db is not None and workspace_id is not None:
+        from app.services.attribute_taxonomy_service import get_allowed_values
+
+        db_values = get_allowed_values(
+            db,
+            workspace_id,
+            attribute.name,
+            default_values=attribute.allowed_values,
+        )
+        if db_values != (attribute.allowed_values or []):
+            effective_attr = attribute.model_copy(
+                update={"allowed_values": db_values or None}
+            )
+
+    builder = _VISUAL_BUILDERS[effective_attr.class_name]
+    return builder(effective_attr, visual)
 
 
 def build_visual_enrichment_output(
@@ -377,14 +397,54 @@ def build_visual_enrichment_output(
                 contributing_sources=[EnrichmentSource.VISUAL],
             )
         )
+    proposed_values = _parse_visual_proposed_values(
+        raw.get("proposed_values") or [],
+        attribute.allowed_values,
+        {v.value for v in values if isinstance(v.value, str)},
+    )
     return EnrichmentOutput(
         attribute_name=raw.get("attribute_name") or attribute.name,
         attribute_class=raw.get("attribute_class") or attribute.class_name,
         values=values,
-        proposed_values=list(raw.get("proposed_values") or []),
+        proposed_values=proposed_values,
         warnings=list(raw.get("warnings") or []),
         source=EnrichmentSource.VISUAL,
     )
+
+
+def _parse_visual_proposed_values(
+    raw_proposed: list,
+    allowed_values: list[str] | None,
+    value_keys: set,
+) -> list[ProposedValue]:
+    """Validate raw proposed_values items. See the identical text-enrichment
+    parser for the contract (structured dict, confidence >= 0.8, non-empty
+    evidence, never shadows allowed_values or values)."""
+    allowed_set = {v.lower() for v in (allowed_values or [])}
+    out: list[ProposedValue] = []
+    for item in raw_proposed or []:
+        if not isinstance(item, dict):
+            continue
+        value = item.get("value")
+        if not isinstance(value, str) or not value.strip():
+            continue
+        if value.lower() in allowed_set:
+            continue
+        if value in value_keys:
+            continue
+        try:
+            confidence = float(item.get("confidence", 0.0))
+        except (TypeError, ValueError):
+            continue
+        if confidence < 0.8:
+            continue
+        evidence = [e for e in (item.get("evidence") or []) if isinstance(e, str) and e.strip()]
+        if not evidence:
+            continue
+        out.append(
+            ProposedValue(value=value, confidence=confidence, evidence=evidence)
+        )
+    return out
 
 
 def generate_visual_enrichment(

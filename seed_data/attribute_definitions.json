@@ -144,5 +144,153 @@
       "negative_scoring_enabled": false
     },
     "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "mom_stage",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "single",
+    "allowed_values": [],
+    "description": "The stage of motherhood or maternity context implied by the product or customer.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": true,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_filter"
+  },
+  {
+    "name": "workout_intensity",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "single",
+    "allowed_values": [],
+    "description": "The level of physical intensity the product is suited for or associated with.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": true,
+      "can_propose_values": true,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "travel_friendly",
+    "object_type": "product",
+    "class_name": "compatibility",
+    "value_mode": "single",
+    "allowed_values": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "description": "Whether the product is suitable for travel contexts such as portability, wrinkle resistance, or versatility.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": false,
+      "ordered_values": true,
+      "can_propose_values": false,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "compatibility_signal"
+  },
+  {
+    "name": "activity_type",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "multi",
+    "allowed_values": [],
+    "description": "The primary workout or movement type the product is designed for or associated with.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": true,
+      "multi_value_allowed": true,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "layering_role",
+    "object_type": "product",
+    "class_name": "compatibility",
+    "value_mode": "single",
+    "allowed_values": [
+      "base",
+      "mid",
+      "outer"
+    ],
+    "description": "The role this garment plays in a layering system (base, mid, or outer).",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": true,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": true
+    },
+    "targeting_mode": "compatibility_signal"
+  },
+  {
+    "name": "environment",
+    "object_type": "product",
+    "class_name": "contextual_semantic",
+    "value_mode": "multi",
+    "allowed_values": [
+      "indoor",
+      "outdoor",
+      "studio"
+    ],
+    "description": "The physical setting or environment a product is designed to be used in.",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": true,
+      "multi_value_allowed": true,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": false
+    },
+    "targeting_mode": "categorical_affinity"
   }
 ]

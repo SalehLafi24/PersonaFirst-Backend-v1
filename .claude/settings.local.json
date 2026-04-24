@@ -7,7 +7,12 @@
       "Bash(python -m pytest tests/test_recommendations_v2.py -v)",
       "Bash(python -m pytest -q)",
       "Bash(python:*)",
-      "Bash(.venv/Scripts/python -m pytest tests/test_behavior_engine.py tests/test_recommendations_v7.py -v 2>&1)"
+      "Bash(.venv/Scripts/python -m pytest tests/test_behavior_engine.py tests/test_recommendations_v7.py -v 2>&1)",
+      "Bash(xargs grep:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(python -m scripts.run_recommendations_c004_eval)",
+      "Read(//tmp/**)"
     ]
   }
 }

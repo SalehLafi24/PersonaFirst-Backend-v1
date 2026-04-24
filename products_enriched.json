@@ -1,0 +1,1823 @@
+[
+  {
+    "product_id": "W9784R",
+    "style_code": "W9784R",
+    "name": "Airlift Ribbed Jump Start V-Neck Bra",
+    "clean_description": "train, bras & tops, bras, activities, barre, cardio, airlift, ribbed, jump, start, neck, bra",
+    "functional_categories": [
+      "Train",
+      "Bras & Tops",
+      "Bras",
+      "Activities",
+      "Barre",
+      "Cardio"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Barre",
+          "confidence": 0.92,
+          "evidence": "functional_categories contains ['barre']"
+        },
+        {
+          "value": "Cardio",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['cardio']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['cardio']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['barre', 'train']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['barre']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['cardio', 'train']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9808R",
+    "style_code": "W9808R",
+    "name": "Tennis Club Sweater Knit Bra",
+    "clean_description": "bras & tops, tennis, club, sweater, knit, bra",
+    "functional_categories": [
+      "Bras & Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Tennis",
+          "confidence": 0.85,
+          "evidence": "clean_description contains ['tennis']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "clean_description contains ['tennis']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "clean_description contains ['tennis']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "clean_description contains ['sweater']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M2066R",
+    "style_code": "M2066R",
+    "name": "Conquer Muscle Tank",
+    "clean_description": "tops, performance, tank tops, activities, yoga, conquer, muscle, tank",
+    "functional_categories": [
+      "Tops",
+      "Performance",
+      "Tank Tops",
+      "Activities",
+      "Yoga"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['performance']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['performance']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M2069R",
+    "style_code": "M2069R",
+    "name": "Society Raw Edge Tank",
+    "clean_description": "tank tops, activity, activities, yoga, tops, train, society, raw, edge, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Activity",
+      "Activities",
+      "Yoga",
+      "Tops",
+      "Train"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train', 'yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3079R",
+    "style_code": "M3079R",
+    "name": "Triumph Long Sleeve Tee",
+    "clean_description": "long sleeves, tops, activity, train, activities, explore, triumph, long, sleeve, tee",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops",
+      "Activity",
+      "Train",
+      "Activities",
+      "Explore"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3089R",
+    "style_code": "M3089R",
+    "name": "Impel Sweatshirt",
+    "clean_description": "outerwear, impel, sweatshirt, sweatshirts & hoodies",
+    "functional_categories": [
+      "Outerwear",
+      "Sweatshirts & Hoodies"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3108R",
+    "style_code": "M3108R",
+    "name": "Triumph Crew Neck Sweatshirt - Unisex",
+    "clean_description": "outerwear, activity, activities, lounge, triumph, crew, neck, sweatshirt, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activity",
+      "Activities",
+      "Lounge"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3109R",
+    "style_code": "M3109R",
+    "name": "Triumph Hoodie - Unisex",
+    "clean_description": "outerwear, triumph, hoodie, jacket & coverups, sweatshirts & hoodies, jackets & coverups",
+    "functional_categories": [
+      "Jacket & Coverups",
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Jackets & Coverups"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['jacket & coverups', 'jackets & coverups', 'outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3148R",
+    "style_code": "M3148R",
+    "name": "Micro Waffle Fast Break Henley",
+    "clean_description": "long sleeves, activities, lounge, tops, micro, waffle, fast, break, henley",
+    "functional_categories": [
+      "Long Sleeves",
+      "Activities",
+      "Lounge",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8195R",
+    "style_code": "W8195R",
+    "name": "Euphoria Long Sleeve Bodysuit",
+    "clean_description": "bodysuits, euphoria, long, sleeve, bodysuit, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Bodysuits"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bodysuit', 'bodysuits', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3156R",
+    "style_code": "M3156R",
+    "name": "Core Hooded Runner",
+    "clean_description": "long sleeves, performance, train, run, activity, activities, explore, tops, core, hooded, runner",
+    "functional_categories": [
+      "Long Sleeves",
+      "Performance",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Explore",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run', 'runner']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['performance', 'run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['performance', 'train']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8197R",
+    "style_code": "W8197R",
+    "name": "Airbrush Racing Onesie",
+    "clean_description": "airbrush, racing, onesie, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['onesie', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8200R",
+    "style_code": "W8200R",
+    "name": "Run It Back Dress",
+    "clean_description": "run, dress, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Day-to-Night Looks"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "clean_description contains ['run']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "clean_description contains ['run']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "clean_description contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8201R",
+    "style_code": "W8201R",
+    "name": "Goddess Ribbed Short Sleeve Dress",
+    "clean_description": "goddess, ribbed, short, sleeve, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8207R",
+    "style_code": "W8207R",
+    "name": "Goddess Ribbed Go-To Dress",
+    "clean_description": "goddess, ribbed, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8208R",
+    "style_code": "W8208R",
+    "name": "Goddess Ribbed Spaghetti Strap Dress",
+    "clean_description": "goddess, ribbed, spaghetti, strap, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8227R",
+    "style_code": "W8227R",
+    "name": "Mesh Plaid Mock Neck Bodysuit",
+    "clean_description": "bodysuits, mesh, plaid, mock, neck, bodysuit, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Bodysuits",
+      "Day-to-Night Looks"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bodysuit', 'bodysuits', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3216R",
+    "style_code": "M3216R",
+    "name": "Renown Sleeveless Hoodie",
+    "clean_description": "outerwear, activities, lounge, bone, renown, sleeveless, hoodie, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activities",
+      "Lounge"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M1224R",
+    "style_code": "M1224R",
+    "name": "Double Take Short Sleeve",
+    "clean_description": "short sleeves, tops, double, take, short, sleeve",
+    "functional_categories": [
+      "Short Sleeves",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": []
+    }
+  },
+  {
+    "product_id": "M3218R",
+    "style_code": "M3218R",
+    "name": "Conquer Reform Mock Neck Long Sleeve",
+    "clean_description": "long sleeves, tops, conquer, reform, mock, neck, long, sleeve",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9682R",
+    "style_code": "W9682R",
+    "name": "Power Move High Impact Bra",
+    "clean_description": "bras & tops, activities, cardio, train, run, power, move, high, impact, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Cardio",
+      "Train",
+      "Run"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Cardio",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['cardio']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['cardio', 'run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['cardio', 'train']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9688R",
+    "style_code": "W9688R",
+    "name": "Foil Airlift Advantage Bra",
+    "clean_description": "bras & tops, activities, yoga, train, run, airlift, body enhance, advantage, bra, signature fabrics, active movement, transitional dressing",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Train",
+      "Run",
+      "Signature Fabrics",
+      "Airlift",
+      "Body Enhance",
+      "Active Movement",
+      "Transitional Dressing"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train', 'yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['train']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M1229R",
+    "style_code": "M1229R",
+    "name": "Open-Knit Polo",
+    "clean_description": "tops, short sleeves, open, knit, polo",
+    "functional_categories": [
+      "Tops",
+      "Short Sleeves"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "clean_description contains ['polo']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3224R",
+    "style_code": "M3224R",
+    "name": "Scholar Crew Neck Sweater - Unisex",
+    "clean_description": "outerwear, activities, lounge, crew, neck, sweater, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Outerwear",
+      "Activities",
+      "Lounge"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8230R",
+    "style_code": "W8230R",
+    "name": "Euphoria Long Sleeve Dress",
+    "clean_description": "euphoria, long, sleeve, dress, onesies & dresses, day-to-night looks",
+    "functional_categories": [
+      "Onesies & Dresses",
+      "Day-to-Night Looks"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9702R",
+    "style_code": "W9702R",
+    "name": "Airlift Winter Warm Cropped Supermoto Tank",
+    "clean_description": "bras & tops, tank tops, best sets, airlift, winter, warm, cropped, supermoto, tank, day-to-night looks",
+    "functional_categories": [
+      "Bras & Tops",
+      "Tank Tops",
+      "Day-to-Night Looks",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bras & tops', 'tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M1235R",
+    "style_code": "M1235R",
+    "name": "Coastal Terry Button Up",
+    "clean_description": "tops, short sleeves, coastal, terry, button",
+    "functional_categories": [
+      "Tops",
+      "Short Sleeves"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": []
+    }
+  },
+  {
+    "product_id": "W9706R",
+    "style_code": "W9706R",
+    "name": "Run It Back Bra",
+    "clean_description": "bras & tops, best sets, activities, barre, pilates, bras, run, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Barre",
+      "Pilates",
+      "Bras",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Barre",
+          "confidence": 0.92,
+          "evidence": "functional_categories contains ['barre']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "clean_description contains ['run']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "clean_description contains ['run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['barre']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['barre', 'pilates']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "clean_description contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9715R",
+    "style_code": "W9715R",
+    "name": "Alosoft All Night Tank",
+    "clean_description": "bras & tops, tank tops, best sets, alosoft, all, night, tank",
+    "functional_categories": [
+      "Bras & Tops",
+      "Tank Tops",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bras & tops', 'tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M1243R",
+    "style_code": "M1243R",
+    "name": "Sports Club Sweater Knit Polo",
+    "clean_description": "short sleeves, tops, sports, club, sweater, knit, polo",
+    "functional_categories": [
+      "Short Sleeves",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "clean_description contains ['sweater']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9629R",
+    "style_code": "W9629R",
+    "name": "Airbrush Socialite Bandeau",
+    "clean_description": "bras & tops, luxe lounge, airbrush, vacation edit, body enhance, socialite, bandeau, signature fabrics",
+    "functional_categories": [
+      "Bras & Tops",
+      "Luxe Lounge",
+      "Signature Fabrics",
+      "Airbrush",
+      "Vacation Edit",
+      "Body Enhance"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8231R",
+    "style_code": "W8231R",
+    "name": "Alosoft Melody Full Length Bootcut Onesie",
+    "clean_description": "alosoft, melody, full, length, bootcut, onesie, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['onesie', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9721R",
+    "style_code": "W9721R",
+    "name": "Waffle Weekend Escape Bra",
+    "clean_description": "bras & tops, best sets, activities, lounge, waffle, weekend, escape, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Lounge",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3225R",
+    "style_code": "M3225R",
+    "name": "Double Take Long Sleeve",
+    "clean_description": "long sleeves, tops, double, take, long, sleeve",
+    "functional_categories": [
+      "Long Sleeves",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W8234R",
+    "style_code": "W8234R",
+    "name": "Striped Mesh Synergy Long Sleeve Dress",
+    "clean_description": "striped, mesh, synergy, long, sleeve, dress, onesies & dresses",
+    "functional_categories": [
+      "Onesies & Dresses"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['dress', 'onesies & dresses']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M5131R",
+    "style_code": "M5131R",
+    "name": "Block Pant",
+    "clean_description": "pants, bottoms, block, pant, on-trend trousers",
+    "functional_categories": [
+      "Pants",
+      "Bottoms",
+      "On-Trend Trousers"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": []
+    }
+  },
+  {
+    "product_id": "W9724R",
+    "style_code": "W9724R",
+    "name": "Airlift Strength Bra",
+    "clean_description": "bras & tops, best sets, activities, yoga, pilates, airlift, strength, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['pilates', 'yoga']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9634R",
+    "style_code": "W9634R",
+    "name": "Wellness Bra",
+    "clean_description": "bras & tops, activities, yoga, run, wellness, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Run"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3227R",
+    "style_code": "M3227R",
+    "name": "Scholar Cardigan Sweater - Unisex",
+    "clean_description": "best sets, activities, lounge, outerwear, cardigan, sweater, sweatshirts & hoodies",
+    "functional_categories": [
+      "Sweatshirts & Hoodies",
+      "Activities",
+      "Lounge",
+      "Outerwear",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Outer Layer",
+          "confidence": 0.88,
+          "evidence": "functional_categories contains ['outerwear']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M2028R",
+    "style_code": "M2028R",
+    "name": "Triumph Tank",
+    "clean_description": "tank tops, performance, yoga, train, run, activity, activities, cardio, tops, triumph, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Performance",
+      "Yoga",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Cardio",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Cardio",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['cardio']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['cardio', 'performance', 'run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train', 'yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['cardio', 'performance', 'train']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9730R",
+    "style_code": "W9730R",
+    "name": "Seamless Ribbed Favorite Bra Tank",
+    "clean_description": "bras & tops, activities, yoga, pilates, seamless, ribbed, favorite, bra, tank",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['pilates', 'yoga']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops', 'tank']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9740R",
+    "style_code": "W9740R",
+    "name": "Molded Engage Bra",
+    "clean_description": "activities, train, molded, engage, bra",
+    "functional_categories": [
+      "Activities",
+      "Train"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "clean_description contains ['bra']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M2033R",
+    "style_code": "M2033R",
+    "name": "The Triumph Muscle Tank",
+    "clean_description": "tank tops, performance, yoga, train, run, activity, activities, cardio, tops, the, triumph, muscle, tank",
+    "functional_categories": [
+      "Tank Tops",
+      "Performance",
+      "Yoga",
+      "Train",
+      "Run",
+      "Activity",
+      "Activities",
+      "Cardio",
+      "Tops"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Cardio",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['cardio']"
+        },
+        {
+          "value": "Running",
+          "confidence": 0.82,
+          "evidence": "functional_categories contains ['run']"
+        },
+        {
+          "value": "Training",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['train']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "High",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['cardio', 'performance', 'run']"
+        },
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['train', 'yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Gym",
+          "confidence": 0.6,
+          "evidence": "functional_categories contains ['cardio', 'performance', 'train']"
+        },
+        {
+          "value": "Outdoor",
+          "confidence": 0.55,
+          "evidence": "functional_categories contains ['run']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['tank', 'tank tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9744R",
+    "style_code": "W9744R",
+    "name": "Alosoft Head Start Bra",
+    "clean_description": "bras & tops, best sets, activities, yoga, pilates, alosoft, head, start, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Yoga",
+      "Pilates",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['pilates', 'yoga']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9636R",
+    "style_code": "W9636R",
+    "name": "Cashmere Jet Set Bra",
+    "clean_description": "bras & tops, best sets, bras, cashmere, jet, set, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Bras",
+      "Best Sets"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "M3229R",
+    "style_code": "M3229R",
+    "name": "Cashmere Reform Long Sleeve - Unisex",
+    "clean_description": "tops, long sleeves, cashmere, reform, long, sleeve",
+    "functional_categories": [
+      "Tops",
+      "Long Sleeves"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Mid Layer",
+          "confidence": 0.78,
+          "evidence": "functional_categories contains ['long sleeves']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9647R",
+    "style_code": "W9647R",
+    "name": "Seamless Luxe Terry Cuddle Bra",
+    "clean_description": "bras & tops, cherry cola, bras, seamless, luxe, terry, cuddle, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Cherry Cola",
+      "Bras"
+    ],
+    "proposed_values": {
+      "activity_type": [],
+      "workout_intensity": [],
+      "environment": [],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9653R",
+    "style_code": "W9653R",
+    "name": "Alosoft Molded Showcase Bra",
+    "clean_description": "activities, yoga, bras & tops, luxe lounge, alosoft, vacation edit, bras, molded, showcase, bra, signature fabrics",
+    "functional_categories": [
+      "Activities",
+      "Yoga",
+      "Signature Fabrics",
+      "Bras & Tops",
+      "Luxe Lounge",
+      "Alosoft",
+      "Vacation Edit",
+      "Bras"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Yoga",
+          "confidence": 0.9,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Medium",
+          "confidence": 0.65,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Studio",
+          "confidence": 0.7,
+          "evidence": "functional_categories contains ['yoga']"
+        },
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['luxe lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras', 'bras & tops']"
+        }
+      ]
+    }
+  },
+  {
+    "product_id": "W9654R",
+    "style_code": "W9654R",
+    "name": "Cashmere Plush Waffle V-Neck Bra",
+    "clean_description": "bras & tops, activities, lounge, toasted almond, cashmere, plush, waffle, neck, bra",
+    "functional_categories": [
+      "Bras & Tops",
+      "Activities",
+      "Lounge",
+      "Toasted Almond"
+    ],
+    "proposed_values": {
+      "activity_type": [
+        {
+          "value": "Lounge",
+          "confidence": 0.8,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "workout_intensity": [
+        {
+          "value": "Low",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "environment": [
+        {
+          "value": "Indoor",
+          "confidence": 0.75,
+          "evidence": "functional_categories contains ['lounge']"
+        }
+      ],
+      "layering_role": [
+        {
+          "value": "Base Layer",
+          "confidence": 0.85,
+          "evidence": "functional_categories contains ['bra', 'bras & tops']"
+        }
+      ]
+    }
+  }
+]
