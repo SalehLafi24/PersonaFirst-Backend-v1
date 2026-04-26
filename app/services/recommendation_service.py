@@ -51,13 +51,39 @@ _CONTEXTUAL_MISMATCH_ATTRS: frozenset[str] = frozenset({
 })
 _CONTEXTUAL_MISMATCH_MULTIPLIER: float = 0.3
 
-# Multi-value direct-score normalization. For attributes listed here, each
-# categorical_affinity contribution from this product is divided by sqrt(N)
-# where N is the count of values the product carries for that attribute.
-# Dampens tag-stacking so a product tagged with all values doesn't accumulate
-# a contribution proportional to its tag density. Weights and affinities are
-# untouched; only the per-product accumulated contribution is normalized.
-_MULTI_VALUE_NORMALIZED_ATTRS: frozenset[str] = frozenset({"activity_type"})
+# FIX 1: Conservative product_type compatibility gate. Excludes only clearly
+# incompatible garment types when the customer has a single dominant
+# product_type signal (affinity > _PRODUCT_TYPE_DOMINANT_THRESHOLD). Built as
+# a small lookup table so the rule is data, not code; mixed/no-dominant
+# customers bypass the gate entirely. Applied BEFORE scoring so excluded
+# products don't accumulate score state (and don't surface via halo either).
+_PRODUCT_TYPE_DOMINANT_THRESHOLD: float = 0.5
+_PRODUCT_TYPE_ALLOW_RULES: dict[str, frozenset[str]] = {
+    "tank":       frozenset({"tank", "tee", "long_sleeve", "hoodie", "sweatshirt"}),
+    "bra":        frozenset({"bra", "tank"}),
+    "hoodie":     frozenset({"hoodie", "sweatshirt", "tee", "long_sleeve", "tank"}),
+    "sweatshirt": frozenset({"hoodie", "sweatshirt", "tee", "long_sleeve", "tank"}),
+}
+
+
+def _resolve_product_type_allow_set(
+    customer_signals_by_attr: dict[str, dict[str, float]],
+) -> frozenset[str] | None:
+    """Return the product_type allow-set for the customer, or None to skip
+    the gate. Returns None when no dominant product_type exists, or when
+    multiple dominants disagree on the rule family ("mixed").
+    """
+    pt_signals = customer_signals_by_attr.get("product_type", {})
+    dominants = [v for v, score in pt_signals.items()
+                 if score > _PRODUCT_TYPE_DOMINANT_THRESHOLD]
+    if not dominants:
+        return None
+    rule_sets = [_PRODUCT_TYPE_ALLOW_RULES.get(d) for d in dominants]
+    if any(r is None for r in rule_sets):
+        return None  # at least one dominant has no defined rule → mixed/skip
+    if all(r == rule_sets[0] for r in rule_sets):
+        return rule_sets[0]
+    return None  # multiple dominants with different families → mixed/skip
 
 # Complementary compatibility attributes — inverted scoring logic.
 # Normal compatibility: match = positive, mismatch = negative.
@@ -85,6 +111,18 @@ _LOW_SIGNAL_THRESHOLD: float = 0.5
 _LOW_SIGNAL_POPULARITY_WEIGHT: float = 0.15
 _LOW_SIGNAL_SCAN_DEPTH_MULTIPLIER: int = 5
 _LOW_SIGNAL_DIVERSITY_PENALTY_MULTIPLIER: float = 2.0
+# FIX 3: stronger popularity weight when the customer signal is very weak
+# (below this threshold). Activated only when the caller did not pass a
+# popularity_weight explicitly. Layered on top of the broader low-signal
+# autoadjust below.
+_VERY_LOW_SIGNAL_THRESHOLD: float = 0.3
+_VERY_LOW_SIGNAL_POPULARITY_WEIGHT: float = 0.3
+# FIX 4: when the top of the ranked list is tightly clustered (max - min
+# below this band) re-rank that window by popularity_score DESC. Acts as a
+# deterministic tiebreaker. Disabled when popularity is uninformative across
+# the window (all candidates share the same popularity_score).
+_TIE_RANGE_THRESHOLD: float = 0.05
+_TIE_TIEBREAK_WINDOW: int = 5
 
 # Diversity shaping — soft category/group re-rank applied AFTER scoring,
 # penalties, halo, and suppression. Rank #1 is never touched; ranks 2..N are
@@ -605,7 +643,11 @@ def get_recommendations(
     )
     if low_signal_active:
         if popularity_weight == 0.0:
-            popularity_weight = _LOW_SIGNAL_POPULARITY_WEIGHT
+            # FIX 3: very-low-signal customers get a stronger popularity weight.
+            if customer_signal_strength < _VERY_LOW_SIGNAL_THRESHOLD:
+                popularity_weight = _VERY_LOW_SIGNAL_POPULARITY_WEIGHT
+            else:
+                popularity_weight = _LOW_SIGNAL_POPULARITY_WEIGHT
         if max_scan_depth is None:
             max_scan_depth = top_n * _LOW_SIGNAL_SCAN_DEPTH_MULTIPLIER
         diversity_penalty_multiplier = _LOW_SIGNAL_DIVERSITY_PENALTY_MULTIPLIER
@@ -702,6 +744,20 @@ def get_recommendations(
                     )
                 )
 
+    # FIX 1: resolve the product_type allow-set once. None = skip gate.
+    pt_allow_set = _resolve_product_type_allow_set(customer_signals_by_attr)
+
+    # FIX 2: precompute the activity_type cap (= max customer affinity for
+    # activity_type × the activity_type weight). Used after each product's
+    # activity_type contributions are summed to prevent multi-tag stacking
+    # from outscoring a single perfect match.
+    _activity_type_signals = customer_signals_by_attr.get("activity_type", {})
+    _max_activity_type_aff = (
+        max(_activity_type_signals.values()) if _activity_type_signals else 0.0
+    )
+    _activity_type_weight = get_attribute_weight("activity_type")
+    _activity_type_cap = _max_activity_type_aff * _activity_type_weight
+
     # 5. Compute workspace-wide popularity for ALL products once
     popularity = _build_popularity_scores(db, workspace_id)
 
@@ -755,6 +811,21 @@ def get_recommendations(
     candidates: list[tuple[int, RecommendationRead, bool]] = []
 
     for product in products:
+        # FIX 1: Pre-scoring product_type gate. Hard-exclude products whose
+        # product_type is outside the allow-set for the customer's dominant
+        # signal. Products carrying no product_type value are NOT excluded
+        # (insufficient data → neutral, consistent with how the rest of the
+        # pipeline treats absent attribute values).
+        if pt_allow_set is not None:
+            pt_values_on_product = [
+                a.attribute_value for a in attrs_by_product[product.id]
+                if a.attribute_id == "product_type"
+            ]
+            if pt_values_on_product and not any(
+                pv in pt_allow_set for pv in pt_values_on_product
+            ):
+                continue
+
         # Purchase-based suppression: tag but keep scoring.
         is_suppressed = False
         if product.product_id in suppressed_product_ids:
@@ -792,12 +863,16 @@ def get_recommendations(
         # descriptive_metadata  → metadata_ignored: not scored
 
         if affinity_map:
-            # Per-attribute value counts on this product. Used to divide
-            # multi-value direct contributions by sqrt(N) for attributes in
-            # _MULTI_VALUE_NORMALIZED_ATTRS.
+            # Per-attribute value counts on this product. Used by FIX 2 to
+            # normalize the activity_type sum by sqrt(N) before capping.
             value_counts_by_attr: dict[str, int] = defaultdict(int)
             for attr in attrs_by_product[product.id]:
                 value_counts_by_attr[attr.attribute_id] += 1
+
+            # FIX 2: accumulate activity_type contributions separately so the
+            # post-loop step can sqrt(N)-normalize the sum AND cap it at
+            # max_customer_aff_for_activity_type × weight.
+            activity_type_raw_sum: float = 0.0
 
             for attr in attrs_by_product[product.id]:
                 key = (attr.attribute_id, attr.attribute_value)
@@ -809,13 +884,13 @@ def get_recommendations(
                 mode = _get_targeting_mode(attr.attribute_id, attribute_targeting_modes)
 
                 if mode == "categorical_affinity":
-                    # Soft preference signal — accumulates into direct_score
-                    contribution = aff_score * weight
-                    if attr.attribute_id in _MULTI_VALUE_NORMALIZED_ATTRS:
-                        n = value_counts_by_attr[attr.attribute_id]
-                        if n > 1:
-                            contribution /= math.sqrt(n)
-                    affinity_contribution += contribution
+                    if attr.attribute_id == "activity_type":
+                        # Defer accumulation; finalised after the loop with
+                        # sqrt(N) normalisation + cap.
+                        activity_type_raw_sum += aff_score * weight
+                    else:
+                        # Other categorical_affinity attributes contribute as before.
+                        affinity_contribution += aff_score * weight
                     matched.append(MatchedAttribute(
                         attribute_id=attr.attribute_id,
                         attribute_value=attr.attribute_value,
@@ -851,6 +926,19 @@ def get_recommendations(
                     pass  # filter_exclusion — no scoring contribution
 
                 # descriptive_metadata: metadata_ignored — not scored
+
+        # FIX 2: finalise the activity_type contribution. Normalise by
+        # sqrt(N) where N = product's activity_type value count, then cap at
+        # the customer's strongest activity_type affinity × weight so a
+        # multi-tag product cannot exceed the contribution of a single
+        # perfect match.
+        if activity_type_raw_sum > 0.0:
+            n = value_counts_by_attr.get("activity_type", 0)
+            normalized = (
+                activity_type_raw_sum / math.sqrt(n)
+                if n > 1 else activity_type_raw_sum
+            )
+            affinity_contribution += min(normalized, _activity_type_cap)
 
         # Negative compatibility pass — opt-in via attribute_behaviors.
         # For each attribute the customer has a compatibility signal for, if
@@ -1404,5 +1492,23 @@ def get_recommendations(
                 "DEBUG diversity shaping moved %d products: %s",
                 len(diversity_movements), diversity_movements,
             )
+
+    # FIX 4: tight-cluster popularity tiebreaker. If the top window's score
+    # range falls below the tie threshold AND popularity varies across the
+    # window, re-rank that window by popularity DESC (stable). Scores are
+    # not mutated; only list order changes.
+    if len(results) >= 2:
+        window_size = min(_TIE_TIEBREAK_WINDOW, len(results))
+        window = results[:window_size]
+        score_range = (
+            max(r.recommendation_score for r in window)
+            - min(r.recommendation_score for r in window)
+        )
+        if score_range < _TIE_RANGE_THRESHOLD:
+            unique_pops = {r.popularity_score for r in window}
+            if len(unique_pops) > 1:
+                results[:window_size] = sorted(
+                    window, key=lambda r: -r.popularity_score
+                )
 
     return results, fallback_applied

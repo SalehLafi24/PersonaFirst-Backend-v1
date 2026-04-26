@@ -33,7 +33,14 @@ from app.models.customer_attribute_affinity import CustomerAttributeAffinity
 from app.models.customer_purchase import CustomerPurchase
 from app.models.product import Product, ProductAttribute
 from app.models.workspace import Workspace
-from app.schemas.attribute_enrichment import AttributeBehavior, AttributeDefinition
+from app.schemas.attribute_enrichment import (
+    AttributeBehavior,
+    AttributeDefinition,
+    EnrichedValue,
+    EnrichmentOutput,
+    EnrichmentSource,
+    ProposedValue,
+)
 from app.services.affinity_service import generate_affinities_from_purchases
 from app.services.recommendation_service import get_recommendations
 from app.services.signal_strength_service import compute_customer_signal_strength
@@ -58,6 +65,56 @@ ENRICHED_ATTRS = ["activity_type", "workout_intensity", "environment", "layering
 def _load_enriched_catalog() -> list[dict]:
     with ENRICHED_PATH.open(encoding="utf-8") as f:
         return json.load(f)
+
+
+def _build_product_enrichment_outputs(
+    catalog: list[dict],
+) -> dict[str, dict[str, EnrichmentOutput]]:
+    """FIX 5: build the nested structure expected by
+    `multi_source_signal_service.apply_multi_source_signals` from the
+    on-disk enrichment JSON. When passed to `get_recommendations`, the
+    multi-source layer can compute `product_signal_strength` per
+    recommendation, which makes the engine's existing
+    `low_signal_penalty` step behave as a real differentiator.
+    """
+    out: dict[str, dict[str, EnrichmentOutput]] = {}
+    for entry in catalog:
+        pid = entry["product_id"]
+        per_attr: dict[str, EnrichmentOutput] = {}
+        for attr_name, attr_obj in (entry.get("attributes") or {}).items():
+            values = []
+            for v in attr_obj.get("values") or []:
+                src = EnrichmentSource(v.get("source", "text"))
+                contrib = [
+                    EnrichmentSource(s)
+                    for s in v.get("contributing_sources", ["text"])
+                ]
+                values.append(EnrichedValue(
+                    value=v["value"],
+                    confidence=float(v.get("confidence", 0.0)),
+                    evidence=list(v.get("evidence") or []),
+                    reasoning_mode=v.get("reasoning_mode"),
+                    source=src,
+                    contributing_sources=contrib,
+                ))
+            proposed = [
+                ProposedValue(
+                    value=p["value"],
+                    confidence=float(p.get("confidence", 0.0)),
+                    evidence=list(p.get("evidence") or []),
+                )
+                for p in (attr_obj.get("proposed_values") or [])
+            ]
+            per_attr[attr_name] = EnrichmentOutput(
+                attribute_name=attr_obj.get("attribute_name", attr_name),
+                attribute_class=attr_obj.get("attribute_class", "contextual_semantic"),
+                values=values,
+                proposed_values=proposed,
+                warnings=list(attr_obj.get("warnings") or []),
+                source=EnrichmentSource(attr_obj.get("source", "text")),
+            )
+        out[pid] = per_attr
+    return out
 
 
 def _kept_values(attr_obj: dict) -> list[str]:
@@ -299,30 +356,44 @@ def _penalty_notes(rec) -> str:
     return "; ".join(notes) if notes else "-"
 
 
-def _print_top5(rows) -> None:
+def _print_top5(rows, by_pid_data: dict) -> None:
     if not rows:
         print("    (no recommendations)")
         return
     header = (
-        f"{'#':<3}{'product_id':<10} {'name':<34} "
-        f"{'final':>8} {'direct':>8} {'rel':>6} {'beh':>6} "
-        f"{'comp+':>7} {'comp-':>7} {'ctx-':>7} {'lowsig-':>8} {'source':<20}"
+        f"{'#':<3}{'product_id':<10} {'name':<30} {'p_type':<10} "
+        f"{'final':>8} {'direct':>8} {'rel':>5} {'beh':>5} {'pop':>5} "
+        f"{'comp+':>7} {'comp-':>7} {'ctx-':>6} {'lowsig-':>8} "
+        f"{'sig_p':>6} {'mconf':>6} {'source':<10}"
     )
     print(header)
     print("-" * len(header))
     for i, r in enumerate(rows[:TOP_N], 1):
-        name = (r.name[:32] + "..") if len(r.name) > 34 else r.name
+        name = (r.name[:28] + "..") if len(r.name) > 30 else r.name
+        # product_type from the enriched JSON for visibility (not invented)
+        pt_obj = (by_pid_data.get(r.product_id) or {}).get("attributes", {}).get("product_type", {})
+        pt_vals = []
+        for v in pt_obj.get("values", []) or []:
+            if v.get("confidence", 0) >= 0.8 and v.get("evidence"):
+                pt_vals.append(v["value"])
+        for v in pt_obj.get("proposed_values", []) or []:
+            if v.get("confidence", 0) >= 0.8 and v.get("evidence"):
+                pt_vals.append(v["value"])
+        pt = "|".join(pt_vals) if pt_vals else "-"
+        sig_p = f"{r.product_signal_strength:.3f}" if r.product_signal_strength is not None else "-"
+        mconf = f"{r.match_confidence:.3f}" if r.match_confidence is not None else "-"
         print(
-            f"#{i:<2}{r.product_id:<10} {name:<34} "
+            f"#{i:<2}{r.product_id:<10} {name:<30} {pt:<10} "
             f"{r.recommendation_score:>+8.3f} "
             f"{r.direct_score:>+8.3f} "
-            f"{r.relationship_score:>+6.3f} "
-            f"{r.behavioral_score:>+6.3f} "
+            f"{r.relationship_score:>+5.2f} "
+            f"{r.behavioral_score:>+5.2f} "
+            f"{r.popularity_score:>+5.2f} "
             f"{r.compatibility_positive_contribution:>+7.3f} "
             f"{r.compatibility_negative_contribution:>+7.3f} "
-            f"{r.contextual_negative_contribution:>+7.3f} "
+            f"{r.contextual_negative_contribution:>+6.3f} "
             f"{r.low_signal_penalty:>+8.3f} "
-            f"{r.recommendation_source:<20}"
+            f"{sig_p:>6} {mconf:>6} {r.recommendation_source:<10}"
         )
         print(f"     top3_attrs : {_top_contrib_attrs(r, 3)}")
         print(f"     penalties  : {_penalty_notes(r)}")
@@ -340,6 +411,9 @@ def main() -> None:
     attr_defs = [AttributeDefinition(**d) for d in raw_defs]
     targeting_modes = {d.name: d.targeting_mode.value for d in attr_defs}
     behaviors = {d.name: d.behavior for d in attr_defs}
+    # FIX 5: enrichment outputs in the shape expected by the multi-source
+    # signal layer. Passed straight through to `get_recommendations`.
+    product_enrichment_outputs = _build_product_enrichment_outputs(catalog)
 
     db = SessionLocal()
     try:
@@ -392,8 +466,9 @@ def main() -> None:
                 attribute_behaviors=behaviors,
                 reference_date=ORDER_DATE,
                 customer_signal_strength=sig.customer_signal_strength,
+                product_enrichment_outputs=product_enrichment_outputs,
             )
-            _print_top5(recs)
+            _print_top5(recs, {e["product_id"]: e for e in catalog})
             print()
             print("WHY #1 (engine explanation field):")
             if recs:
