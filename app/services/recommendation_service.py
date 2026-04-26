@@ -73,6 +73,19 @@ _COMPLEMENTARY_COMPAT_ATTRS: frozenset[str] = frozenset({"layering_role"})
 # multi-source signal layer.  Products without signal data are unaffected.
 _LOW_SIGNAL_PENALTY_WEIGHT: float = 0.1
 
+# Low-signal customer handling. When customer_signal_strength is below the
+# threshold, the engine widens its strategy via the levers the caller already
+# exposes — popularity gets a small weight to break ties, max_scan_depth
+# widens so selection doesn't run out of candidates, and diversity shaping
+# becomes more aggressive. Caller-supplied values for these levers take
+# precedence; we only fill in defaults that increase breadth. Activated
+# only when customer_signal_strength is given and below the threshold;
+# high-signal customers are unaffected.
+_LOW_SIGNAL_THRESHOLD: float = 0.5
+_LOW_SIGNAL_POPULARITY_WEIGHT: float = 0.15
+_LOW_SIGNAL_SCAN_DEPTH_MULTIPLIER: int = 5
+_LOW_SIGNAL_DIVERSITY_PENALTY_MULTIPLIER: float = 2.0
+
 # Diversity shaping — soft category/group re-rank applied AFTER scoring,
 # penalties, halo, and suppression. Rank #1 is never touched; ranks 2..N are
 # re-picked greedily from a small look-ahead window, with a multiplicative
@@ -469,6 +482,7 @@ def _diversity_key(rec: RecommendationRead) -> str:
 
 def _apply_diversity_shaping(
     results: list[RecommendationRead],
+    penalty_multiplier: float = 1.0,
 ) -> tuple[list[RecommendationRead], list[tuple[str, int, int]]]:
     """Soft-diversity re-rank the top-N list.
 
@@ -489,6 +503,14 @@ def _apply_diversity_shaping(
 
     original_order = {rec.product_id: i for i, rec in enumerate(results)}
 
+    # Penalty constants scale with the multiplier so low-signal customers
+    # see stronger category de-duplication. multiplier=1.0 preserves the
+    # original behavior exactly.
+    repeat_penalty = CATEGORY_REPEAT_PENALTY * penalty_multiplier
+    max_repeat_effect = min(
+        MAX_CATEGORY_REPEAT_EFFECT * penalty_multiplier, 0.99
+    )
+
     locked = [results[0]]
     remaining: list[RecommendationRead] = list(results[1:])
     seen_keys: dict[str, int] = {_diversity_key(results[0]): 1}
@@ -504,7 +526,7 @@ def _apply_diversity_shaping(
             repeats = seen_keys.get(_diversity_key(rec), 0)
             if rec.recommendation_score >= threshold:
                 factor = 1.0 - min(
-                    repeats * CATEGORY_REPEAT_PENALTY, MAX_CATEGORY_REPEAT_EFFECT
+                    repeats * repeat_penalty, max_repeat_effect
                 )
                 adjusted = rec.recommendation_score * factor
             else:
@@ -573,6 +595,26 @@ def get_recommendations(
         relationship_weight = _DEFAULT_RELATIONSHIP_WEIGHT
         popularity_weight = _DEFAULT_POPULARITY_WEIGHT
         # behavioral_weight stays 0.0
+
+    # Low-signal auto-adjust. Caller-supplied values win — we only fill in
+    # defaults that broaden the candidate pool and tie-breaking surface.
+    diversity_penalty_multiplier: float = 1.0
+    low_signal_active = (
+        customer_signal_strength is not None
+        and customer_signal_strength < _LOW_SIGNAL_THRESHOLD
+    )
+    if low_signal_active:
+        if popularity_weight == 0.0:
+            popularity_weight = _LOW_SIGNAL_POPULARITY_WEIGHT
+        if max_scan_depth is None:
+            max_scan_depth = top_n * _LOW_SIGNAL_SCAN_DEPTH_MULTIPLIER
+        diversity_penalty_multiplier = _LOW_SIGNAL_DIVERSITY_PENALTY_MULTIPLIER
+        logger.warning(
+            "DEBUG low-signal mode active: customer_signal_strength=%.3f "
+            "popularity_weight=%.3f max_scan_depth=%s diversity_multiplier=%.2f",
+            customer_signal_strength, popularity_weight, max_scan_depth,
+            diversity_penalty_multiplier,
+        )
 
     # 1. Build suppression sets.
     # Evaluation mode: skip purchase-based suppression entirely so the engine
@@ -1354,7 +1396,9 @@ def get_recommendations(
     #     Rank #1 is preserved; ranks 2..N are re-picked with a category
     #     repetition penalty, gated by a closeness band.
     if not disable_diversity_shaping:
-        results, diversity_movements = _apply_diversity_shaping(results)
+        results, diversity_movements = _apply_diversity_shaping(
+            results, penalty_multiplier=diversity_penalty_multiplier,
+        )
         if diversity_movements:
             logger.warning(
                 "DEBUG diversity shaping moved %d products: %s",

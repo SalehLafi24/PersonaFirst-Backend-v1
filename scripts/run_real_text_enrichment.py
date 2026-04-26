@@ -105,6 +105,64 @@ def _parse_proposed_values(
     return out
 
 
+# For value_mode=single attributes, the enrichment output occasionally yields
+# multiple candidates above the confidence threshold (the model may emit both a
+# styling axis and a garment shape, e.g. "long_sleeve" + "hoodie").  To honour
+# the value_mode=single contract we collapse to exactly one winner via the
+# rules below.  Generic-styling values lose to structural-shape values when
+# both are present; among remaining candidates the highest confidence wins,
+# with deterministic alphabetical tie-break + an ambiguous_<attr> warning.
+_GENERIC_STYLING_VALUES: dict[str, set[str]] = {
+    "product_type": {"long_sleeve"},
+}
+
+
+def _collapse_to_single(
+    attr: AttributeDefinition,
+    values: list[EnrichedValue],
+    proposed: list[ProposedValue],
+    warnings: list[str],
+) -> tuple[list[EnrichedValue], list[ProposedValue], list[str]]:
+    """Enforce value_mode=single. Returns (values, proposed, warnings)
+    with at most one entry total across values+proposed."""
+    if attr.value_mode != "single":
+        return values, proposed, warnings
+
+    # Combine candidates, tagging origin so we can rebuild the right list.
+    candidates: list[tuple[str, str, float]] = []  # (origin, value, confidence)
+    for v in values:
+        candidates.append(("value", v.value, float(v.confidence)))
+    for p in proposed:
+        candidates.append(("proposed", p.value, float(p.confidence)))
+
+    if len(candidates) <= 1:
+        return values, proposed, warnings
+
+    # Rule 1: drop generic-styling values when a non-generic candidate exists.
+    generics = _GENERIC_STYLING_VALUES.get(attr.name, set())
+    non_generic = [c for c in candidates if c[1] not in generics]
+    if non_generic:
+        candidates = non_generic
+
+    # Rule 2: highest confidence wins; rule 3: alphabetical tie-break + warn.
+    candidates.sort(key=lambda c: (-c[2], c[1]))
+    winner_origin, winner_value, _ = candidates[0]
+    confidence_tied = sum(1 for c in candidates if c[2] == candidates[0][2]) > 1
+    new_warnings = list(warnings)
+    if confidence_tied:
+        warning = f"ambiguous_{attr.name}"
+        if warning not in new_warnings:
+            new_warnings.append(warning)
+
+    new_values: list[EnrichedValue] = []
+    new_proposed: list[ProposedValue] = []
+    if winner_origin == "value":
+        new_values = [v for v in values if v.value == winner_value][:1]
+    else:
+        new_proposed = [p for p in proposed if p.value == winner_value][:1]
+    return new_values, new_proposed, new_warnings
+
+
 def _build_enrichment_output(attr: AttributeDefinition, raw: dict) -> EnrichmentOutput:
     values: list[EnrichedValue] = []
     for item in raw.get("values") or []:
@@ -124,12 +182,14 @@ def _build_enrichment_output(attr: AttributeDefinition, raw: dict) -> Enrichment
         attr.allowed_values,
         value_keys,
     )
+    warnings = list(raw.get("warnings") or [])
+    values, proposed, warnings = _collapse_to_single(attr, values, proposed, warnings)
     return EnrichmentOutput(
         attribute_name=raw.get("attribute_name") or attr.name,
         attribute_class=raw.get("attribute_class") or attr.class_name,
         values=values,
         proposed_values=proposed,
-        warnings=list(raw.get("warnings") or []),
+        warnings=warnings,
         source=EnrichmentSource.TEXT,
     )
 

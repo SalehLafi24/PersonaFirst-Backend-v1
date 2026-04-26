@@ -36,6 +36,7 @@ from app.models.workspace import Workspace
 from app.schemas.attribute_enrichment import AttributeBehavior, AttributeDefinition
 from app.services.affinity_service import generate_affinities_from_purchases
 from app.services.recommendation_service import get_recommendations
+from app.services.signal_strength_service import compute_customer_signal_strength
 
 ROOT = Path(__file__).resolve().parent.parent
 ENRICHED_PATH = ROOT / "products_enriched_real.json"
@@ -253,25 +254,78 @@ def _print_derived_affinities(db, ws_id: int, cust_id: str) -> None:
         print(f"    {attr:18s} {s}")
 
 
+def _top_contrib_attrs(rec, k: int = 3) -> str:
+    """Top-k matched attributes ranked by |score * weight|, with their effect."""
+    sorted_m = sorted(
+        rec.matched_attributes,
+        key=lambda m: -abs(m.score * m.weight),
+    )
+    out = []
+    for m in sorted_m[:k]:
+        eff = round(m.score * m.weight, 3)
+        out.append(f"{m.attribute_id}={m.attribute_value} (s={m.score:.2f}*w={m.weight}={eff:+.3f})")
+    return " | ".join(out) if out else "-"
+
+
+def _penalty_notes(rec) -> str:
+    notes: list[str] = []
+    if rec.compatibility_negative_contribution > 0:
+        # which compat attrs were mismatched / duplicated?
+        roles = [
+            f"{m.attribute_id}={m.attribute_value}"
+            for m in rec.matched_attributes
+            if m.targeting_mode == "compatibility_signal"
+        ]
+        if roles:
+            notes.append(
+                f"compat- {rec.compatibility_negative_contribution:.3f} "
+                f"(complementary duplicate on {','.join(roles)})"
+            )
+        else:
+            notes.append(
+                f"compat- {rec.compatibility_negative_contribution:.3f} "
+                f"(compatibility mismatch — engine penalty pass)"
+            )
+    if rec.contextual_negative_contribution > 0:
+        notes.append(
+            f"ctx- {rec.contextual_negative_contribution:.3f} "
+            f"(contextual mismatch on occasion/activity/environment)"
+        )
+    if rec.low_signal_penalty > 0:
+        notes.append(
+            f"low_signal- {rec.low_signal_penalty:.3f} "
+            f"(weak enrichment coverage)"
+        )
+    return "; ".join(notes) if notes else "-"
+
+
 def _print_top5(rows) -> None:
     if not rows:
         print("    (no recommendations)")
         return
-    print(f"    {'rank':<5}{'product_id':<14}{'final':>9}"
-          f"{'aff':>9}{'compat+':>9}{'compat-':>9}{'ctx-':>9}  matched")
+    header = (
+        f"{'#':<3}{'product_id':<10} {'name':<34} "
+        f"{'final':>8} {'direct':>8} {'rel':>6} {'beh':>6} "
+        f"{'comp+':>7} {'comp-':>7} {'ctx-':>7} {'lowsig-':>8} {'source':<20}"
+    )
+    print(header)
+    print("-" * len(header))
     for i, r in enumerate(rows[:TOP_N], 1):
-        matched_short = ", ".join(
-            f"{m.attribute_id}={m.attribute_value}" for m in r.matched_attributes[:5]
-        )
+        name = (r.name[:32] + "..") if len(r.name) > 34 else r.name
         print(
-            f"    #{i:<4}{r.product_id:<14}"
-            f"{r.recommendation_score:>+9.4f}"
-            f"{r.affinity_contribution:>+9.4f}"
-            f"{r.compatibility_positive_contribution:>+9.4f}"
-            f"{r.compatibility_negative_contribution:>+9.4f}"
-            f"{r.contextual_negative_contribution:>+9.4f}  "
-            f"{matched_short}"
+            f"#{i:<2}{r.product_id:<10} {name:<34} "
+            f"{r.recommendation_score:>+8.3f} "
+            f"{r.direct_score:>+8.3f} "
+            f"{r.relationship_score:>+6.3f} "
+            f"{r.behavioral_score:>+6.3f} "
+            f"{r.compatibility_positive_contribution:>+7.3f} "
+            f"{r.compatibility_negative_contribution:>+7.3f} "
+            f"{r.contextual_negative_contribution:>+7.3f} "
+            f"{r.low_signal_penalty:>+8.3f} "
+            f"{r.recommendation_source:<20}"
         )
+        print(f"     top3_attrs : {_top_contrib_attrs(r, 3)}")
+        print(f"     penalties  : {_penalty_notes(r)}")
 
 
 # ---------------------------------------------------------------------------
@@ -320,6 +374,14 @@ def main() -> None:
             print("DERIVED AFFINITIES (count/max-count via affinity_service):")
             _print_derived_affinities(db, ws.id, cust_id)
             print()
+            sig = compute_customer_signal_strength(db, ws.id, cust_id)
+            print(
+                f"CUSTOMER SIGNAL STRENGTH: {sig.customer_signal_strength:.3f} "
+                f"(purchase_depth={sig.components.purchase_depth:.3f}, "
+                f"attribute_richness={sig.components.attribute_richness:.3f}, "
+                f"behavioral_graph={sig.components.behavioral_graph:.3f})"
+            )
+            print()
             print("TOP 5 RECOMMENDATIONS (via recommendation_service.get_recommendations):")
             recs, _ = get_recommendations(
                 db,
@@ -329,6 +391,7 @@ def main() -> None:
                 attribute_targeting_modes=targeting_modes,
                 attribute_behaviors=behaviors,
                 reference_date=ORDER_DATE,
+                customer_signal_strength=sig.customer_signal_strength,
             )
             _print_top5(recs)
             print()

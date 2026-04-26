@@ -301,5 +301,43 @@
       "negative_scoring_enabled": false
     },
     "targeting_mode": "categorical_affinity"
+  },
+  {
+    "name": "product_type",
+    "object_type": "product",
+    "class_name": "compatibility",
+    "value_mode": "single",
+    "allowed_values": [
+      "bra",
+      "tank",
+      "tee",
+      "long_sleeve",
+      "hoodie",
+      "sweatshirt",
+      "sweater",
+      "cardigan",
+      "jacket",
+      "vest",
+      "shorts",
+      "pants",
+      "leggings",
+      "skirt",
+      "dress"
+    ],
+    "description": "The garment type or category of the product (e.g. bra, tank, tee, hoodie, jacket, leggings).",
+    "evidence_sources": [
+      "text",
+      "image"
+    ],
+    "behavior": {
+      "taxonomy_sensitive": true,
+      "ordered_values": false,
+      "can_propose_values": true,
+      "multi_value_allowed": false,
+      "prefer_conservative_inference": true,
+      "value_order": null,
+      "negative_scoring_enabled": true
+    },
+    "targeting_mode": "compatibility_signal"
   }
 ]

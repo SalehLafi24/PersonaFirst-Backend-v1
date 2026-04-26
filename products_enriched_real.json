@@ -105,6 +105,29 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Airlift Ribbed Jump Start V-Neck Bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras & tops, bras, bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -180,6 +203,30 @@
             "confidence": 0.95,
             "evidence": [
               "name: Tennis Club Sweater Knit Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Tennis Club Sweater Knit Bra",
+              "description: bras & tops, tennis, club, sweater, knit, bra",
               "functional_categories: Bras & Tops",
               "keywords: bra"
             ],
@@ -290,6 +337,30 @@
               "name: Conquer Muscle Tank",
               "functional_categories: Tank Tops",
               "keywords: tank tops, muscle, tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Conquer Muscle Tank",
+              "functional_categories: Tank Tops",
+              "keywords: tank tops, tank",
+              "description: tank tops"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -428,6 +499,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Society Raw Edge Tank",
+              "functional_categories: Tank Tops",
+              "keywords: tank tops, tank",
+              "description: tank tops, tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -524,6 +619,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "long_sleeve",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Triumph Long Sleeve Tee",
+              "description: long sleeves, tops",
+              "functional_categories: Long Sleeves, Tops",
+              "keywords: long sleeves, long, sleeve, tee"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -578,6 +697,30 @@
               "name: Impel Sweatshirt",
               "functional_categories: Sweatshirts & Hoodies",
               "description: sweatshirt, sweatshirts & hoodies"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "sweatshirt",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Impel Sweatshirt",
+              "description: outerwear, impel, sweatshirt, sweatshirts & hoodies",
+              "functional_categories: Sweatshirts & Hoodies",
+              "keywords: sweatshirt"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -697,6 +840,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "sweatshirt",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Triumph Crew Neck Sweatshirt - Unisex",
+              "functional_categories: Sweatshirts & Hoodies",
+              "description: sweatshirt, sweatshirts & hoodies",
+              "keywords: sweatshirt"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -767,6 +934,30 @@
               "name: Triumph Hoodie - Unisex",
               "functional_categories: Jacket & Coverups, Outerwear, Jackets & Coverups",
               "description: outerwear, jacket & coverups"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "hoodie",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Triumph Hoodie - Unisex",
+              "description: outerwear, triumph, hoodie, jacket & coverups, sweatshirts & hoodies",
+              "functional_categories: Sweatshirts & Hoodies",
+              "keywords: hoodie"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -886,6 +1077,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "long_sleeve",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Micro Waffle Fast Break Henley",
+              "functional_categories: Long Sleeves",
+              "description: long sleeves",
+              "keywords: long sleeves"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -962,6 +1177,26 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "bodysuit",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Euphoria Long Sleeve Bodysuit",
+              "functional_categories: Bodysuits",
+              "description: bodysuits, euphoria, long, sleeve, bodysuit, onesies & dresses"
+            ]
+          }
+        ],
+        "warnings": [
+          "no_supported_value_found"
+        ],
         "source": "text"
       }
     }
@@ -1089,6 +1324,31 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "hoodie",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Core Hooded Runner",
+              "description: core, hooded, runner",
+              "keywords: hooded"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
+        "source": "text"
       }
     }
   },
@@ -1152,6 +1412,27 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "onesie",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Airbrush Racing Onesie",
+              "description: airbrush, racing, onesie, onesies & dresses",
+              "functional_categories: Onesies & Dresses",
+              "keywords: onesie"
+            ]
+          }
+        ],
+        "warnings": [
+          "no_supported_value_found"
+        ],
         "source": "text"
       }
     }
@@ -1258,6 +1539,29 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: 'Run It Back Dress'",
+              "description: 'run, dress, onesies & dresses, day-to-night looks'",
+              "functional_categories: 'Onesies & Dresses'"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -1349,6 +1653,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Goddess Ribbed Short Sleeve Dress",
+              "description: goddess, ribbed, short, sleeve, dress, onesies & dresses",
+              "functional_categories: Onesies & Dresses",
+              "keywords: dress"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -1426,6 +1754,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: 'Goddess Ribbed Go-To Dress'",
+              "description: 'goddess, ribbed, dress, onesies & dresses'",
+              "functional_categories: ['Onesies & Dresses']",
+              "keywords: ['dress']"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -1492,6 +1844,30 @@
               "Goddess Ribbed Spaghetti Strap Dress",
               "functional_categories: Onesies & Dresses",
               "spaghetti strap dress"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Goddess Ribbed Spaghetti Strap Dress",
+              "description: goddess, ribbed, spaghetti, strap, dress, onesies & dresses",
+              "functional_categories: Onesies & Dresses",
+              "keywords: dress"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -1597,6 +1973,27 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "bodysuit",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Mesh Plaid Mock Neck Bodysuit",
+              "functional_categories: Bodysuits",
+              "keywords: bodysuits, bodysuit",
+              "description: bodysuits, mesh, plaid, mock, neck, bodysuit"
+            ]
+          }
+        ],
+        "warnings": [
+          "no_supported_value_found"
+        ],
         "source": "text"
       }
     }
@@ -1707,6 +2104,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "hoodie",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Renown Sleeveless Hoodie",
+              "functional_categories: Sweatshirts & Hoodies",
+              "keywords: hoodie",
+              "description: hoodie, sweatshirts & hoodies"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -1772,6 +2193,29 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tee",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Double Take Short Sleeve",
+              "functional_categories: Short Sleeves, Tops",
+              "description: short sleeves, tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -1826,6 +2270,30 @@
               "name: Conquer Reform Mock Neck Long Sleeve",
               "functional_categories: Long Sleeves, Tops",
               "No fleece, thermal, insulated, or mid-layer construction indicators present"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "long_sleeve",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Conquer Reform Mock Neck Long Sleeve",
+              "description: long sleeves, tops, conquer, reform, mock, neck, long, sleeve",
+              "functional_categories: Long Sleeves, Tops",
+              "keywords: long sleeves, tops, long, sleeve"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -1938,6 +2406,30 @@
               "name: Power Move High Impact Bra",
               "functional_categories: Bras & Tops",
               "keywords: bra, bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Power Move High Impact Bra",
+              "description: bras & tops, activities, cardio, train, run, power, move, high, impact, bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bras & tops, bra"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -2096,6 +2588,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Foil Airlift Advantage Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra",
+              "description: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -2159,6 +2675,24 @@
           }
         ],
         "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "polo",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Open-Knit Polo",
+              "description: tops, short sleeves, open, knit, polo",
+              "keywords: polo"
+            ]
+          }
+        ],
         "warnings": [],
         "source": "text"
       }
@@ -2270,6 +2804,29 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "sweater",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Scholar Crew Neck Sweater - Unisex",
+              "description: crew, neck, sweater",
+              "keywords: sweater"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -2337,6 +2894,30 @@
               "Euphoria Long Sleeve Dress",
               "functional_categories: Onesies & Dresses",
               "Day-to-Night Looks"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Euphoria Long Sleeve Dress",
+              "description: euphoria, long, sleeve, dress, onesies & dresses",
+              "functional_categories: Onesies & Dresses",
+              "keywords: dress"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -2458,6 +3039,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 1.0,
+            "evidence": [
+              "name: 'Airlift Winter Warm Cropped Supermoto Tank'",
+              "functional_categories: 'Tank Tops'",
+              "keywords: 'tank tops', 'tank'",
+              "description: 'tank'"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -2536,6 +3141,26 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "button_up_shirt",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Coastal Terry Button Up",
+              "description: tops, short sleeves, coastal, terry, button",
+              "functional_categories: Tops, Short Sleeves"
+            ]
+          }
+        ],
+        "warnings": [
+          "no_supported_value_found"
+        ],
         "source": "text"
       }
     }
@@ -2664,6 +3289,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Run It Back Bra",
+              "description: bras & tops, best sets, activities, barre, pilates, bras, run, bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras & tops, bras, bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -2745,6 +3394,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 0.98,
+            "evidence": [
+              "name: Alosoft All Night Tank",
+              "functional_categories: Tank Tops",
+              "description: bras & tops, tank tops",
+              "keywords: tank tops, tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -2799,6 +3472,29 @@
               "short sleeves",
               "polo",
               "Tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "sweater",
+            "confidence": 0.95,
+            "evidence": [
+              "name: 'Sports Club Sweater Knit Polo'",
+              "description: 'sweater, knit'",
+              "keywords: 'sweater', 'knit'"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -2882,6 +3578,30 @@
               "name: Airbrush Socialite Bandeau",
               "functional_categories: Bras & Tops",
               "keywords: bandeau, bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Airbrush Socialite Bandeau",
+              "functional_categories: Bras & Tops",
+              "keywords: bras & tops",
+              "description: bras & tops"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -2984,6 +3704,26 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [],
+        "proposed_values": [
+          {
+            "value": "onesie",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Alosoft Melody Full Length Bootcut Onesie",
+              "functional_categories: Onesies & Dresses",
+              "keywords: onesie"
+            ]
+          }
+        ],
+        "warnings": [
+          "no_supported_value_found"
+        ],
         "source": "text"
       }
     }
@@ -3096,6 +3836,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: 'Waffle Weekend Escape Bra'",
+              "description: 'bras & tops, best sets, activities, lounge, waffle, weekend, escape, bra'",
+              "functional_categories: 'Bras & Tops'",
+              "keywords: 'bra', 'bras & tops'"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -3150,6 +3914,30 @@
               "name: 'Double Take Long Sleeve'",
               "functional_categories: ['Long Sleeves', 'Tops']",
               "keywords: ['long sleeves', 'tops']"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "long_sleeve",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Double Take Long Sleeve",
+              "description: long sleeves, tops, double, take, long, sleeve",
+              "functional_categories: Long Sleeves, Tops",
+              "keywords: long sleeves"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -3250,6 +4038,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "dress",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Striped Mesh Synergy Long Sleeve Dress",
+              "description: striped, mesh, synergy, long, sleeve, dress, onesies & dresses",
+              "functional_categories: Onesies & Dresses",
+              "keywords: dress"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -3306,6 +4118,30 @@
               "name: Block Pant",
               "functional_categories: Pants, Bottoms",
               "description: pants, bottoms"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "pants",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Block Pant",
+              "description: pants, bottoms, block, pant, on-trend trousers",
+              "functional_categories: Pants, Bottoms, On-Trend Trousers",
+              "keywords: pants, bottoms"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -3444,6 +4280,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Airlift Strength Bra",
+              "description: bras & tops, best sets, activities, yoga, pilates, airlift, strength, bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -3569,6 +4429,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Wellness Bra",
+              "description: bras & tops, activities, yoga, run, wellness, bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -3677,6 +4561,31 @@
         ],
         "proposed_values": [],
         "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "cardigan",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Scholar Cardigan Sweater - Unisex",
+              "description: best sets, activities, lounge, outerwear, cardigan, sweater, sweatshirts & hoodies",
+              "keywords: cardigan"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected"
+        ],
         "source": "text"
       }
     }
@@ -3838,6 +4747,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Triumph Tank",
+              "description: tank tops, performance, yoga, train, run, activity, activities, cardio, tops, triumph, tank",
+              "functional_categories: Tank Tops",
+              "keywords: tank tops, tank"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -3956,6 +4889,33 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Seamless Ribbed Favorite Bra Tank",
+              "description: bras & tops, activities, yoga, pilates, seamless, ribbed, favorite, bra, tank",
+              "functional_categories: Bras & Tops",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [
+          "multiple_strong_values_detected",
+          "ambiguous_product_type"
+        ],
+        "source": "text"
       }
     }
   },
@@ -4036,6 +4996,29 @@
               "product_id: W9740R",
               "name: Molded Engage Bra",
               "functional_categories: Train",
+              "keywords: bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Molded Engage Bra",
+              "description: molded, engage, bra",
               "keywords: bra"
             ],
             "reasoning_mode": "suitability",
@@ -4195,6 +5178,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "tank",
+            "confidence": 1.0,
+            "evidence": [
+              "name: The Triumph Muscle Tank",
+              "functional_categories: Tank Tops",
+              "keywords: tank tops, tank",
+              "description: tank tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -4313,6 +5320,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Alosoft Head Start Bra",
+              "description: bras & tops, best sets, activities, yoga, pilates, alosoft, head, start, bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra, bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -4405,6 +5436,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Cashmere Jet Set Bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras, bra",
+              "description: bras & tops, best sets, bras, cashmere, jet, set, bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -4459,6 +5514,30 @@
               "Cashmere Reform Long Sleeve",
               "functional_categories: Tops, Long Sleeves",
               "No mid-layer construction indicators (fleece, thermal, insulated) present"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "long_sleeve",
+            "confidence": 0.95,
+            "evidence": [
+              "name: Cashmere Reform Long Sleeve - Unisex",
+              "description: tops, long sleeves, cashmere, reform, long, sleeve",
+              "functional_categories: Tops, Long Sleeves",
+              "keywords: long sleeves, long, sleeve"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -4566,6 +5645,30 @@
               "name: Seamless Luxe Terry Cuddle Bra",
               "functional_categories: Bras & Tops, Bras",
               "keywords: bras & tops, bras"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Seamless Luxe Terry Cuddle Bra",
+              "description: bras & tops, cherry cola, bras, seamless, luxe, terry, cuddle, bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras & tops, bras, bra"
             ],
             "reasoning_mode": "suitability",
             "source": "text",
@@ -4706,6 +5809,30 @@
         "proposed_values": [],
         "warnings": [],
         "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Alosoft Molded Showcase Bra",
+              "functional_categories: Bras & Tops, Bras",
+              "keywords: bras, bra",
+              "description: bras & tops, bras, molded, showcase, bra"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
       }
     }
   },
@@ -4800,6 +5927,30 @@
             "confidence": 0.95,
             "evidence": [
               "name: Cashmere Plush Waffle V-Neck Bra",
+              "functional_categories: Bras & Tops",
+              "keywords: bra, bras & tops"
+            ],
+            "reasoning_mode": "suitability",
+            "source": "text",
+            "contributing_sources": [
+              "text"
+            ]
+          }
+        ],
+        "proposed_values": [],
+        "warnings": [],
+        "source": "text"
+      },
+      "product_type": {
+        "attribute_name": "product_type",
+        "attribute_class": "compatibility",
+        "values": [
+          {
+            "value": "bra",
+            "confidence": 1.0,
+            "evidence": [
+              "name: Cashmere Plush Waffle V-Neck Bra",
+              "description: bras & tops, activities, lounge, toasted almond, cashmere, plush, waffle, neck, bra",
               "functional_categories: Bras & Tops",
               "keywords: bra, bras & tops"
             ],
