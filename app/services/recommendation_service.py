@@ -1,4 +1,5 @@
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,14 @@ _CONTEXTUAL_MISMATCH_ATTRS: frozenset[str] = frozenset({
     "occasion", "activity", "environment",
 })
 _CONTEXTUAL_MISMATCH_MULTIPLIER: float = 0.3
+
+# Multi-value direct-score normalization. For attributes listed here, each
+# categorical_affinity contribution from this product is divided by sqrt(N)
+# where N is the count of values the product carries for that attribute.
+# Dampens tag-stacking so a product tagged with all values doesn't accumulate
+# a contribution proportional to its tag density. Weights and affinities are
+# untouched; only the per-product accumulated contribution is normalized.
+_MULTI_VALUE_NORMALIZED_ATTRS: frozenset[str] = frozenset({"activity_type"})
 
 # Complementary compatibility attributes — inverted scoring logic.
 # Normal compatibility: match = positive, mismatch = negative.
@@ -741,6 +750,13 @@ def get_recommendations(
         # descriptive_metadata  → metadata_ignored: not scored
 
         if affinity_map:
+            # Per-attribute value counts on this product. Used to divide
+            # multi-value direct contributions by sqrt(N) for attributes in
+            # _MULTI_VALUE_NORMALIZED_ATTRS.
+            value_counts_by_attr: dict[str, int] = defaultdict(int)
+            for attr in attrs_by_product[product.id]:
+                value_counts_by_attr[attr.attribute_id] += 1
+
             for attr in attrs_by_product[product.id]:
                 key = (attr.attribute_id, attr.attribute_value)
                 if key not in affinity_map:
@@ -752,7 +768,12 @@ def get_recommendations(
 
                 if mode == "categorical_affinity":
                     # Soft preference signal — accumulates into direct_score
-                    affinity_contribution += aff_score * weight
+                    contribution = aff_score * weight
+                    if attr.attribute_id in _MULTI_VALUE_NORMALIZED_ATTRS:
+                        n = value_counts_by_attr[attr.attribute_id]
+                        if n > 1:
+                            contribution /= math.sqrt(n)
+                    affinity_contribution += contribution
                     matched.append(MatchedAttribute(
                         attribute_id=attr.attribute_id,
                         attribute_value=attr.attribute_value,
