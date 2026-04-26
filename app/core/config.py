@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     debug: bool = False
     database_url: str = "postgresql://postgres:postgres@localhost:5432/personafirst"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 settings = Settings()

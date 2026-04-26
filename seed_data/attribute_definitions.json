@@ -172,7 +172,11 @@
     "object_type": "product",
     "class_name": "contextual_semantic",
     "value_mode": "single",
-    "allowed_values": [],
+    "allowed_values": [
+      "low",
+      "moderate",
+      "high"
+    ],
     "description": "The level of physical intensity the product is suited for or associated with.",
     "evidence_sources": [
       "text",
@@ -224,7 +228,12 @@
     "object_type": "product",
     "class_name": "contextual_semantic",
     "value_mode": "multi",
-    "allowed_values": [],
+    "allowed_values": [
+      "yoga",
+      "lounge",
+      "running",
+      "training"
+    ],
     "description": "The primary workout or movement type the product is designed for or associated with.",
     "evidence_sources": [
       "text",

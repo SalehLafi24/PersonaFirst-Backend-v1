@@ -336,7 +336,7 @@ CANONICAL VOCABULARY (workout_intensity)
 --------------------------------
 - The canonical vocabulary for workout_intensity is exactly:
       low | moderate | high
-- Every proposed value MUST be exactly one of: low, moderate, high.
+- Every value or proposed value MUST be exactly one of: low, moderate, high.
 - Do not return synonyms, adjacent terms, or scale variants. Map them to
   the closest canonical level:
       "light", "gentle", "easy", "restorative"  ->  low
@@ -346,14 +346,45 @@ CANONICAL VOCABULARY (workout_intensity)
   "moderate to high". If the signal is genuinely between two canonical
   levels, choose the SINGLE best-supported level and add the warning:
       "ambiguous_intensity_signal"
-- If evidence is weak or absent, return proposed_values = [] rather than
+- If evidence is weak or absent, return an empty output rather than
   guessing."""
 
 
+_WORKOUT_INTENSITY_CARDINALITY_BLOCK = """\
+--------------------------------
+SINGLE-VALUE ENFORCEMENT (workout_intensity)
+--------------------------------
+- Return EXACTLY ONE workout_intensity value per product. Never more than
+  one, and never zero when evidence is sufficient.
+- This cardinality applies to the combined output: across `values` and
+  `proposed_values`, there must be at most ONE entry for this attribute.
+- If multiple intensity levels are plausibly supported, choose the SINGLE
+  best-supported level and emit only that one.
+- If ambiguity exists between two adjacent levels (e.g. evidence supports
+  both "low" and "moderate"), select the level with the highest-confidence
+  underlying evidence and add the warning:
+      "ambiguous_intensity_signal"
+- Do NOT return multiple intensity values for the same product.
+- Do NOT emit compound or ranged outputs (already forbidden by the
+  atomicity rules; reinforced here).
+- If no intensity level is clearly supported, return an empty output with
+  warning "no_supported_value_found"."""
+
+
 def _contextual_semantic_vocabulary_block(attr: AttributeDefinition) -> str:
-    """Return an attribute-specific canonical-vocabulary block, or empty string."""
+    """Return attribute-specific override blocks, or empty string.
+
+    For workout_intensity this injects both the canonical vocabulary block
+    and the single-value cardinality block. Other attributes get no extra
+    sections here.
+    """
     if attr.name == "workout_intensity":
-        return "\n\n" + _WORKOUT_INTENSITY_VOCAB_BLOCK
+        return (
+            "\n\n"
+            + _WORKOUT_INTENSITY_VOCAB_BLOCK
+            + "\n\n"
+            + _WORKOUT_INTENSITY_CARDINALITY_BLOCK
+        )
     return ""
 
 
@@ -478,6 +509,48 @@ FINAL RULE
 Return JSON only. No explanation."""
 
 
+_LAYERING_ROLE_CARDINALITY_BLOCK = """\
+--------------------------------
+SINGLE-VALUE ENFORCEMENT (layering_role)
+--------------------------------
+- Return EXACTLY ONE layering_role value per product. Never more than one.
+- This cardinality applies to the combined output: across `values` and
+  `proposed_values`, there must be at most ONE entry for this attribute.
+- This OVERRIDES the general class behavior that permits multiple values
+  — for layering_role specifically, one role is the final answer.
+- Allowed values are: base | mid | outer.
+- Choose the DOMINANT role based on product type:
+      bra, tank, tee, short-sleeve top, bodysuit, dress, legging  ->  base
+      long-sleeve tee, henley, lightweight knit                    ->  base (default)
+      sweatshirt, fleece pullover, thermal mid-layer               ->  mid
+      jacket, hoodie, parka, outerwear, coverup                    ->  outer
+- LONG-SLEEVE TEE RULE: default to "base" UNLESS there is strong textual
+  evidence of mid-layer construction, such as "fleece", "thermal",
+  "insulated", "waffle thermal", "brushed fleece", "sherpa lining",
+  or similar insulation cues. Absent such evidence, a long-sleeve tee
+  is a base layer.
+- If the evidence genuinely splits between two roles, select the role
+  with the HIGHER-confidence underlying evidence and add the warning:
+      "ambiguous_layering_role"
+- Do NOT return multiple layering_role values for the same product.
+- Do NOT emit compound or ranged values (e.g. "base/mid", "base to mid").
+- If no role is clearly supported, return an empty output with warning
+  "no_supported_value_found"."""
+
+
+def _compatibility_attribute_overrides_block(attr: AttributeDefinition) -> str:
+    """Return attribute-specific override blocks for compatibility-class prompts.
+
+    Injected after CLASS BEHAVIOR so it can override the general permission
+    to return multiple values — needed because layering_role must be
+    single-valued while other compatibility attributes may legitimately
+    return multiple values.
+    """
+    if attr.name == "layering_role":
+        return "\n\n" + _LAYERING_ROLE_CARDINALITY_BLOCK
+    return ""
+
+
 def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
     """
     Infers suitability or compatibility. Avoids unsupported claims.
@@ -489,6 +562,7 @@ def _build_compatibility_prompt(attr: AttributeDefinition, obj: dict) -> str:
     else:
         allowed_block = "(none provided)"
 
+    overrides_block = _compatibility_attribute_overrides_block(attr)
     obj_json = json.dumps(_normalize_obj(obj), indent=2, ensure_ascii=False)
 
     return f"""\
@@ -523,7 +597,7 @@ CLASS BEHAVIOR
 - Use semantic and contextual signals from the object data, not literal-text matching alone.
 - Confidence must reflect the strength of evidence, not the assumed compatibility.
 - If multiple values are independently and strongly supported, you may return more than one.
-- If signals are weak or ambiguous, return no values.
+- If signals are weak or ambiguous, return no values.{overrides_block}
 
 --------------------------------
 OBJECT DATA
