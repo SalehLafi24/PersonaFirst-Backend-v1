@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>PersonaFirst - Taxonomy Admin</title>
+<style>
+  body { font-family: -apple-system, system-ui, Arial, sans-serif; margin: 0; padding: 0;
+         background: #f6f6f8; color: #1d1d1f; font-size: 13px; }
+  header { background: #20232a; color: #fff; padding: 10px 16px; }
+  header h1 { font-size: 14px; margin: 0; font-weight: 600; }
+  .controls { background: #fff; padding: 10px 16px; border-bottom: 1px solid #ddd;
+              display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .controls label { font-size: 12px; color: #555; }
+  select, input { padding: 5px 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 3px; }
+  .tabs { display: flex; gap: 0; background: #fff; border-bottom: 1px solid #ddd; padding: 0 16px; }
+  .tab { padding: 10px 16px; cursor: pointer; border-bottom: 2px solid transparent;
+         user-select: none; }
+  .tab.active { border-bottom-color: #20232a; font-weight: 600; }
+  .tab-content { display: none; padding: 16px; }
+  .tab-content.active { display: block; }
+  .filters { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee;
+           font-size: 12px; vertical-align: top; }
+  th { background: #f0f0f3; font-weight: 600; position: sticky; top: 0; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.code { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .pill { display: inline-block; padding: 2px 6px; border-radius: 8px;
+          font-size: 11px; font-weight: 600; }
+  .pill.assigned { background: #d1f0d6; color: #15601e; }
+  .pill.pending  { background: #ffe6b3; color: #8a4a00; }
+  .pill.missing  { background: #ffd6d6; color: #9b1c1c; }
+  .pill.approved { background: #d1f0d6; color: #15601e; }
+  .pill.merged   { background: #ddd; color: #555; }
+  .pill.rejected { background: #ffd6d6; color: #9b1c1c; }
+  .pill.ready    { background: #cfe7ff; color: #14457e; }
+  .pager { margin-top: 8px; display: flex; gap: 8px; align-items: center; }
+  .metric { display: inline-block; background: #fff; padding: 12px 16px; margin: 6px;
+            border-radius: 4px; border: 1px solid #e5e5ea; min-width: 160px; }
+  .metric .label { font-size: 11px; color: #666; }
+  .metric .value { font-size: 22px; font-weight: 600; margin-top: 2px;
+                   font-variant-numeric: tabular-nums; }
+  small.dim { color: #888; }
+  small.evid { color: #555; font-style: italic; }
+  #errbar { display: none; background: #ffd6d6; color: #9b1c1c;
+            padding: 8px 16px; font-family: ui-monospace, Menlo, Consolas, monospace;
+            font-size: 12px; white-space: pre-wrap; border-bottom: 1px solid #d49a9a; }
+  #errbar.visible { display: block; }
+  #status { color: #888; font-size: 11px; margin-left: auto; }
+  td.actions { white-space: nowrap; }
+  button.act { font-size: 11px; padding: 3px 8px; margin-right: 4px;
+               border: 1px solid #ccc; background: #fff; cursor: pointer;
+               border-radius: 3px; }
+  button.act:disabled { opacity: 0.35; cursor: not-allowed; }
+  button.act-approve:not(:disabled) { background: #d1f0d6; border-color: #99c79f; color: #15601e; }
+  button.act-reject:not(:disabled)  { background: #ffd6d6; border-color: #d49a9a; color: #9b1c1c; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PersonaFirst - Taxonomy Admin (read-only)</h1>
+</header>
+<div id=errbar></div>
+<div class=controls>
+  <label>Workspace</label>
+  <select id=ws><option value="">(loading...)</option></select>
+  <label>Attribute</label>
+  <input id=attr value="product_type" size=18>
+  <button onclick="refreshAll()">Refresh</button>
+  <small class=dim id=ctxinfo></small>
+  <small id=status></small>
+</div>
+<div class=tabs>
+  <div class="tab active" data-tab=aggregates>Aggregates</div>
+  <div class=tab data-tab=allowed>Allowed Values</div>
+  <div class=tab data-tab=products>Products</div>
+  <div class=tab data-tab=coverage>Coverage</div>
+</div>
+
+<div id=aggregates class="tab-content active">
+  <div class=filters>
+    <label>Status</label>
+    <select id=agg-status>
+      <option value=>(any)</option>
+      <option>pending</option>
+      <option>approved</option>
+      <option>merged</option>
+      <option>rejected</option>
+    </select>
+    <label>Search</label>
+    <input id=agg-search placeholder="cluster_key / canonical_value" size=22>
+    <button onclick="loadAggregates()">Apply</button>
+    <small class=dim id=agg-count></small>
+  </div>
+  <table id=agg-table>
+    <thead><tr>
+      <th>cluster_key</th><th>canonical</th><th class=num>count</th>
+      <th class=num>distinct</th><th class=num>avg_conf</th>
+      <th>status</th><th>promoted_to</th><th>ready</th>
+      <th>sample evidence</th><th>sample products</th><th>actions</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class=pager>
+    <button onclick="aggPage(-1)">&laquo; prev</button>
+    <span id=agg-pageinfo></span>
+    <button onclick="aggPage(1)">next &raquo;</button>
+  </div>
+</div>
+
+<div id=allowed class=tab-content>
+  <table id=allowed-table>
+    <thead><tr>
+      <th>attribute_name</th><th>value</th><th>is_active</th><th>created_at</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div id=products class=tab-content>
+  <div class=filters>
+    <label>Status</label>
+    <select id=prod-status>
+      <option value=>(any)</option>
+      <option>assigned</option>
+      <option>pending</option>
+      <option>missing</option>
+    </select>
+    <label>Search</label>
+    <input id=prod-search placeholder="product_id / name / sku" size=22>
+    <button onclick="loadProducts()">Apply</button>
+    <small class=dim id=prod-count></small>
+  </div>
+  <table id=prod-table>
+    <thead><tr>
+      <th>product_id</th><th>name</th>
+      <th>assigned product_type</th>
+      <th>proposed product_type</th>
+      <th>conf</th>
+      <th>status</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  <div class=pager>
+    <button onclick="prodPage(-1)">&laquo; prev</button>
+    <span id=prod-pageinfo></span>
+    <button onclick="prodPage(1)">next &raquo;</button>
+  </div>
+</div>
+
+<div id=coverage class=tab-content>
+  <div id=cov-metrics></div>
+</div>
+
+<script>
+// Immediate beacon: if you see "[js started]" in the status bar but the
+// workspace dropdown stays at "(loading...)", the script is running but
+// something failed during loadWorkspaces -- check the red banner / console.
+// If you DON'T see "[js started]" at all, the script isn't being parsed
+// (browser blocked it, stale cache, or uvicorn not serving the new code).
+try {
+  const _s = document.getElementById("status");
+  if (_s) _s.textContent = "[js started] @ " + new Date().toISOString();
+} catch (e) {}
+
+const PAGE = 50;
+let aggOffset = 0, prodOffset = 0;
+
+function showError(msg) {
+  const el = document.getElementById("errbar");
+  el.textContent = "[error] " + msg;
+  el.classList.add("visible");
+  console.error(msg);
+}
+function clearError() {
+  const el = document.getElementById("errbar");
+  el.textContent = "";
+  el.classList.remove("visible");
+}
+function setStatus(msg) {
+  document.getElementById("status").textContent = msg || "";
+}
+
+// Surface any uncaught JS errors visibly so they don't fail silently.
+window.addEventListener("error", e => showError("JS: " + (e.message || e)));
+window.addEventListener("unhandledrejection",
+  e => showError("Promise: " + (e.reason && e.reason.message || e.reason || "unknown")));
+
+async function api(path, params = {}) {
+  const url = new URL("/admin/taxonomy/api/" + path, window.location.origin);
+  for (const k in params) if (params[k] !== "" && params[k] != null) url.searchParams.set(k, params[k]);
+  let r;
+  try {
+    r = await fetch(url);
+  } catch (e) {
+    throw new Error("network error fetching " + url.pathname + url.search + ": " + e.message);
+  }
+  if (!r.ok) {
+    let body = "";
+    try { body = await r.text(); } catch {}
+    throw new Error("HTTP " + r.status + " " + url.pathname + url.search + " -- " + body.slice(0, 200));
+  }
+  return r.json();
+}
+
+function ws()   { return document.getElementById("ws").value; }
+function attr() { return document.getElementById("attr").value; }
+
+async function loadWorkspaces() {
+  setStatus("loading workspaces...");
+  try {
+    const list = await api("workspaces");
+    const sel = document.getElementById("ws");
+    sel.innerHTML = "";
+    if (!list.length) {
+      sel.innerHTML = '<option value="">(no workspaces)</option>';
+      showError("workspaces endpoint returned an empty list");
+      return;
+    }
+    for (const w of list) {
+      const opt = document.createElement("option");
+      opt.value = w.id;
+      opt.textContent = `${w.slug} (id=${w.id})`;
+      sel.appendChild(opt);
+    }
+    // Default to mumzworld_v3_sample if present, else first.
+    const v3 = list.find(w => w.slug === "mumzworld_v3_sample");
+    sel.value = (v3 || list[0]).id;
+    setStatus(`${list.length} workspaces loaded`);
+    clearError();
+    refreshAll();
+  } catch (e) {
+    showError("loadWorkspaces failed: " + e.message);
+    setStatus("");
+  }
+}
+
+async function loadAggregates() {
+  if (!ws()) return;
+  let data;
+  try {
+    data = await api("aggregates", {
+      workspace_id: ws(), attribute: attr(),
+      status: document.getElementById("agg-status").value,
+      search: document.getElementById("agg-search").value,
+      offset: aggOffset, limit: PAGE,
+    });
+  } catch (e) { showError("aggregates: " + e.message); return; }
+  const tbody = document.querySelector("#agg-table tbody");
+  tbody.innerHTML = "";
+  for (const a of data.items) {
+    const tr = document.createElement("tr");
+    const evid = (a.sample_evidence || []).map(e => `* ${e}`).join("<br>");
+    const samp = (a.sample_product_ids || []).slice(0,3).join(", ");
+    const readyPill = a.ready ? '<span class="pill ready">ready</span>' : '';
+    const isPending = a.status === "pending";
+    const approveDisabled = !(isPending && a.ready);
+    const rejectDisabled  = !isPending;
+    const approveBtn = `<button class="act act-approve" data-id="${a.id}"
+        data-key="${a.cluster_key}" data-count="${a.count}"
+        data-dist="${a.distinct_products}" data-conf="${a.avg_conf}"
+        ${approveDisabled ? "disabled" : ""}>Approve</button>`;
+    const rejectBtn = `<button class="act act-reject" data-id="${a.id}"
+        data-key="${a.cluster_key}" data-count="${a.count}"
+        data-dist="${a.distinct_products}" data-conf="${a.avg_conf}"
+        ${rejectDisabled ? "disabled" : ""}>Reject</button>`;
+    tr.innerHTML = `
+      <td class=code>${a.cluster_key}</td>
+      <td class=code>${a.canonical_value}</td>
+      <td class=num>${a.count}</td>
+      <td class=num>${a.distinct_products}</td>
+      <td class=num>${a.avg_conf.toFixed(3)}</td>
+      <td><span class="pill ${a.status}">${a.status}</span></td>
+      <td class=code>${a.promoted_to_allowed_value || ""}</td>
+      <td>${readyPill}</td>
+      <td><small class=evid>${evid}</small></td>
+      <td><small class=dim>${samp}</small></td>
+      <td class=actions>${approveBtn} ${rejectBtn}</td>`;
+    tbody.appendChild(tr);
+  }
+  // Wire up newly-rendered action buttons.
+  tbody.querySelectorAll(".act-approve").forEach(b =>
+    b.addEventListener("click", () => onApprove(b.dataset)));
+  tbody.querySelectorAll(".act-reject").forEach(b =>
+    b.addEventListener("click", () => onReject(b.dataset)));
+  document.getElementById("agg-count").textContent =
+    `${data.total} aggregates (thresholds: count>=${data.thresholds.min_count}, ` +
+    `distinct>=${data.thresholds.min_distinct}, avg_conf>=${data.thresholds.min_avg_conf})`;
+  document.getElementById("agg-pageinfo").textContent =
+    `${aggOffset + 1}-${Math.min(aggOffset + PAGE, data.total)} of ${data.total}`;
+}
+function aggPage(dir) {
+  aggOffset = Math.max(0, aggOffset + dir * PAGE);
+  loadAggregates();
+}
+
+async function postAction(verb, ds) {
+  // Browser confirm with the cluster details -- required by the spec.
+  const lines = [
+    `${verb.toUpperCase()} aggregate?`,
+    `cluster_key      : ${ds.key}`,
+    `count            : ${ds.count}`,
+    `distinct_products: ${ds.dist}`,
+    `avg_conf         : ${(+ds.conf).toFixed(3)}`,
+    `workspace        : id=${ws()}`,
+    `attribute        : ${attr()}`,
+  ];
+  if (!confirm(lines.join("
+"))) return;
+  const url = new URL(
+    `/admin/taxonomy/api/aggregates/${ds.id}/${verb}`,
+    window.location.origin
+  );
+  url.searchParams.set("workspace_id", ws());
+  url.searchParams.set("attribute", attr());
+  const r = await fetch(url, { method: "POST" });
+  if (!r.ok) {
+    const body = await r.text();
+    alert(`Action failed (${r.status}): ${body}`);
+    return;
+  }
+  // Refresh ALL four tabs so the user sees the consequence everywhere.
+  refreshAll();
+}
+function onApprove(ds) { postAction("approve", ds); }
+function onReject(ds)  { postAction("reject",  ds); }
+
+async function loadAllowed() {
+  if (!ws()) return;
+  let data;
+  try {
+    data = await api("allowed_values", {
+      workspace_id: ws(), attribute: attr(),
+    });
+  } catch (e) { showError("allowed_values: " + e.message); return; }
+  const tbody = document.querySelector("#allowed-table tbody");
+  tbody.innerHTML = "";
+  for (const r of data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class=code>${r.attribute_name}</td>
+      <td class=code>${r.value}</td>
+      <td>${r.is_active}</td>
+      <td><small>${r.created_at || ""}</small></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+async function loadProducts() {
+  if (!ws()) return;
+  let data;
+  try {
+    data = await api("products", {
+      workspace_id: ws(), attribute: attr(),
+      status: document.getElementById("prod-status").value,
+      search: document.getElementById("prod-search").value,
+      offset: prodOffset, limit: PAGE,
+    });
+  } catch (e) { showError("products: " + e.message); return; }
+  const tbody = document.querySelector("#prod-table tbody");
+  tbody.innerHTML = "";
+  for (const p of data.items) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class=code>${p.product_id}</td>
+      <td>${(p.name || "").slice(0,80)}</td>
+      <td class=code>${p.assigned_value || ""}</td>
+      <td class=code>${p.proposed_value || ""}</td>
+      <td class=num>${p.proposed_confidence != null ? p.proposed_confidence.toFixed(2) : ""}</td>
+      <td><span class="pill ${p.status}">${p.status}</span></td>`;
+    tbody.appendChild(tr);
+  }
+  document.getElementById("prod-count").textContent = `${data.total} products`;
+  document.getElementById("prod-pageinfo").textContent =
+    `${prodOffset + 1}-${Math.min(prodOffset + PAGE, data.total)} of ${data.total}`;
+}
+function prodPage(dir) {
+  prodOffset = Math.max(0, prodOffset + dir * PAGE);
+  loadProducts();
+}
+
+async function loadCoverage() {
+  if (!ws()) return;
+  let c;
+  try {
+    c = await api("coverage", {
+      workspace_id: ws(), attribute: attr(),
+    });
+  } catch (e) { showError("coverage: " + e.message); return; }
+  const el = document.getElementById("cov-metrics");
+  const fmt = (label, val) =>
+    `<div class=metric><div class=label>${label}</div><div class=value>${val}</div></div>`;
+  el.innerHTML =
+    fmt("total products", c.total_products) +
+    fmt("with " + c.attribute, c.products_with_attribute) +
+    fmt("coverage %", c.coverage_pct + "%") +
+    fmt("approved values", c.approved_value_count) +
+    fmt("pending aggregates", c.pending_aggregate_count) +
+    fmt("long tail (count==1)", c.long_tail_count) +
+    fmt("missing", c.missing_count);
+  document.getElementById("ctxinfo").textContent =
+    `${c.total_products} products | ${c.products_with_attribute} assigned | ` +
+    `${c.coverage_pct}% coverage`;
+}
+
+function refreshAll() {
+  aggOffset = 0; prodOffset = 0;
+  loadAggregates(); loadAllowed(); loadProducts(); loadCoverage();
+}
+
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  document.getElementById(t.dataset.tab).classList.add("active");
+}));
+
+document.getElementById("ws").addEventListener("change", refreshAll);
+document.getElementById("attr").addEventListener("change", refreshAll);
+
+loadWorkspaces();
+</script>
+</body>
+</html>

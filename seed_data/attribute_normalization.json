@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "attributes": {
+    "age_group": {
+      "split_chars": "|;,/",
+      "case_sensitive": false,
+      "trim_whitespace": true,
+      "unmatched_policy": "discard",
+      "synonyms": {
+        "newborn": [
+          "newborn", "0-3 months", "0-3m"
+        ],
+        "infant": [
+          "infant", "infants", "baby", "babies",
+          "baby 0-2 years", "0-2 years", "0-2y",
+          "0-12 months", "0-12m"
+        ],
+        "toddler": [
+          "toddler", "toddlers",
+          "toddler 2-4 years", "2-4 years", "2-4y",
+          "12-36 months", "12-36m"
+        ],
+        "kids": [
+          "kids", "child", "children",
+          "adventurers 5-7 years", "5-7 years", "5-7y",
+          "school age", "school"
+        ],
+        "teen": [
+          "teen", "teens", "tween", "tweens",
+          "pioneers 8+", "8+ years", "8+y", "8+"
+        ],
+        "adult": [
+          "adult", "adults",
+          "mom", "mother", "father", "parent"
+        ],
+        "universal": [
+          "universal", "all ages", "any age"
+        ]
+      },
+      "discard_patterns": [
+        "^mumz$",
+        "^dadz$",
+        "^unisex$",
+        "^male$",
+        "^female$"
+      ]
+    },
+    "brand": {
+      "split_chars": "",
+      "case_sensitive": false,
+      "trim_whitespace": true,
+      "collapse_whitespace": true,
+      "strip_trailing_punctuation": true,
+      "strip_suffix_words": [
+        "inc",
+        "ltd",
+        "llc",
+        "co",
+        "company",
+        "corp",
+        "corporation"
+      ],
+      "unmatched_policy": "propose",
+      "synonyms": {},
+      "discard_patterns": []
+    },
+    "gender": {
+      "split_chars": "|;,/",
+      "case_sensitive": false,
+      "trim_whitespace": true,
+      "collapse_whitespace": true,
+      "unmatched_policy": "discard",
+      "synonyms": {
+        "male": [
+          "male",
+          "boy",
+          "boys",
+          "for him",
+          "men",
+          "mens",
+          "baby boy"
+        ],
+        "female": [
+          "female",
+          "girl",
+          "girls",
+          "for her",
+          "women",
+          "womens",
+          "baby girl"
+        ],
+        "unisex": [
+          "unisex",
+          "kids",
+          "children",
+          "baby",
+          "all",
+          "all genders"
+        ]
+      },
+      "discard_patterns": []
+    }
+  }
+}

@@ -1,0 +1,1351 @@
+[
+  {
+    "cluster_key": "art_supply",
+    "count": 16,
+    "distinct": 16,
+    "avg_conf": 0.935,
+    "sample_pids": [
+      "30474891-781661452550",
+      "35374639-LT500G",
+      "AMS-21004",
+      "BOX-HAMA8472",
+      "GIC-MRU_17400023037",
+      "GIC-MSP_16928",
+      "HPG-ST-2200-LC24",
+      "IB-6063482"
+    ],
+    "sample_evidence": [
+      "DIY Acrylic Pouring Paint",
+      "Poster Paint",
+      "Acrylic Studio Paint",
+      "arts & crafts",
+      "arts & crafts"
+    ],
+    "all_pids": [
+      "30474891-781661452550",
+      "35374639-LT500G",
+      "AMS-21004",
+      "BOX-HAMA8472",
+      "GIC-MRU_17400023037",
+      "GIC-MSP_16928",
+      "HPG-ST-2200-LC24",
+      "IB-6063482",
+      "JDK-DK711VAL70889",
+      "JDK-DK711VAL72087",
+      "KOJ-200476",
+      "MBN-MBN-3700847800692",
+      "NGT-MX-FMB70X100-Y",
+      "RME-PC00522",
+      "TIFL-94-3F68-T7PC",
+      "TT-TM-411111"
+    ]
+  },
+  {
+    "cluster_key": "skincare",
+    "count": 13,
+    "distinct": 13,
+    "avg_conf": 0.942,
+    "sample_pids": [
+      "27120845-FS-F2BLUSRB",
+      "AEW-BL8700",
+      "AMF-CVD780",
+      "BBFL-22458",
+      "BBL-30101936",
+      "BPD-25",
+      "BTB-849980040619",
+      "BTB-8809417490020"
+    ],
+    "sample_evidence": [
+      "skin care",
+      "skin care",
+      "skin care",
+      "Washing Face Cream",
+      "Lotion"
+    ],
+    "all_pids": [
+      "27120845-FS-F2BLUSRB",
+      "AEW-BL8700",
+      "AMF-CVD780",
+      "BBFL-22458",
+      "BBL-30101936",
+      "BPD-25",
+      "BTB-849980040619",
+      "BTB-8809417490020",
+      "GI3600042503",
+      "HSTL-6291100950010",
+      "HZG-SL312",
+      "LAMF-NCLASS22",
+      "MI-SCVZSXXXFAC77071"
+    ]
+  },
+  {
+    "cluster_key": "makeup",
+    "count": 12,
+    "distinct": 12,
+    "avg_conf": 0.962,
+    "sample_pids": [
+      "ADE-28715",
+      "ALP-MOD-LG13092-0",
+      "BBL-96110904",
+      "BTB-693667330155",
+      "BTB-CB-794712213840",
+      "CGT-731509606744",
+      "DH-3715748390009-COCOA",
+      "FAH-8809581487949"
+    ],
+    "sample_evidence": [
+      "make up",
+      "make up",
+      "Lip Liner",
+      "Liquid Lipstick",
+      "Foundation"
+    ],
+    "all_pids": [
+      "ADE-28715",
+      "ALP-MOD-LG13092-0",
+      "BBL-96110904",
+      "BTB-693667330155",
+      "BTB-CB-794712213840",
+      "CGT-731509606744",
+      "DH-3715748390009-COCOA",
+      "FAH-8809581487949",
+      "MI-MPNVNXXXNLC73055",
+      "MI-MPORLNLQNCE90246",
+      "MSR-009612",
+      "MSR-CO_CFSSB3"
+    ]
+  },
+  {
+    "cluster_key": "puzzle",
+    "count": 12,
+    "distinct": 12,
+    "avg_conf": 0.955,
+    "sample_pids": [
+      "AL-38802",
+      "BDM-R1532A",
+      "CBTF-791101085736",
+      "EM-126057",
+      "EM-96176",
+      "FGCO-13276",
+      "FGI-15288",
+      "LBL-ASGPZSE2250"
+    ],
+    "sample_evidence": [
+      "Puzzle Frame Me Up",
+      "Educational Puzzle",
+      "puzzles",
+      "puzzles",
+      "puzzles"
+    ],
+    "all_pids": [
+      "AL-38802",
+      "BDM-R1532A",
+      "CBTF-791101085736",
+      "EM-126057",
+      "EM-96176",
+      "FGCO-13276",
+      "FGI-15288",
+      "LBL-ASGPZSE2250",
+      "PC-DJ07254",
+      "PS-FS9424100",
+      "TOP-MD2126",
+      "YAL-YK004"
+    ]
+  },
+  {
+    "cluster_key": "vehicle_toy",
+    "count": 12,
+    "distinct": 12,
+    "avg_conf": 0.953,
+    "sample_pids": [
+      "637187-DJ02108",
+      "AL-DC5225",
+      "AL-GDG83-FYX90",
+      "FGI-39540",
+      "HGT-18-21065BK",
+      "IB-6022627-MARSHALL-FIRE",
+      "II-2751",
+      "KETP-6060"
+    ],
+    "sample_evidence": [
+      "Glider Plane Play Vehicle",
+      "RC Super Sport 1/14 Car",
+      "Hot Wheels",
+      "vehicles",
+      "vehicles"
+    ],
+    "all_pids": [
+      "637187-DJ02108",
+      "AL-DC5225",
+      "AL-GDG83-FYX90",
+      "FGI-39540",
+      "HGT-18-21065BK",
+      "IB-6022627-MARSHALL-FIRE",
+      "II-2751",
+      "KETP-6060",
+      "KZ-FY889",
+      "SGTL-2028-1B",
+      "STM-251106018",
+      "TW-18-12014"
+    ]
+  },
+  {
+    "cluster_key": "playset",
+    "count": 10,
+    "distinct": 10,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "DBT-16494A",
+      "KZ-3144",
+      "LNDL-LLIST0003647-Mix",
+      "MOG-36-554",
+      "MSBM-818-203",
+      "PCG-4466",
+      "PT-67117",
+      "SGT-A2443"
+    ],
+    "sample_evidence": [
+      "collectable playsets",
+      "role play & dress up",
+      "action toys & hero play",
+      "role play & dress up",
+      "role play & dress up"
+    ],
+    "all_pids": [
+      "DBT-16494A",
+      "KZ-3144",
+      "LNDL-LLIST0003647-Mix",
+      "MOG-36-554",
+      "MSBM-818-203",
+      "PCG-4466",
+      "PT-67117",
+      "SGT-A2443",
+      "ST-MN_1062",
+      "TT-MGA-118312-S4_118350"
+    ]
+  },
+  {
+    "cluster_key": "construction_toy",
+    "count": 9,
+    "distinct": 9,
+    "avg_conf": 0.94,
+    "sample_pids": [
+      "520-HDL80",
+      "BDM-00763",
+      "EM-4455",
+      "JDK-DK711TRFG00424",
+      "PTC-DJ06434",
+      "SBFZE-1001",
+      "SES-50367",
+      "TPF-830491000100"
+    ],
+    "sample_evidence": [
+      "Builder Playset",
+      "Mechanics Gravity",
+      "construction toys for kids",
+      "construction toys for kids",
+      "Ze Totanimo Blocks"
+    ],
+    "all_pids": [
+      "520-HDL80",
+      "BDM-00763",
+      "EM-4455",
+      "JDK-DK711TRFG00424",
+      "PTC-DJ06434",
+      "SBFZE-1001",
+      "SES-50367",
+      "TPF-830491000100",
+      "TT-6331877"
+    ]
+  },
+  {
+    "cluster_key": "game",
+    "count": 6,
+    "distinct": 6,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "DD-EN82704",
+      "GF-E7978",
+      "HAS-E1845102",
+      "JUM-PS4MINECRAFT",
+      "KETP-SG444",
+      "TTCL-DG258"
+    ],
+    "sample_evidence": [
+      "board games",
+      "card games",
+      "board games",
+      "game consoles & accessories",
+      "board & card games"
+    ],
+    "all_pids": [
+      "DD-EN82704",
+      "GF-E7978",
+      "HAS-E1845102",
+      "JUM-PS4MINECRAFT",
+      "KETP-SG444",
+      "TTCL-DG258"
+    ]
+  },
+  {
+    "cluster_key": "learning_toy",
+    "count": 6,
+    "distinct": 6,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "22630846-213447186",
+      "40434844-6942053857085",
+      "AFR-CFC73-00",
+      "BTG-003977",
+      "CIHL-53801",
+      "GT-CH11207"
+    ],
+    "sample_evidence": [
+      "Lights And Sounds Phonics Desk",
+      "Doodle Board",
+      "Smart Stages Laptop",
+      "early learning toys",
+      "early learning toys"
+    ],
+    "all_pids": [
+      "22630846-213447186",
+      "40434844-6942053857085",
+      "AFR-CFC73-00",
+      "BTG-003977",
+      "CIHL-53801",
+      "GT-CH11207"
+    ]
+  },
+  {
+    "cluster_key": "plush_toy",
+    "count": 5,
+    "distinct": 5,
+    "avg_conf": 0.968,
+    "sample_pids": [
+      "1577197-M13043WA",
+      "1577197-SQVA00874",
+      "38261480-24182555",
+      "FLG-PD3HBP",
+      "PZ-18644"
+    ],
+    "sample_evidence": [
+      "Clip-On Plush Toy",
+      "Squishmallows",
+      "Plush",
+      "soft toys",
+      "soft toys"
+    ],
+    "all_pids": [
+      "1577197-M13043WA",
+      "1577197-SQVA00874",
+      "38261480-24182555",
+      "FLG-PD3HBP",
+      "PZ-18644"
+    ]
+  },
+  {
+    "cluster_key": "action_figure",
+    "count": 4,
+    "distinct": 4,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "AL-GWY55",
+      "CTGT-3000016299",
+      "JDK-DK71100583",
+      "RTC-42685"
+    ],
+    "sample_evidence": [
+      "Velociraptor Beta Dinosaur Figure",
+      "action figures",
+      "action toys & hero play",
+      "action toys & hero play"
+    ],
+    "all_pids": [
+      "AL-GWY55",
+      "CTGT-3000016299",
+      "JDK-DK71100583",
+      "RTC-42685"
+    ]
+  },
+  {
+    "cluster_key": "feminine_care",
+    "count": 4,
+    "distinct": 4,
+    "avg_conf": 0.963,
+    "sample_pids": [
+      "38179651-VWIW200",
+      "LMT-SG758475057042",
+      "MGT-LB_ZDSC_MNSDSC_MDM_01",
+      "NG-6251001309126"
+    ],
+    "sample_evidence": [
+      "feminine care",
+      "feminine care",
+      "feminine care",
+      "feminine care"
+    ],
+    "all_pids": [
+      "38179651-VWIW200",
+      "LMT-SG758475057042",
+      "MGT-LB_ZDSC_MNSDSC_MDM_01",
+      "NG-6251001309126"
+    ]
+  },
+  {
+    "cluster_key": "musical_toy",
+    "count": 4,
+    "distinct": 4,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "HT-1295P",
+      "MHMI-NB1047",
+      "SHE-KD-RH-115",
+      "WTI-000723"
+    ],
+    "sample_evidence": [
+      "lights & musical toys",
+      "musical",
+      "electronics",
+      "lights & musical toys"
+    ],
+    "all_pids": [
+      "HT-1295P",
+      "MHMI-NB1047",
+      "SHE-KD-RH-115",
+      "WTI-000723"
+    ]
+  },
+  {
+    "cluster_key": "sensory_toy",
+    "count": 4,
+    "distinct": 4,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "24401497-10236",
+      "26106585-7600140306",
+      "SGCO-GL134",
+      "TBOX-21-222"
+    ],
+    "sample_evidence": [
+      "Rainbow Balls",
+      "Explor Cube",
+      "educational",
+      "educational"
+    ],
+    "all_pids": [
+      "24401497-10236",
+      "26106585-7600140306",
+      "SGCO-GL134",
+      "TBOX-21-222"
+    ]
+  },
+  {
+    "cluster_key": "accessory",
+    "count": 3,
+    "distinct": 3,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "PS-AVTS218149",
+      "DDFZ-PDG300009",
+      "NIJ-NZ038"
+    ],
+    "sample_evidence": [
+      "role play & dress up",
+      "Shawl",
+      "accessories"
+    ],
+    "all_pids": [
+      "PS-AVTS218149",
+      "DDFZ-PDG300009",
+      "NIJ-NZ038"
+    ]
+  },
+  {
+    "cluster_key": "bath_product",
+    "count": 3,
+    "distinct": 3,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "ANDS-WP000043",
+      "BES-00489",
+      "CC-V1581"
+    ],
+    "sample_evidence": [
+      "Shower Gel",
+      "Sugar Scrub",
+      "Hand Wash"
+    ],
+    "all_pids": [
+      "ANDS-WP000043",
+      "BES-00489",
+      "CC-V1581"
+    ]
+  },
+  {
+    "cluster_key": "educational_toy",
+    "count": 3,
+    "distinct": 3,
+    "avg_conf": 0.917,
+    "sample_pids": [
+      "PCG-6-1217",
+      "SES-PP443",
+      "TC-LER6366"
+    ],
+    "sample_evidence": [
+      "educational",
+      "educational",
+      "educational"
+    ],
+    "all_pids": [
+      "PCG-6-1217",
+      "SES-PP443",
+      "TC-LER6366"
+    ]
+  },
+  {
+    "cluster_key": "ride_on",
+    "count": 3,
+    "distinct": 3,
+    "avg_conf": 0.96,
+    "sample_pids": [
+      "19188949-0923_RED",
+      "TC-6553",
+      "TOP-999DX-RED"
+    ],
+    "sample_evidence": [
+      "Kids Electric Ride On Car",
+      "outdoor",
+      "outdoor"
+    ],
+    "all_pids": [
+      "19188949-0923_RED",
+      "TC-6553",
+      "TOP-999DX-RED"
+    ]
+  },
+  {
+    "cluster_key": "walker_toy",
+    "count": 3,
+    "distinct": 3,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "GF-2303",
+      "MTC-599-wablu",
+      "VD-VD-0670724646657"
+    ],
+    "sample_evidence": [
+      "walker toys",
+      "baby & preschool",
+      "walker toys"
+    ],
+    "all_pids": [
+      "GF-2303",
+      "MTC-599-wablu",
+      "VD-VD-0670724646657"
+    ]
+  },
+  {
+    "cluster_key": "activity_toy",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.875,
+    "sample_pids": [
+      "PS-VT80-533503",
+      "SGTL-A3150C"
+    ],
+    "sample_evidence": [
+      "indoor play & activity",
+      "baby & preschool"
+    ],
+    "all_pids": [
+      "PS-VT80-533503",
+      "SGTL-A3150C"
+    ]
+  },
+  {
+    "cluster_key": "bag",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "3527487-BLBBRP01",
+      "BGTL-BGD05148020102"
+    ],
+    "sample_evidence": [
+      "bags",
+      "Bag"
+    ],
+    "all_pids": [
+      "3527487-BLBBRP01",
+      "BGTL-BGD05148020102"
+    ]
+  },
+  {
+    "cluster_key": "clothing",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "5144666-VCSP009-CONFIG",
+      "DUA-W130016-config"
+    ],
+    "sample_evidence": [
+      "Lounge Co-Ord Set",
+      "T-shirt"
+    ],
+    "all_pids": [
+      "5144666-VCSP009-CONFIG",
+      "DUA-W130016-config"
+    ]
+  },
+  {
+    "cluster_key": "collectible_toy",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "5418963-77351SK",
+      "TT-ZUR-9284"
+    ],
+    "sample_evidence": [
+      "5 Surprise Toy Mini Brands",
+      "collectable toys"
+    ],
+    "all_pids": [
+      "5418963-77351SK",
+      "TT-ZUR-9284"
+    ]
+  },
+  {
+    "cluster_key": "costume",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.965,
+    "sample_pids": [
+      "837-MAR-039-02-CONFIG",
+      "YT-84632-CONFIG"
+    ],
+    "sample_evidence": [
+      "Cosplay Costume",
+      "costumes & dress up"
+    ],
+    "all_pids": [
+      "837-MAR-039-02-CONFIG",
+      "YT-84632-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "deodorant",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "DME-55505926",
+      "JADE-BFA-3902"
+    ],
+    "sample_evidence": [
+      "Deodorant",
+      "Body Spray"
+    ],
+    "all_pids": [
+      "DME-55505926",
+      "JADE-BFA-3902"
+    ]
+  },
+  {
+    "cluster_key": "doll",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.965,
+    "sample_pids": [
+      "AL-20512",
+      "NBL-31264"
+    ],
+    "sample_evidence": [
+      "13-inch Doll",
+      "dolls & accessories"
+    ],
+    "all_pids": [
+      "AL-20512",
+      "NBL-31264"
+    ]
+  },
+  {
+    "cluster_key": "doll_accessory",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "STM-7600253104",
+      "TT-GG50030Z"
+    ],
+    "sample_evidence": [
+      "dolls & accessories",
+      "dolls & accessories"
+    ],
+    "all_pids": [
+      "STM-7600253104",
+      "TT-GG50030Z"
+    ]
+  },
+  {
+    "cluster_key": "figurine",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "DD-387321",
+      "HGT-99985"
+    ],
+    "sample_evidence": [
+      "collectable toys",
+      "collectable toys"
+    ],
+    "all_pids": [
+      "DD-387321",
+      "HGT-99985"
+    ]
+  },
+  {
+    "cluster_key": "fitness_equipment",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "AJ-13580-0001",
+      "KASE-210000015712"
+    ],
+    "sample_evidence": [
+      "fitness",
+      "fitness"
+    ],
+    "all_pids": [
+      "AJ-13580-0001",
+      "KASE-210000015712"
+    ]
+  },
+  {
+    "cluster_key": "hair_color",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "20235035-121880",
+      "ADS-1029151"
+    ],
+    "sample_evidence": [
+      "hair colors",
+      "hair colors"
+    ],
+    "all_pids": [
+      "20235035-121880",
+      "ADS-1029151"
+    ]
+  },
+  {
+    "cluster_key": "hair_dryer",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.975,
+    "sample_pids": [
+      "33821499-A18-GREY",
+      "MI-HEQUPXXXDRY89788"
+    ],
+    "sample_evidence": [
+      "hair dryers",
+      "hair dryers"
+    ],
+    "all_pids": [
+      "33821499-A18-GREY",
+      "MI-HEQUPXXXDRY89788"
+    ]
+  },
+  {
+    "cluster_key": "outdoor_toy",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.925,
+    "sample_pids": [
+      "MD-6036",
+      "OSP-CHRA001"
+    ],
+    "sample_evidence": [
+      "outdoor",
+      "outdoor"
+    ],
+    "all_pids": [
+      "MD-6036",
+      "OSP-CHRA001"
+    ]
+  },
+  {
+    "cluster_key": "personal_care_appliance",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "CGT-8710103997962",
+      "EMID-RES5525"
+    ],
+    "sample_evidence": [
+      "Electric Toothbrush",
+      "Straightener"
+    ],
+    "all_pids": [
+      "CGT-8710103997962",
+      "EMID-RES5525"
+    ]
+  },
+  {
+    "cluster_key": "play_kitchen",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.965,
+    "sample_pids": [
+      "31971811-77050",
+      "DBT-L40217"
+    ],
+    "sample_evidence": [
+      "Coffee Machine Toy",
+      "play kitchens"
+    ],
+    "all_pids": [
+      "31971811-77050",
+      "DBT-L40217"
+    ]
+  },
+  {
+    "cluster_key": "shapewear",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.975,
+    "sample_pids": [
+      "GMG-BL-BFF-CR-CONFIG",
+      "MED-373-config"
+    ],
+    "sample_evidence": [
+      "Postpartum Band",
+      "shapewear"
+    ],
+    "all_pids": [
+      "GMG-BL-BFF-CR-CONFIG",
+      "MED-373-config"
+    ]
+  },
+  {
+    "cluster_key": "supplement",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "39629019-V0CN0046A6IIP3",
+      "NCHL-2680"
+    ],
+    "sample_evidence": [
+      "vitamins & supplements",
+      "vitamins & supplements"
+    ],
+    "all_pids": [
+      "39629019-V0CN0046A6IIP3",
+      "NCHL-2680"
+    ]
+  },
+  {
+    "cluster_key": "toy_gun",
+    "count": 2,
+    "distinct": 2,
+    "avg_conf": 0.98,
+    "sample_pids": [
+      "17235894-BIG507",
+      "527-CY016"
+    ],
+    "sample_evidence": [
+      "Electric Gun",
+      "Water Shooterz Gun"
+    ],
+    "all_pids": [
+      "17235894-BIG507",
+      "527-CY016"
+    ]
+  },
+  {
+    "cluster_key": "activewear",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "ALFO-SAC417082019-CONFIG"
+    ],
+    "sample_evidence": [
+      "activewear"
+    ],
+    "all_pids": [
+      "ALFO-SAC417082019-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "activity_table",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "GF-SGEOS-102"
+    ],
+    "sample_evidence": [
+      "activity tables"
+    ],
+    "all_pids": [
+      "GF-SGEOS-102"
+    ]
+  },
+  {
+    "cluster_key": "arcade_game",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "10541937-DGUNL-4185"
+    ],
+    "sample_evidence": [
+      "Super Street Fighter II Micro Player Pro Retro Arcade"
+    ],
+    "all_pids": [
+      "10541937-DGUNL-4185"
+    ]
+  },
+  {
+    "cluster_key": "ball_pit",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "EZZ-EZZ-RBP-MW-120-GRA-6-030"
+    ],
+    "sample_evidence": [
+      "playpens & ball pits"
+    ],
+    "all_pids": [
+      "EZZ-EZZ-RBP-MW-120-GRA-6-030"
+    ]
+  },
+  {
+    "cluster_key": "bra",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 1.0,
+    "sample_pids": [
+      "MSBM-ADWN228009A-CONFIG"
+    ],
+    "sample_evidence": [
+      "bras"
+    ],
+    "all_pids": [
+      "MSBM-ADWN228009A-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "card_game",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "RBT-WG126"
+    ],
+    "sample_evidence": [
+      "board & card games"
+    ],
+    "all_pids": [
+      "RBT-WG126"
+    ]
+  },
+  {
+    "cluster_key": "collectible",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "PZ-73452"
+    ],
+    "sample_evidence": [
+      "novelties & collectables"
+    ],
+    "all_pids": [
+      "PZ-73452"
+    ]
+  },
+  {
+    "cluster_key": "craft_kit",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "RTC-SSC134"
+    ],
+    "sample_evidence": [
+      "arts & crafts"
+    ],
+    "all_pids": [
+      "RTC-SSC134"
+    ]
+  },
+  {
+    "cluster_key": "dollhouse",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.98,
+    "sample_pids": [
+      "AL-76932"
+    ],
+    "sample_evidence": [
+      "Summer Villa with Doll"
+    ],
+    "all_pids": [
+      "AL-76932"
+    ]
+  },
+  {
+    "cluster_key": "eyewear",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 1.0,
+    "sample_pids": [
+      "MAUI-SUN-TO-CAM"
+    ],
+    "sample_evidence": [
+      "eyewear"
+    ],
+    "all_pids": [
+      "MAUI-SUN-TO-CAM"
+    ]
+  },
+  {
+    "cluster_key": "hair_accessory",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "16880979-XLZ00XZ940"
+    ],
+    "sample_evidence": [
+      "hair brushes & accessories"
+    ],
+    "all_pids": [
+      "16880979-XLZ00XZ940"
+    ]
+  },
+  {
+    "cluster_key": "hair_care",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "ALF-1029676"
+    ],
+    "sample_evidence": [
+      "hair care"
+    ],
+    "all_pids": [
+      "ALF-1029676"
+    ]
+  },
+  {
+    "cluster_key": "hair_product",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "ASTA-DB031"
+    ],
+    "sample_evidence": [
+      "Hair Oil"
+    ],
+    "all_pids": [
+      "ASTA-DB031"
+    ]
+  },
+  {
+    "cluster_key": "haircare",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 1.0,
+    "sample_pids": [
+      "MSCT-75036"
+    ],
+    "sample_evidence": [
+      "hair care"
+    ],
+    "all_pids": [
+      "MSCT-75036"
+    ]
+  },
+  {
+    "cluster_key": "inflatable_toy",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.9,
+    "sample_pids": [
+      "HR-7581"
+    ],
+    "sample_evidence": [
+      "collectable toys"
+    ],
+    "all_pids": [
+      "HR-7581"
+    ]
+  },
+  {
+    "cluster_key": "keychain",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "FGI-AU8004"
+    ],
+    "sample_evidence": [
+      "keychains"
+    ],
+    "all_pids": [
+      "FGI-AU8004"
+    ]
+  },
+  {
+    "cluster_key": "lingerie",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "GMG-WL_852303-253-CONFIG"
+    ],
+    "sample_evidence": [
+      "Bra"
+    ],
+    "all_pids": [
+      "GMG-WL_852303-253-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "makeup_tool",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "LSMT-312643"
+    ],
+    "sample_evidence": [
+      "make up brushes and tools"
+    ],
+    "all_pids": [
+      "LSMT-312643"
+    ]
+  },
+  {
+    "cluster_key": "maternity_clothing",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "40622314-BH193-CONFIG"
+    ],
+    "sample_evidence": [
+      "Maternity Wrap Co-Ord Set"
+    ],
+    "all_pids": [
+      "40622314-BH193-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "maternity_dress",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 1.0,
+    "sample_pids": [
+      "MB-15716-CONFIG"
+    ],
+    "sample_evidence": [
+      "maternity clothing"
+    ],
+    "all_pids": [
+      "MB-15716-CONFIG"
+    ]
+  },
+  {
+    "cluster_key": "mouthwash",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "HGT-HGT-0733102238421"
+    ],
+    "sample_evidence": [
+      "Mouthwash"
+    ],
+    "all_pids": [
+      "HGT-HGT-0733102238421"
+    ]
+  },
+  {
+    "cluster_key": "nursing_accessory",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "10212998-NSCM-B00-01U"
+    ],
+    "sample_evidence": [
+      "nursing"
+    ],
+    "all_pids": [
+      "10212998-NSCM-B00-01U"
+    ]
+  },
+  {
+    "cluster_key": "nursing_pillow",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "22972598-16374"
+    ],
+    "sample_evidence": [
+      "nursing pillows"
+    ],
+    "all_pids": [
+      "22972598-16374"
+    ]
+  },
+  {
+    "cluster_key": "personal_care",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "CC-C1775A"
+    ],
+    "sample_evidence": [
+      "Cotton Buds"
+    ],
+    "all_pids": [
+      "CC-C1775A"
+    ]
+  },
+  {
+    "cluster_key": "pregnancy_pillow",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "980-I"
+    ],
+    "sample_evidence": [
+      "pregnancy pillows"
+    ],
+    "all_pids": [
+      "980-I"
+    ]
+  },
+  {
+    "cluster_key": "pull_toy",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "AL-J05159"
+    ],
+    "sample_evidence": [
+      "Pull-Along Snail"
+    ],
+    "all_pids": [
+      "AL-J05159"
+    ]
+  },
+  {
+    "cluster_key": "puppet",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "DRP-DR10221"
+    ],
+    "sample_evidence": [
+      "puppets"
+    ],
+    "all_pids": [
+      "DRP-DR10221"
+    ]
+  },
+  {
+    "cluster_key": "rattle",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "PG0101145"
+    ],
+    "sample_evidence": [
+      "baby & preschool"
+    ],
+    "all_pids": [
+      "PG0101145"
+    ]
+  },
+  {
+    "cluster_key": "science_kit",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.98,
+    "sample_pids": [
+      "AZ-0SA221"
+    ],
+    "sample_evidence": [
+      "Mind Blowing Science Kit"
+    ],
+    "all_pids": [
+      "AZ-0SA221"
+    ]
+  },
+  {
+    "cluster_key": "sleep_accessory",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.92,
+    "sample_pids": [
+      "LBG-YSGT0004PK"
+    ],
+    "sample_evidence": [
+      "sleeping"
+    ],
+    "all_pids": [
+      "LBG-YSGT0004PK"
+    ]
+  },
+  {
+    "cluster_key": "toothpaste",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "GATC-4670049950329"
+    ],
+    "sample_evidence": [
+      "Toothpaste"
+    ],
+    "all_pids": [
+      "GATC-4670049950329"
+    ]
+  },
+  {
+    "cluster_key": "toy_weapon",
+    "count": 1,
+    "distinct": 1,
+    "avg_conf": 0.95,
+    "sample_pids": [
+      "TW-86304"
+    ],
+    "sample_evidence": [
+      "guns & blasters"
+    ],
+    "all_pids": [
+      "TW-86304"
+    ]
+  }
+]
