@@ -143,8 +143,145 @@ def reload_rules(rules_path: Path | None = None) -> None:
     global _rules_cache, _rules_path_used
     _rules_cache = None
     _rules_path_used = None
+    _override_cache.clear()
     if rules_path is not None:
         _get_rules("__warm__", rules_path)
+
+
+# ---------------------------------------------------------------------------
+# Per-workspace synonym overrides (Phase 8.5b).
+#
+# Layered on top of the JSON-loaded rules. Override rows are applied as
+# extra synonyms (raw_value -> canonical_value) without modifying the
+# discard patterns or unmatched_policy. Cache is keyed by (workspace_id,
+# attribute_name) and refreshed when a reviewer adds new overrides.
+# ---------------------------------------------------------------------------
+
+# (workspace_id, attribute_name) -> (last_loaded_count, layered_rules)
+_override_cache: dict[tuple[int, str], tuple[int, _AttributeRules]] = {}
+
+
+def _layer_workspace_overrides(
+    base: _AttributeRules, attribute_name: str,
+    workspace_id: int, db,
+) -> _AttributeRules:
+    """Return a copy of `base` with workspace overrides merged into the
+    synonym lookup. Reads `attribute_synonym_overrides` for the
+    (workspace, attribute) pair. Cached per request key; cache is
+    invalidated by row count change (cheap; correct enough)."""
+    # Imported lazily to avoid a top-level dependency on the ORM model.
+    from app.models.attribute_synonym_override import AttributeSynonymOverride
+
+    cache_key = (workspace_id, attribute_name)
+    rows = (
+        db.query(AttributeSynonymOverride)
+        .filter(
+            AttributeSynonymOverride.workspace_id == workspace_id,
+            AttributeSynonymOverride.attribute_name == attribute_name,
+        )
+        .all()
+    )
+    cached = _override_cache.get(cache_key)
+    if cached is not None and cached[0] == len(rows):
+        return cached[1]
+
+    if not rows:
+        # Cache the base so the next call short-circuits.
+        _override_cache[cache_key] = (0, base)
+        return base
+
+    # Build a synonym map that layers overrides over the base. Overrides
+    # win on conflict.
+    merged: dict[str, str] = dict(base.synonym_lookup)
+    for r in rows:
+        key = r.raw_value if base.case_sensitive else r.raw_value.lower()
+        if base.trim_whitespace:
+            key = key.strip()
+        if not key:
+            continue
+        merged[key] = r.canonical_value
+
+    layered = _AttributeRules(
+        split_chars=base.split_chars,
+        case_sensitive=base.case_sensitive,
+        trim_whitespace=base.trim_whitespace,
+        unmatched_policy=base.unmatched_policy,
+        synonym_lookup=merged,
+        discard_patterns=base.discard_patterns,
+        collapse_whitespace=base.collapse_whitespace,
+        strip_trailing_punctuation=base.strip_trailing_punctuation,
+        strip_suffix_words=base.strip_suffix_words,
+    )
+    _override_cache[cache_key] = (len(rows), layered)
+    return layered
+
+
+def _maybe_build_override_only_rules(
+    workspace_id: int, attribute_name: str, db,
+) -> _AttributeRules | None:
+    """Build a minimal rules object from override rows alone.
+
+    Used when an attribute has no JSON normalization config but workspace
+    synonym overrides exist (e.g., product_type before any JSON synonyms
+    are configured). Returns None when there are no overrides -- callers
+    interpret None as "no rules; passthrough" to preserve legacy behaviour.
+
+    Defaults: case-insensitive, trim whitespace, no splitting, no
+    discards, no cleaning, unmatched_policy='propose' so unmatched
+    tokens still flow through to the caller's existing logic.
+    """
+    from app.models.attribute_synonym_override import AttributeSynonymOverride
+
+    rows = (
+        db.query(AttributeSynonymOverride)
+        .filter(
+            AttributeSynonymOverride.workspace_id == workspace_id,
+            AttributeSynonymOverride.attribute_name == attribute_name,
+        )
+        .all()
+    )
+    if not rows:
+        return None
+
+    synonyms: dict[str, str] = {}
+    for r in rows:
+        key = r.raw_value.strip().lower()
+        if not key:
+            continue
+        synonyms[key] = r.canonical_value
+    if not synonyms:
+        return None
+    return _AttributeRules(
+        split_chars="",
+        case_sensitive=False,
+        trim_whitespace=True,
+        unmatched_policy="propose",
+        synonym_lookup=synonyms,
+        discard_patterns=[],
+        collapse_whitespace=False,
+        strip_trailing_punctuation=False,
+        strip_suffix_words=frozenset(),
+    )
+
+
+def invalidate_override_cache(
+    *, workspace_id: int | None = None,
+    attribute_name: str | None = None,
+) -> None:
+    """Clear the override cache. Called by approval endpoints after
+    inserting new override rows so the next normalize_cell() call sees
+    them."""
+    if workspace_id is None and attribute_name is None:
+        _override_cache.clear()
+        return
+    keys = list(_override_cache.keys())
+    for k in keys:
+        ws, attr = k
+        if workspace_id is not None and ws != workspace_id:
+            continue
+        if attribute_name is not None and attr != attribute_name:
+            continue
+        _override_cache.pop(k, None)
 
 
 # ---------------------------------------------------------------------------
@@ -185,7 +322,12 @@ def _log_discard(*, attribute: str, raw: str, reason: str, rule_id: str | None) 
     )
 
 
-def normalize_cell(attribute_name: str, raw_cell: str) -> list[NormalizationResult]:
+def normalize_cell(
+    attribute_name: str, raw_cell: str,
+    *,
+    workspace_id: int | None = None,
+    db: "Session | None" = None,  # type: ignore[name-defined]
+) -> list[NormalizationResult]:
     """Normalise one CSV cell against the rules for `attribute_name`.
 
     Returns one result per token after splitting. If no rules are
@@ -193,6 +335,12 @@ def normalize_cell(attribute_name: str, raw_cell: str) -> list[NormalizationResu
     carrying the unsplit cell -- the caller's existing splitting/matching
     path then handles it (so attributes without rules behave exactly as
     before).
+
+    Per-workspace synonym overrides (Phase 8.5b): when both `workspace_id`
+    and `db` are provided, AttributeSynonymOverride rows for that
+    workspace are layered on top of the JSON synonym map. Override rows
+    win over JSON for the same raw_value. Callers without `workspace_id`
+    behave exactly as before (JSON-only) -- backwards compatible.
     """
     if raw_cell is None:
         return []
@@ -201,6 +349,19 @@ def normalize_cell(attribute_name: str, raw_cell: str) -> list[NormalizationResu
         return []
 
     rules = _get_rules(attribute_name)
+    if workspace_id is not None and db is not None:
+        if rules is None:
+            # No JSON rules but workspace overrides may still exist
+            # (Phase 8.5b: attributes like product_type that historically
+            # have no JSON normalization can still receive synonym
+            # overrides from approvals).
+            rules = _maybe_build_override_only_rules(
+                workspace_id, attribute_name, db,
+            )
+        else:
+            rules = _layer_workspace_overrides(
+                rules, attribute_name, workspace_id, db,
+            )
     if rules is None:
         return [NormalizationResult(raw=cell, decision="passthrough")]
 

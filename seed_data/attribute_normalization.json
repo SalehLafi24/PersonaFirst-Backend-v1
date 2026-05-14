@@ -64,6 +64,39 @@
       "synonyms": {},
       "discard_patterns": []
     },
+    "seasonality": {
+      "split_chars": "|;,/",
+      "case_sensitive": false,
+      "trim_whitespace": true,
+      "unmatched_policy": "discard",
+      "synonyms": {
+        "spring":      ["spring"],
+        "summer":      ["summer", "hot weather", "warm weather", "beach", "swim", "swimwear"],
+        "autumn":      ["autumn", "fall", "back to school", "back-to-school"],
+        "winter":      ["winter", "cold weather", "snow"],
+        "all_season":  ["all season", "all-season", "year round", "year-round", "any season"]
+      },
+      "discard_patterns": []
+    },
+    "use_case": {
+      "split_chars": "|;,/",
+      "case_sensitive": false,
+      "trim_whitespace": true,
+      "unmatched_policy": "discard",
+      "synonyms": {
+        "feeding":   ["feeding", "nursing", "mealtime", "snack time"],
+        "diapering": ["diapering", "diaper change", "nappy change"],
+        "bathing":   ["bathing", "bath time", "shower time"],
+        "sleeping":  ["sleeping", "bedtime", "naptime", "nursery night"],
+        "travel":    ["travel", "on the go", "stroll", "car ride"],
+        "school":    ["school", "back to school", "kindergarten", "preschool"],
+        "swimming":  ["swimming", "pool", "beach day", "water play"],
+        "play":      ["play", "playtime", "active play"],
+        "learning":  ["learning", "education", "early learning"],
+        "party":     ["party", "celebration", "birthday party"]
+      },
+      "discard_patterns": []
+    },
     "gender": {
       "split_chars": "|;,/",
       "case_sensitive": false,

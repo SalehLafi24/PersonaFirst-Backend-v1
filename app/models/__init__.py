@@ -1,7 +1,9 @@
 # Import all models so Alembic can detect them via Base.metadata
 from app.models.attribute_allowed_value import AttributeAllowedValue
+from app.models.attribute_synonym_override import AttributeSynonymOverride
 from app.models.attribute_value_relationship import AttributeValueRelationship
 from app.models.audit_log import AuditLog
+from app.models.customer import Customer, CustomerInteraction
 from app.models.customer_attribute_affinity import CustomerAttributeAffinity
 from app.models.customer_purchase import CustomerPurchase
 from app.models.product import Product, ProductAttribute

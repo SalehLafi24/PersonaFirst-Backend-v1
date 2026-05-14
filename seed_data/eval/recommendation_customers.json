@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "workspace_slug": "mumzworld_v3_sample",
+  "workspace_id": 8,
+  "_doc": "Synthetic customer fixture for recommendation_eval.py. Each customer is a real DB row with real CustomerInteraction history. The eval is conformance against design claims (rec engine does what it claims), NOT ground-truth benchmarking. Do not infer customer-level preference from these labels.",
+  "panel_size": 10,
+  "claims_under_test": [
+    "C1, C2 (ranking weight conformance)",
+    "C8 (no duplicate product_id within rec set)",
+    "C9 (sort order: score descending)",
+    "C10, C11 (RepurchaseSuppression -- recent-repurchase fixture)",
+    "C12 (complement bypass)",
+    "C18 (top_n contract)",
+    "C19 (matched_signals completeness)",
+    "C24 (cold-start handling -- cold_start fixture)",
+    "diversity floor",
+    "complement separation"
+  ],
+  "customers": [
+    {
+      "customer_id": "synthetic_baby_essentials",
+      "profile_label": "infant parent (heavy purchase history)",
+      "expected_persona_dominant": {"age_group": "infant"},
+      "expected_cold_start": false,
+      "tests": ["C1", "C2", "C8", "C9", "C19", "diversity_floor"]
+    },
+    {
+      "customer_id": "synthetic_baby_essentials_alt",
+      "profile_label": "infant parent (alt distribution)",
+      "expected_persona_dominant": {"age_group": "infant"},
+      "expected_cold_start": false,
+      "tests": ["C1", "C2", "C9"]
+    },
+    {
+      "customer_id": "synthetic_toy_focused",
+      "profile_label": "play-focused buyer (mixed ages)",
+      "expected_persona_dominant": {"use_case": "play"},
+      "expected_cold_start": false,
+      "tests": ["C1", "C8", "diversity_floor", "complement_separation"]
+    },
+    {
+      "customer_id": "synthetic_book_heavy",
+      "profile_label": "kids/learning buyer",
+      "expected_persona_dominant": {"use_case": "learning"},
+      "expected_cold_start": false,
+      "tests": ["C1", "C2", "diversity_floor"]
+    },
+    {
+      "customer_id": "synthetic_apparel_focused",
+      "profile_label": "apparel buyer (mixed ages)",
+      "expected_persona_dominant": {"product_type": "shirt"},
+      "expected_cold_start": false,
+      "tests": ["C8", "C9"]
+    },
+    {
+      "customer_id": "synthetic_mixed_category",
+      "profile_label": "cross-segment buyer (one of each)",
+      "expected_persona_dominant": null,
+      "expected_cold_start": false,
+      "_note": "Diverse history -- stresses diversity_floor without single-category collapse",
+      "tests": ["diversity_floor", "C1"]
+    },
+    {
+      "customer_id": "synthetic_adult_self",
+      "profile_label": "adult-self buyer (supplements/makeup/coffee/skincare/hair_care)",
+      "expected_persona_dominant": {"age_group": "adult"},
+      "expected_cold_start": false,
+      "_note": "Tests that adult-targeted recs surface for adult-self customers, not baby items.",
+      "tests": ["C1", "persona_coverage"]
+    },
+    {
+      "customer_id": "synthetic_gift_buyer",
+      "profile_label": "gift buyer (variety across ages and product_types)",
+      "expected_persona_dominant": null,
+      "expected_cold_start": false,
+      "_note": "Deliberately spans bib/playset/book/backpack/bodysuit/action_figure/pacifier across infant/toddler/kids/teen. Stresses persona-diffusion handling and diversity floor.",
+      "tests": ["diversity_floor", "complement_separation"]
+    },
+    {
+      "customer_id": "synthetic_cold_start",
+      "profile_label": "cold-start (single interaction)",
+      "expected_persona_dominant": null,
+      "expected_cold_start": true,
+      "_note": "1 purchase -- triggers cold_start (interaction_count < 3). Tests C6 (cold_start flag) and C24 (still returns recs with damped scores).",
+      "tests": ["C6", "C24"]
+    },
+    {
+      "customer_id": "synthetic_recent_repurchase",
+      "profile_label": "recent-purchase customer (tests RepurchaseSuppression)",
+      "expected_persona_dominant": null,
+      "expected_cold_start": false,
+      "_note": "Recent purchases include diapers, bibs, etc. Tests C10 (one-time products dropped) and C11 (repurchasable within window dropped). Saturation pattern stress.",
+      "tests": ["C10", "C11", "C18"]
+    }
+  ]
+}

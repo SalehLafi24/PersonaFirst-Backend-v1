@@ -16,7 +16,7 @@ from __future__ import annotations
 import re
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
@@ -44,8 +44,10 @@ from app.services.proposed_attribute_value_service import (
     PROMOTION_MIN_DISTINCT_PRODUCTS,
     PROMOTION_MIN_PROPOSAL_COUNT,
     approve_aggregate,
+    list_review_queue,
     merge_aggregate,
     promotion_readiness,
+    queue_health_snapshot,
     reject_aggregate,
 )
 
@@ -60,6 +62,46 @@ router = APIRouter(prefix="/admin/taxonomy", tags=["admin"])
 def list_workspaces(db: Session = Depends(get_db)):
     rows = db.query(Workspace).order_by(Workspace.id).all()
     return [{"id": w.id, "slug": w.slug, "name": w.name} for w in rows]
+
+
+# ---------------------------------------------------------------------------
+# Reviewer queue (Phase 8.5a)
+#
+# Read-only endpoints exposing the prioritised queue and its health.
+# CLI tooling under scripts/review_queue_report.py is the recommended
+# entry point; these endpoints are for an admin UI / external dashboard
+# integration.
+# ---------------------------------------------------------------------------
+
+@router.get("/api/queue")
+def get_review_queue(
+    workspace_id: int,
+    attribute: Optional[str] = None,
+    sort_by: str = "priority",
+    stale_only: bool = False,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    if sort_by not in {"priority", "age", "count"}:
+        raise HTTPException(
+            status_code=400,
+            detail=f"sort_by must be one of priority/age/count; got {sort_by!r}",
+        )
+    items = list_review_queue(
+        db, workspace_id=workspace_id, attribute_name=attribute,
+        sort_by=sort_by, stale_only=stale_only, limit=limit,
+    )
+    # Each ReviewQueueItem is a plain dataclass; serialise by reading vars().
+    return [vars(i) for i in items]
+
+
+@router.get("/api/queue_health")
+def get_queue_health(
+    workspace_id: int,
+    db: Session = Depends(get_db),
+):
+    snap = queue_health_snapshot(db, workspace_id=workspace_id)
+    return vars(snap)
 
 
 # ---------------------------------------------------------------------------
@@ -999,6 +1041,7 @@ def approve_aggregate_action(
     workspace_id: int,
     attribute: str = "product_type",
     force: bool = False,
+    synonym_additions: Optional[list[dict]] = Body(default=None),
     db: Session = Depends(get_db),
 ):
     """Promote a pending aggregate via the engine's approve_aggregate
@@ -1009,9 +1052,15 @@ def approve_aggregate_action(
         proposed_attribute_value_service.approve_aggregate
             → flips aggregate.status to 'approved'
             → calls attribute_taxonomy_service.upsert_allowed_value
-            → returns extended allowed_values list
+            → optionally writes synonym overrides (Phase 8.5b)
+            → returns extended allowed_values list + ApprovalReport
 
     Audit: review_note is recorded on the aggregate.
+    Phase 8.5b: response now carries `raw_variants_seen` and
+    `suggested_synonym_additions` so a caller can decide which raw forms
+    to harden as synonyms. The body field `synonym_additions` accepts
+    the reviewer's choice; matching rows are written to
+    `attribute_synonym_overrides`.
     """
     agg = _load_pending_aggregate(db, aggregate_id, workspace_id, attribute)
     if not force:
@@ -1025,12 +1074,13 @@ def approve_aggregate_action(
 
     current_allowed = list(get_allowed_values(db, workspace_id, attribute))
     try:
-        updated_agg, new_allowed = approve_aggregate(
+        updated_agg, new_allowed, report = approve_aggregate(
             db,
             aggregate_id=agg.id,
             current_allowed_values=current_allowed,
             force=force,
             review_note="Approved from taxonomy admin UI",
+            synonym_additions=synonym_additions,
         )
     except ValueError as e:
         raise HTTPException(422, str(e))
@@ -1043,6 +1093,9 @@ def approve_aggregate_action(
         "promoted_to_allowed_value": updated_agg.promoted_to_allowed_value,
         "review_note": updated_agg.review_note,
         "allowed_values_after": list(get_allowed_values(db, workspace_id, attribute)),
+        "raw_variants_seen": report.raw_variants_seen,
+        "suggested_synonym_additions": report.suggested_synonym_additions,
+        "synonyms_added": report.synonyms_added,
     }
 
 

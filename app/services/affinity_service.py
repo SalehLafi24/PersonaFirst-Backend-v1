@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from sqlalchemy.orm import Session
 
+from app.models.customer import CustomerInteraction, INTERACTION_PURCHASE
 from app.models.customer_attribute_affinity import CustomerAttributeAffinity
 from app.models.customer_purchase import CustomerPurchase
 from app.models.product import Product, ProductAttribute
@@ -127,6 +128,101 @@ def generate_affinities_from_purchases(
                 )
             total_upserted += 1
 
+    db.commit()
+    return AffinityGenerateResult(
+        customers_processed=len(by_customer),
+        affinities_upserted=total_upserted,
+    )
+
+
+def generate_affinities_from_interactions(
+    db: Session,
+    workspace_id: int,
+    customer_id: str | None = None,
+) -> AffinityGenerateResult:
+    """Interaction-sourced sibling of generate_affinities_from_purchases.
+
+    Reads CustomerInteraction rows where interaction_type == 'purchase'
+    (other types could be added later via a weight table). Maps each
+    interaction's external product_id to a Product DB id, then computes
+    per-customer (attribute_id, attribute_value) counts normalised by
+    the customer's max count. Upserts into customer_attribute_affinities.
+
+    Behaviour and contract are identical to the purchase-sourced version --
+    same output table, same scoring, same idempotency. Existing
+    CustomerPurchase callers are untouched.
+    """
+    q = (
+        db.query(CustomerInteraction)
+        .filter(CustomerInteraction.workspace_id == workspace_id,
+                CustomerInteraction.interaction_type == INTERACTION_PURCHASE)
+    )
+    if customer_id:
+        q = q.filter(CustomerInteraction.customer_id == customer_id)
+    interactions = q.all()
+
+    by_customer: dict[str, list[CustomerInteraction]] = defaultdict(list)
+    for i in interactions:
+        by_customer[i.customer_id].append(i)
+    if not by_customer:
+        return AffinityGenerateResult(customers_processed=0, affinities_upserted=0)
+
+    # Resolve ext product_id -> Product (and its attributes) once.
+    pids = list({i.product_id for i in interactions})
+    products = (
+        db.query(Product)
+        .filter(Product.workspace_id == workspace_id,
+                Product.product_id.in_(pids))
+        .all()
+    )
+    product_by_ext: dict[str, Product] = {p.product_id: p for p in products}
+    db_ids = [p.id for p in products]
+    attrs = (
+        db.query(ProductAttribute)
+        .filter(ProductAttribute.product_id.in_(db_ids))
+        .all() if db_ids else []
+    )
+    attrs_by_db_id: dict[int, list[ProductAttribute]] = defaultdict(list)
+    for a in attrs:
+        attrs_by_db_id[a.product_id].append(a)
+
+    total_upserted = 0
+    for cust_id, cust_interactions in by_customer.items():
+        pair_counts: dict[tuple[str, str], int] = defaultdict(int)
+        for inter in cust_interactions:
+            prod = product_by_ext.get(inter.product_id)
+            if prod is None:
+                continue
+            # Interactions don't carry quantity; weight = 1 per row.
+            for attr in attrs_by_db_id[prod.id]:
+                pair_counts[(attr.attribute_id, attr.attribute_value)] += 1
+
+        if not pair_counts:
+            continue
+        max_count = max(pair_counts.values())
+        for (attr_id, attr_val), count in pair_counts.items():
+            score = round(count / max_count, 6)
+            existing = (
+                db.query(CustomerAttributeAffinity)
+                .filter_by(
+                    workspace_id=workspace_id,
+                    customer_id=cust_id,
+                    attribute_id=attr_id,
+                    attribute_value=attr_val,
+                )
+                .first()
+            )
+            if existing:
+                existing.score = score
+            else:
+                db.add(CustomerAttributeAffinity(
+                    workspace_id=workspace_id,
+                    customer_id=cust_id,
+                    attribute_id=attr_id,
+                    attribute_value=attr_val,
+                    score=score,
+                ))
+            total_upserted += 1
     db.commit()
     return AffinityGenerateResult(
         customers_processed=len(by_customer),
