@@ -862,17 +862,19 @@ def get_recommendations(
         # categorical_filter    → filter_exclusion: handled as pre-scoring gate above
         # descriptive_metadata  → metadata_ignored: not scored
 
+        # Per-attribute value counts on this product. Used by FIX 2 to
+        # normalize the activity_type sum by sqrt(N) before capping.
+        value_counts_by_attr: dict[str, int] = defaultdict(int)
+        # FIX 2: accumulate activity_type contributions separately so the
+        # post-loop step can sqrt(N)-normalize the sum AND cap it at
+        # max_customer_aff_for_activity_type × weight. Initialised
+        # unconditionally so the post-loop finalisation is safe when
+        # affinity_map is empty (no-affinity / popularity-fallback path).
+        activity_type_raw_sum: float = 0.0
+
         if affinity_map:
-            # Per-attribute value counts on this product. Used by FIX 2 to
-            # normalize the activity_type sum by sqrt(N) before capping.
-            value_counts_by_attr: dict[str, int] = defaultdict(int)
             for attr in attrs_by_product[product.id]:
                 value_counts_by_attr[attr.attribute_id] += 1
-
-            # FIX 2: accumulate activity_type contributions separately so the
-            # post-loop step can sqrt(N)-normalize the sum AND cap it at
-            # max_customer_aff_for_activity_type × weight.
-            activity_type_raw_sum: float = 0.0
 
             for attr in attrs_by_product[product.id]:
                 key = (attr.attribute_id, attr.attribute_value)
@@ -1438,11 +1440,12 @@ def get_recommendations(
     # 13. Starter-mode multi-source signal layer. Additive and opt-in:
     #     only runs when the caller passes signal inputs. When nothing is
     #     passed, `results` is returned exactly as built above.
-    if (
+    signal_layer_active = (
         customer_signal_strength is not None
         or product_enrichment_outputs is not None
         or tiebreak_by_match_confidence
-    ):
+    )
+    if signal_layer_active:
         from app.services.multi_source_signal_service import apply_multi_source_signals
 
         results = apply_multi_source_signals(
@@ -1457,27 +1460,33 @@ def get_recommendations(
     #     no enrichment data (None) are treated as 0.0 — maximum penalty —
     #     so unenriched products never outrank enriched ones by default.
     #     Re-sorts afterward so rankings reflect the adjusted scores.
+    #     Gated on signal_layer_active (same condition as step 13): when no
+    #     signal inputs are passed, product_signal_strength is unpopulated
+    #     for every product, so an unconditional penalty would uniformly
+    #     demote the whole list and break step 13's "returned exactly as
+    #     built" pass-through contract.
     any_penalty = False
-    for i, rec in enumerate(results):
-        effective_strength = rec.product_signal_strength if rec.product_signal_strength is not None else 0.0
-        penalty = round(
-            (1.0 - effective_strength) * _LOW_SIGNAL_PENALTY_WEIGHT, 6
-        )
-        if penalty > 0:
-            new_score = round(rec.recommendation_score - penalty, 6)
-            results[i] = rec.model_copy(update={
-                "low_signal_penalty": penalty,
-                "recommendation_score": new_score,
-            })
-            any_penalty = True
+    if signal_layer_active:
+        for i, rec in enumerate(results):
+            effective_strength = rec.product_signal_strength if rec.product_signal_strength is not None else 0.0
+            penalty = round(
+                (1.0 - effective_strength) * _LOW_SIGNAL_PENALTY_WEIGHT, 6
+            )
+            if penalty > 0:
+                new_score = round(rec.recommendation_score - penalty, 6)
+                results[i] = rec.model_copy(update={
+                    "low_signal_penalty": penalty,
+                    "recommendation_score": new_score,
+                })
+                any_penalty = True
 
-    if any_penalty:
-        results.sort(
-            key=lambda r: (
-                -r.recommendation_score,
-                -(r.match_confidence if r.match_confidence is not None else -1.0),
-            ),
-        )
+        if any_penalty:
+            results.sort(
+                key=lambda r: (
+                    -r.recommendation_score,
+                    -(r.match_confidence if r.match_confidence is not None else -1.0),
+                ),
+            )
 
     # 15. Soft diversity shaping. Runs last so it operates on the final
     #     ranked list, after scoring, halo, suppression, and penalties.
