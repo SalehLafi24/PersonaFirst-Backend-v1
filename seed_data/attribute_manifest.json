@@ -193,7 +193,8 @@
         "score_weight": 0.366465,
         "usage": "cohort_key",
         "signal_tags": [
-          "cross_segment_guard"
+          "cross_segment_guard",
+          "persona_coherent"
         ],
         "_weight_reason": "suggester_v2"
       }

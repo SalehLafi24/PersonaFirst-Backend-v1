@@ -119,6 +119,22 @@ PROFILES: list[dict] = [
         "product_type_in": ["pacifier", "teether"],
         "age_group_in": ["infant"],
     },
+    # Gift buyer SKEWED to older kids (Patch B / age_coherence). Unlike
+    # synthetic_gift_buyer (genuinely spread, no dominant age), this profile
+    # restricts picks to kids/teen so the persona has a clear age_group
+    # center of mass. Adjacent infant items can still surface via shared
+    # use_case/product_type + boosters; PersonaCoherenceDemoter must keep
+    # the top-N from collapsing onto infant. No manual product selection --
+    # the older skew is a deterministic consequence of the age filter.
+    {
+        "customer_id": "synthetic_gift_buyer_age_skew",
+        "min_interactions": 5, "max_interactions": 10,
+        "product_type_in": [
+            "book", "backpack", "lunch_box", "stationery", "art_supply",
+            "puzzle", "action_figure",
+        ],
+        "age_group_in": ["kids", "teen"],
+    },
 ]
 
 

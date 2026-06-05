@@ -530,6 +530,130 @@ def check_diversity_floor(
     return out
 
 
+# --------------------------------------------------------------------------
+# Age-coherence floor (Patch B)
+# --------------------------------------------------------------------------
+#
+# Targets the gift_buyer cross-age collapse: a customer whose PURCHASES
+# concentrate on one age_group still receives recs that collapse to a
+# DIFFERENT age (e.g. infant). We measure the share of the rec set sitting
+# on age values the customer barely purchases, and flag when that share is
+# high AND the customer has a clear purchase center of mass.
+#
+# Self-contained on the response: the customer's purchase distribution is
+# read from `response.persona.attribute_affinities[attr].distribution` (the
+# same normalized distribution the engine scores against); the rec
+# distribution is read from `rec.attributes[attr]`. This is the eval-side
+# mirror of intent_layer_service.PersonaCoherenceDemoter; the demoter
+# corrects the ranking, this check confirms the correction held.
+
+_AGE_COHERENCE_FLOOR = 0.15             # purchase share below this = the
+                                        # customer barely buys this value.
+_AGE_COHERENCE_DOMINANCE_MIN = 0.40     # only judge customers with a clear
+                                        # purchase center of mass.
+_AGE_COHERENCE_MAX_OFFDIST_SHARE = 0.5  # at most half the rec set may sit on
+                                        # off-distribution values.
+
+
+def _purchase_distribution(response, attribute_name: str) -> dict[str, float]:
+    """The customer's purchase probability distribution for `attribute_name`,
+    read from the persona attached to the response. Empty when absent."""
+    persona = getattr(response, "persona", None)
+    affs = getattr(persona, "attribute_affinities", None) or {}
+    aff = affs.get(attribute_name)
+    dist = getattr(aff, "distribution", None) if aff is not None else None
+    return dict(dist) if dist else {}
+
+
+def _check_age_coherence_floor(
+    response,
+    *,
+    attribute: str,
+    floor: float,
+    dominance_min: float,
+    max_offdist_share: float,
+    severity: str = "error",
+) -> list[Violation]:
+    """Flag when too large a share of the rec set sits on attribute values
+    the customer barely purchases, given a clear purchase center of mass.
+
+    Skips (passes) when there's no purchase signal for the attribute or no
+    dominant value — mirroring the demoter's focused-/spread-buyer guard, so
+    a genuinely diverse gift-buyer or a cold-start customer is never flagged.
+    """
+    if not response.recommendations:
+        return []
+    purchase_dist = _purchase_distribution(response, attribute)
+    if not purchase_dist:
+        return []  # no purchase signal for this attribute -> nothing to judge
+    dominant = max(purchase_dist.values())
+    if dominant < dominance_min:
+        return []  # no clear center of mass (spread / cold-start) -> skip
+
+    rec_values = [
+        v for v in ((rec.attributes or {}).get(attribute)
+                    for rec in response.recommendations)
+        if v is not None
+    ]
+    if not rec_values:
+        return []
+    off = [v for v in rec_values if purchase_dist.get(v, 0.0) < floor]
+    off_share = len(off) / len(rec_values)
+    if off_share <= max_offdist_share + _FLOAT_EPS:
+        return []
+
+    off_counts: dict[str, int] = {}
+    for v in off:
+        off_counts[v] = off_counts.get(v, 0) + 1
+    return [Violation(
+        check=f"age_coherence_{attribute}",
+        severity=severity,
+        message=(f"{off_share:.0%} of recs sit on off-distribution "
+                 f"{attribute} value(s) {sorted(set(off))} (each <{floor:.0%} "
+                 f"of purchases; cap={max_offdist_share:.0%}); customer's "
+                 f"dominant {attribute} purchase share is {dominant:.0%}"),
+        detail={"attribute": attribute, "off_share": off_share,
+                "max_offdist_share": max_offdist_share, "floor": floor,
+                "dominant_purchase_share": dominant,
+                "off_value_counts": off_counts,
+                "purchase_distribution": purchase_dist},
+    )]
+
+
+AGE_COHERENCE_CHECKS = ("age_coherence_age_group",)
+
+
+def check_age_coherence(
+    response,
+    *,
+    customer_id: str,
+    attribute: str = "age_group",
+    floor: float = _AGE_COHERENCE_FLOOR,
+    dominance_min: float = _AGE_COHERENCE_DOMINANCE_MIN,
+    max_offdist_share: float = _AGE_COHERENCE_MAX_OFFDIST_SHARE,
+    severity: str = "error",
+) -> dict[str, CheckResult]:
+    """Age-coherence floor: the rec set must track the customer's purchase
+    distribution on `attribute`, not collapse to an off-distribution value.
+
+    The eval-side counterpart to PersonaCoherenceDemoter. Defaults mirror
+    the demoter's knobs so a fixed rec set is judged by the same semantics
+    that produced it.
+    """
+    violations = _check_age_coherence_floor(
+        response, attribute=attribute, floor=floor,
+        dominance_min=dominance_min, max_offdist_share=max_offdist_share,
+        severity=severity,
+    )
+    name = f"age_coherence_{attribute}"
+    return {name: CheckResult(
+        customer_id=customer_id,
+        check=name,
+        passed=not any(v.severity == "error" for v in violations),
+        violations=violations,
+    )}
+
+
 def check_weight_conformance(
     response,
     *,

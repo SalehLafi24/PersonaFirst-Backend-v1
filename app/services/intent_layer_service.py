@@ -839,6 +839,126 @@ class SaturationDemoter:
         )
 
 
+# --------------------------------------------------------------------------
+# Persona-coherence knobs (Patch B). Calibrated against synthetic data;
+# tune from real traffic.
+# --------------------------------------------------------------------------
+_COHERENCE_FLOOR = 0.15           # demote only when the customer's share for
+                                  # the candidate's value is below this.
+_COHERENCE_DOMINANCE_MIN = 0.40   # ...and only when the customer has a clear
+                                  # center of mass (dominant value >= this).
+_COHERENCE_MAX_DEMOTE = 0.40      # at share≈0, multiplier = 1 - 0.40 = 0.60.
+
+
+class PersonaCoherenceDemoter:
+    """Soft-demote candidates whose attribute value is UNDER-represented in
+    the customer's purchase distribution — the inverse of SaturationDemoter.
+
+    Motivation (Patch B): the `gift_buyer` cross-age collapse. A customer
+    whose purchases concentrate on one age_group still receives recs that
+    collapse to a different age (e.g. infant). The cross_segment_guard only
+    gates the *boosters*; items the base recommender surfaces in an
+    off-distribution segment are never demoted. This signal demotes them.
+
+    For each attribute tagged `persona_coherent` in the manifest that the
+    candidate has a value for:
+      - share    = customer's persona probability for the candidate's value
+      - dominant = the customer's strongest probability for that attribute
+      - demote only when `share < FLOOR` AND `dominant >= DOMINANCE_MIN`.
+        The dominance gate is the focused-/spread-buyer guard: a buyer with
+        no clear center of mass (a genuinely diverse gift-buyer, or a
+        cold-start flat distribution) is left untouched so we don't strip
+        their whole catalog; a single-age buyer never demotes their own age
+        because that value's share is high.
+      - multiplier = 1 - MAX_DEMOTE * (FLOOR - share) / FLOOR
+        → 1.0 at the floor, 1 - MAX_DEMOTE as share → 0. Clamped to [0, 1].
+
+    Multipliers compound across attributes and fold into the rerank loop's
+    multiplicative demote step, composing with SaturationDemoter.
+
+    Complementary-role candidates are exempt (return None, no demote): a
+    stroller-buyer's accessory should not be age-demoted, mirroring
+    SaturationDemoter's complementary bypass.
+
+    Multi-tenant: opt-in per attribute via manifest
+    `recommendation.signal_tags = ['persona_coherent']`. Workspaces that do
+    not tag any attribute get a no-op signal.
+    """
+
+    name = "persona_coherence_demoter"
+
+    def applies(self, ctx: IntentContext) -> bool:
+        if ctx.persona is None or not ctx.customer_purchase_history:
+            return False
+        return bool(_persona_coherent_attrs_from_ctx(ctx))
+
+    def evaluate(self, candidate: Any, ctx: IntentContext) -> Contribution | None:
+        info = ctx.catalog_index.get(_pid_of(candidate))
+        if info is None:
+            return None
+
+        coherent_attrs = _persona_coherent_attrs_from_ctx(ctx)
+        if not coherent_attrs:
+            return None
+
+        # Complementary role is exempt: an explicitly complementary pick
+        # (e.g. an accessory for something already owned) is allowed through
+        # cross-segment by design.
+        if info.recommendation_role == "complementary":
+            return None
+
+        affinities = (ctx.persona.attribute_affinities
+                      if hasattr(ctx.persona, "attribute_affinities") else {})
+
+        compounded = 1.0
+        per_attr: list[dict] = []
+        for attr in coherent_attrs:
+            cand_value = info.attributes.get(attr)
+            if not cand_value:
+                continue
+            aff = affinities.get(attr)
+            dist = getattr(aff, "distribution", None) if aff is not None else None
+            if not dist:
+                continue
+            dominant = max(dist.values())
+            if dominant < _COHERENCE_DOMINANCE_MIN:
+                # No clear center of mass — leave the candidate alone.
+                continue
+            share = dist.get(cand_value, 0.0)
+            if share >= _COHERENCE_FLOOR:
+                continue
+            scale = (_COHERENCE_FLOOR - share) / _COHERENCE_FLOOR
+            multiplier = 1.0 - (_COHERENCE_MAX_DEMOTE * scale)
+            multiplier = max(0.0, min(1.0, multiplier))
+            compounded *= multiplier
+            per_attr.append({
+                "attribute": attr,
+                "value": cand_value,
+                "customer_share": round(share, 4),
+                "dominant_share": round(dominant, 4),
+                "multiplier": round(multiplier, 4),
+            })
+
+        if not per_attr:
+            return None
+
+        first = per_attr[0]
+        return Contribution(
+            signal_name=self.name,
+            kind=CONTRIB_DEMOTE,
+            value=compounded,
+            reason=(
+                f"{first['attribute']}={first['value']!r} is only "
+                f"{first['customer_share']:.0%} of your purchases; "
+                f"demoted by {(1 - compounded) * 100:.0f}%."
+            ),
+            debug={
+                "compounded_multiplier": round(compounded, 4),
+                "per_attribute": per_attr,
+            },
+        )
+
+
 def _saturatable_attrs_from_ctx(ctx: IntentContext) -> list[str]:
     """Return the list of attribute names tagged `saturatable` in the
     manifest. Cached on the context after first call so signals don't
@@ -856,6 +976,29 @@ def _saturatable_attrs_from_ctx(ctx: IntentContext) -> list[str]:
         out = []
     try:
         object.__setattr__(ctx, "_saturatable_attrs_cache", out)
+    except Exception:
+        pass
+    return out
+
+
+def _persona_coherent_attrs_from_ctx(ctx: IntentContext) -> list[str]:
+    """Return the attribute names tagged `persona_coherent` in the manifest.
+    Cached on the context after first call (mirrors
+    _saturatable_attrs_from_ctx) so PersonaCoherenceDemoter doesn't re-read
+    the manifest per candidate."""
+    cached = getattr(ctx, "_persona_coherent_attrs_cache", None)
+    if cached is not None:
+        return cached
+    try:
+        manifest = load_manifest()
+        out = [
+            name for name, entry in manifest.entries.items()
+            if "persona_coherent" in entry.recommendation.signal_tags
+        ]
+    except Exception:
+        out = []
+    try:
+        object.__setattr__(ctx, "_persona_coherent_attrs_cache", out)
     except Exception:
         pass
     return out
@@ -895,6 +1038,7 @@ def _cross_segment_guard_attrs_from_ctx(ctx: IntentContext) -> list[str]:
 REGISTERED_SIGNAL_TAGS: dict[str, type] = {
     "saturatable": SaturationDemoter,
     "cross_segment_guard": AttributeRelationshipBooster,
+    "persona_coherent": PersonaCoherenceDemoter,
 }
 
 
@@ -904,6 +1048,7 @@ _REGISTERED_SIGNALS: list[IntentSignal] = [
     BehavioralCoOccurrenceBooster(),
     AttributeRelationshipBooster(),
     SaturationDemoter(),
+    PersonaCoherenceDemoter(),
 ]
 
 

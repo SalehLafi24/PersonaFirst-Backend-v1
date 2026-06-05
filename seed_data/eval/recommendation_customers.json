@@ -3,7 +3,7 @@
   "workspace_slug": "mumzworld_v3_sample",
   "workspace_id": 8,
   "_doc": "Synthetic customer fixture for recommendation_eval.py. Each customer is a real DB row with real CustomerInteraction history. The eval is conformance against design claims (rec engine does what it claims), NOT ground-truth benchmarking. Do not infer customer-level preference from these labels.",
-  "panel_size": 10,
+  "panel_size": 11,
   "claims_under_test": [
     "C1, C2 (ranking weight conformance)",
     "C8 (no duplicate product_id within rec set)",
@@ -14,7 +14,8 @@
     "C19 (matched_signals completeness)",
     "C24 (cold-start handling -- cold_start fixture)",
     "diversity floor",
-    "complement separation"
+    "complement separation",
+    "age_coherence (PersonaCoherenceDemoter -- gift_buyer_age_skew fixture)"
   ],
   "customers": [
     {
@@ -73,8 +74,16 @@
       "profile_label": "gift buyer (variety across ages and product_types)",
       "expected_persona_dominant": null,
       "expected_cold_start": false,
-      "_note": "Deliberately spans bib/playset/book/backpack/bodysuit/action_figure/pacifier across infant/toddler/kids/teen. Stresses persona-diffusion handling and diversity floor.",
+      "_note": "Deliberately spans bib/playset/book/backpack/bodysuit/action_figure/pacifier across infant/toddler/kids/teen. Stresses persona-diffusion handling and diversity floor. Genuinely spread (no dominant age) -- the age_coherence guard must NOT fire here.",
       "tests": ["diversity_floor", "complement_separation"]
+    },
+    {
+      "customer_id": "synthetic_gift_buyer_age_skew",
+      "profile_label": "gift buyer skewed to older kids (age-coherence stress)",
+      "expected_persona_dominant": {"age_group": "kids"},
+      "expected_cold_start": false,
+      "_note": "Purchases concentrate on older-kid product_types restricted to kids/teen, so age_group has a clear center of mass. Adjacent infant items can still surface via shared use_case/product_type + boosters. Stresses PersonaCoherenceDemoter / the age_coherence check: top-N must not collapse onto infant. This is the gift_buyer cross-age collapse both rubric reviewers flagged.",
+      "tests": ["age_coherence", "diversity_floor"]
     },
     {
       "customer_id": "synthetic_cold_start",
