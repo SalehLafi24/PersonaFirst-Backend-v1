@@ -34,9 +34,9 @@ here", that maps to the **`no`** column.
 | Q | Question (yes / none = good) | Values | ✓ good vs ✗ problem |
 |---|---|---|---|
 | q1 | **Anchor sense**: do the recs reflect the customer's dominant persona / shopping pattern? | yes / no | ✓ yes · ✗ no = the dominant signal isn't reflected at all |
-| q2 | **No bizarre items**: how many recs are clearly absurd for this persona? (a count, not yes/no) | none / 1 / >1 | ✓ none · ✗ 1 or >1 — counts items, not severity |
+| q2 | **No bizarre items**: are the recs all sensible for this persona? Count any clearly-absurd ones — **`none` is the good answer.** | none / 1 / >1 | ✓ none · ✗ 1 or >1 — counts items, not severity |
 | q3 | **Complement quality**: do complement-style recs genuinely complement rather than duplicate? | yes / partial / no | ✓ yes · partial = some complements are echoes · ✗ no = clones / near-dupes |
-| q4 | **Saturation respect**: are recently-purchased items kept out of the recs (or clearly justified when shown)? | yes / no | ✓ yes = respected · ✗ no = an unjustified repeat appeared (cross-check `intent_contributions`) |
+| q4 | **No bad repeats** (saturation respect): are recently-bought items kept out of the recs, or clearly justified when shown? **If you spot a just-bought item re-pitched, answer `no`.** | yes / no | ✓ yes = respected · ✗ no = an unjustified repeat appeared (cross-check `intent_contributions`) |
 | q5 | **Surprise**: is there at least one interesting-but-defensible rec? | yes / no | ✓ yes · ✗ no = everything is predictable (echo chamber) |
 
 ## Filling the template

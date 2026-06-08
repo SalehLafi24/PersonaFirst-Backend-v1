@@ -28,9 +28,9 @@ wrong, that's a `no` (or a non-zero count on q2). Trust your first instinct.
 | # | Question (yes / none = good) | Answer | ✓ good vs ✗ problem |
 |---|---|---|---|
 | q1 | **Anchor sense** — do the recs match what this customer is clearly into? | yes / no | ✓ yes = history + recs feel coherent · ✗ no = recs ignore the obvious shopping pattern |
-| q2 | **Bizarre items** — how many recs are clearly out of place? (a count) | none / 1 / >1 | ✓ none · ✗ 1 or >1 — e.g. adult skincare to a baby-book buyer is bizarre; a slightly different product type is not |
+| q2 | **Bizarre items** — are all the recs sensible? Count any clearly out of place — **`none` = good.** | none / 1 / >1 | ✓ none · ✗ 1 or >1 — e.g. adult skincare to a baby-book buyer is bizarre; a slightly different product type is not |
 | q3 | **Complement vs more-of-same** — do the recs *go with* what they bought, rather than just being *more of* the same? | yes / partial / no | ✓ yes = adds a different dimension to their basket · partial = mixed · ✗ no = clones / near-duplicates |
-| q4 | **No bad repeats** — are things they just bought kept out of the recs (or clearly justified if shown)? | yes / no | ✓ yes = no awkward repeats · ✗ no = something they bought yesterday is being re-pitched |
+| q4 | **No bad repeats** — are things they just bought kept out of the recs (or clearly justified if shown)? **Spot a just-bought item re-pitched → answer `no`.** | yes / no | ✓ yes = no awkward repeats · ✗ no = something they bought yesterday is being re-pitched |
 | q5 | **Surprise** — is there at least one interesting expansion — something they probably didn't expect but still makes sense? | yes / no | ✓ yes = at least one defensible "huh, that's a nice idea" · ✗ no = everything is predictable |
 
 ## How to record your answers
