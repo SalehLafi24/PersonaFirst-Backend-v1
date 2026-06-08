@@ -1,0 +1,714 @@
+{
+  "version": "1.0",
+  "_doc": "Declarative manifest read by app/services/attribute_engine. One entry per attribute. Adding a new attribute is a config change here + a normalization block in attribute_normalization.json. No code changes required. The `recommendation` block declares how each attribute participates in customer recommendation services: persona_relevant + score_weight (validator-enforced to sum to 1.0 across persona_relevant attributes) + usage. The `signal_tags` array is opt-in (1:1 with intent-layer signals; today only `saturatable`). The `_weight_reason` field is FREE-TEXT documentation of why each weight was set; no behavioural impact. Recommended values: 'initial_manual_tuning_v1' (hand-picked at first ship), 'suggester_v1' (set by weight_suggester --apply), 'override_<context>' (deliberate human override of a suggester run, e.g. 'override_fashion_team_2026Q2'). Evolution of weights is logged at seed_data/weight_history.jsonl.",
+  "attributes": {
+    "product_type": {
+      "_doc": "Identity attribute. Discovered + governed via the existing taxonomy_admin pipeline (product_type-clustering script + approval). Declared here so persona_extraction_service and customer_recommendation_service can read it as a manifest source of truth without hardcoding the attribute name.",
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "open",
+        "cardinality": "single",
+        "normalization_ref": null,
+        "unmatched_policy": "discard",
+        "allowed_values": []
+      },
+      "input": {
+        "modes": [],
+        "precedence": []
+      },
+      "proposal": {
+        "confidence_min": 0.5,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": true,
+        "score_weight": 0.236311,
+        "usage": "cohort_key",
+        "signal_tags": [
+          "saturatable"
+        ],
+        "_weight_reason": "suggester_v2"
+      }
+    },
+    "age_group": {
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "closed",
+        "cardinality": "single",
+        "normalization_ref": "age_group",
+        "unmatched_policy": "discard",
+        "allowed_values": [
+          "newborn",
+          "infant",
+          "toddler",
+          "kids",
+          "teen",
+          "adult",
+          "universal"
+        ]
+      },
+      "input": {
+        "modes": [
+          "csv_direct",
+          "regex_extract",
+          "llm_evidence",
+          "contextual_defaults"
+        ],
+        "precedence": [
+          "csv_direct",
+          "regex_extract",
+          "llm_evidence",
+          "contextual_defaults"
+        ],
+        "contextual_defaults": {
+          "_doc": "Phase A: when CSV is silent and no regex/LLM event fires, default age_group from product_type. Adult-targeted product types like supplements, feminine_care, makeup default to 'adult'. Generic mechanism applicable to other attributes too.",
+          "rules": [
+            {
+              "if_product_type_in": ["supplement", "feminine_care", "makeup", "coffee", "tea", "mug", "skincare", "hair_care"],
+              "value": "adult",
+              "confidence": 0.65,
+              "rationale": "adult-targeted product types default to age_group=adult when CSV is silent"
+            }
+          ]
+        },
+        "csv_direct": {
+          "csv_path": "seed_data/mumz_products.csv",
+          "product_id_column": "sku",
+          "source_columns": [
+            "age"
+          ]
+        },
+        "regex_extract": {
+          "fields": [
+            "name"
+          ],
+          "patterns": [
+            {
+              "pattern": "(?i)\\b0\\s*-?\\s*3\\s*m(?:onths?)?\\b",
+              "value": "newborn",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\bnewborn\\b",
+              "value": "newborn",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(?:0\\s*-\\s*(?:6|12)\\s*m|0\\s*-\\s*2\\s*y(?:ears?)?)\\b",
+              "value": "infant",
+              "confidence": 0.9
+            },
+            {
+              "pattern": "(?i)\\b(?:infant|baby|babies)\\b",
+              "value": "infant",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(?:12\\s*-\\s*36\\s*m|2\\s*-\\s*4\\s*y(?:ears?)?)\\b",
+              "value": "toddler",
+              "confidence": 0.9
+            },
+            {
+              "pattern": "(?i)\\btoddlers?\\b",
+              "value": "toddler",
+              "confidence": 0.88
+            },
+            {
+              "pattern": "(?i)\\b(?:5\\s*-\\s*7\\s*y(?:ears?)?|school\\s*age|kindergarten)\\b",
+              "value": "kids",
+              "confidence": 0.88
+            },
+            {
+              "pattern": "(?i)\\bkids?\\b",
+              "value": "kids",
+              "confidence": 0.8
+            },
+            {
+              "pattern": "(?i)\\b(?:8\\+|teens?|tweens?)\\b",
+              "value": "teen",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(?:adult|adults|mom|mother|father|parent)s?\\b",
+              "value": "adult",
+              "confidence": 0.78
+            },
+            {
+              "_doc": "B2c: explicit gendered-adult phrases. Helps out-of-domain products that lack a csv_direct event (empty CSV age cell).",
+              "pattern": "(?i)\\b(men's|mens|women's|womens|gentlemen|gentleman|ladies)\\b",
+              "value": "adult",
+              "confidence": 0.92
+            },
+            {
+              "_doc": "B2c: 'For Men' / 'For Women' phrasing.",
+              "pattern": "(?i)\\bfor\\s+(?:men|women|him|her)\\b",
+              "value": "adult",
+              "confidence": 0.92
+            }
+          ]
+        },
+        "llm_evidence": {
+          "fields": [
+            "name"
+          ],
+          "class_name": "contextual_semantic",
+          "max_objects_per_run": 30
+        }
+      },
+      "proposal": {
+        "confidence_min": 0.5,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "_doc": "Phase A pilot tested multi_event_resolution=most_specific here and reverted. Reason: on 'Probiotic Gummies For Kids' the regex layer emitted toddler/kids/teen events all at conf=0.98; most_specific picked toddler, but the gold label was kids (driven by the 'For Kids' phrase). Specificity-band resolution can't distinguish 'named age band in title' from 'age range covered'. Phrase-aware extraction is the right fix and is deferred. Keeping highest_confidence here.",
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": true,
+        "score_weight": 0.366465,
+        "usage": "cohort_key",
+        "signal_tags": [
+          "cross_segment_guard",
+          "persona_coherent"
+        ],
+        "_weight_reason": "suggester_v2"
+      }
+    },
+    "gender": {
+      "_doc": "Closed-taxonomy direct CSV attribute. Populated outside the engine via scripts/import_gender_on_v3.py.",
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "closed",
+        "cardinality": "single",
+        "normalization_ref": "gender",
+        "unmatched_policy": "discard",
+        "allowed_values": [
+          "male",
+          "female",
+          "unisex"
+        ]
+      },
+      "input": {
+        "modes": [],
+        "precedence": []
+      },
+      "proposal": {
+        "confidence_min": 0.5,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": true,
+        "score_weight": 0.301462,
+        "usage": "ranking_signal",
+        "_weight_reason": "suggester_v2"
+      }
+    },
+    "brand": {
+      "_doc": "Open-taxonomy direct CSV attribute. Populated outside the engine. Not persona-relevant in V1 (brand affinity is a future signal); declared so the manifest is the source of truth across all attributes the system is aware of.",
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "open",
+        "cardinality": "single",
+        "normalization_ref": "brand",
+        "unmatched_policy": "propose",
+        "allowed_values": []
+      },
+      "input": {
+        "modes": [],
+        "precedence": []
+      },
+      "proposal": {
+        "confidence_min": 0.5,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": false,
+        "score_weight": 0.0,
+        "usage": "ranking_signal"
+      }
+    },
+    "use_case": {
+      "_doc": "Intent attribute: the moment / context the product is for. Closed taxonomy of 10 values. Populated by regex_extract on product names; no LLM cost. Persona-relevant -- enters customer-rec scoring with weight 0.25.",
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "closed",
+        "cardinality": "single",
+        "normalization_ref": "use_case",
+        "unmatched_policy": "discard",
+        "allowed_values": [
+          "feeding",
+          "diapering",
+          "bathing",
+          "sleeping",
+          "travel",
+          "school",
+          "swimming",
+          "play",
+          "learning",
+          "party"
+        ]
+      },
+      "input": {
+        "modes": [
+          "regex_extract",
+          "contextual_defaults"
+        ],
+        "precedence": [
+          "regex_extract",
+          "contextual_defaults"
+        ],
+        "contextual_defaults": {
+          "_doc": "B2b: themed playsets are play per v1.1 ('themed toys take play, NOT the themed moment'). construction_toy is intentionally NOT in this list -- they split between play (Lego, blocks) and learning (age-graded engineering kits like Metal Mechanix). Fires only when no regex_extract event already covers the product (precedence enforces this). Confidence 0.7 keeps it below specific keyword patterns so a real signal still wins.",
+          "rules": [
+            {
+              "if_product_type_in": ["playset"],
+              "value": "play",
+              "confidence": 0.7,
+              "rationale": "themed playsets default to use_case=play per v1.1 themed-toy rule"
+            }
+          ]
+        },
+        "regex_extract": {
+          "fields": [
+            "name"
+          ],
+          "patterns": [
+            {
+              "pattern": "(?i)\\b(diaper|diapers|nappy|nappies)\\b",
+              "value": "diapering",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\bchanging\\s*(mat|pad|station)\\b",
+              "value": "diapering",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(wipe|wipes)\\b",
+              "value": "diapering",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(bib|bibs)\\b",
+              "value": "feeding",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(breast\\s*pump|breastpump)\\b",
+              "value": "feeding",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(sippy|sipper|tippy)\\b",
+              "value": "feeding",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(highchair|high\\s*chair)\\b",
+              "value": "feeding",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(baby|feeding|nursing)\\s*bottle\\b",
+              "value": "feeding",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(formula|baby\\s*food|cereal|puree)\\b",
+              "value": "feeding",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(shampoo|conditioner|body\\s*wash|baby\\s*soap)\\b",
+              "value": "bathing",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\bbath\\s*(toy|toys|tub|seat|sponge|towel)\\b",
+              "value": "bathing",
+              "confidence": 0.9
+            },
+            {
+              "pattern": "(?i)\\b(bath\\s*time|bathtime|bathing)\\b",
+              "value": "bathing",
+              "confidence": 0.88
+            },
+            {
+              "pattern": "(?i)\\b(swaddle|swaddling|sleep\\s*sack|sleeping\\s*bag)\\b",
+              "value": "sleeping",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(white\\s*noise|nursery\\s*night|night\\s*light|nightlight)\\b",
+              "value": "sleeping",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(blanket|comforter|duvet|crib\\s*sheet)\\b",
+              "value": "sleeping",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(pajama|pyjama|sleepwear|nightie|onesie)\\b",
+              "value": "sleeping",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(stroller|pram|buggy|pushchair)\\b",
+              "value": "travel",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(car\\s*seat|carseat|carrycot|infant\\s*carrier)\\b",
+              "value": "travel",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(diaper\\s*bag|nappy\\s*bag|baby\\s*bag|changing\\s*bag)\\b",
+              "value": "travel",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(travel|on\\s*the\\s*go|portable)\\b",
+              "value": "travel",
+              "confidence": 0.78
+            },
+            {
+              "pattern": "(?i)\\b(backpack|school\\s*bag|rucksack)\\b",
+              "value": "school",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(lunch\\s*box|lunchbox|lunch\\s*bag|bento)\\b",
+              "value": "school",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(pencil\\s*case|stationery|notebook|exercise\\s*book)\\b",
+              "value": "school",
+              "confidence": 0.9
+            },
+            {
+              "pattern": "(?i)\\b(kindergarten|preschool|scholar)\\b",
+              "value": "school",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(swim|swimming|swimsuit|swimwear)\\b",
+              "value": "swimming",
+              "confidence": 0.95
+            },
+            {
+              "pattern": "(?i)\\b(swim\\s*diaper|swim\\s*nappy|float|armband|water\\s*wing)\\b",
+              "value": "swimming",
+              "confidence": 0.92
+            },
+            {
+              "_doc": "B2b: 'surf' false-fires on 'Surf Gecko T-Shirt' (apparel); block apparel categories.",
+              "pattern": "(?i)\\b(beach|pool|surf|seaside)\\b",
+              "value": "swimming",
+              "confidence": 0.82,
+              "block_when_product_type_in": ["shirt", "bodysuit", "socks", "costume", "bib", "skincare", "makeup", "hair_care"]
+            },
+            {
+              "_doc": "B2b: 'costumes' (plural) was missed because \\bcostume\\b doesn't match plural with word-boundary at the right edge.",
+              "pattern": "(?i)\\b(costumes?|cosplay|fancy\\s*dress|halloween)\\b",
+              "value": "party",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(balloon|streamer|garland|cake\\s*topper|cupcake\\s*wrap)\\b",
+              "value": "party",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(party|birthday|celebration)\\b",
+              "value": "party",
+              "confidence": 0.88
+            },
+            {
+              "pattern": "(?i)\\b(flashcard|flash\\s*card|alphabet|abc|123|phonics)\\b",
+              "value": "learning",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(learning|educational|montessori)\\b",
+              "value": "learning",
+              "confidence": 0.9
+            },
+            {
+              "_doc": "B2b: 'story|stories' alone false-fires on brand names like 'Little Story'. Require book/reading anchor.",
+              "pattern": "(?i)\\b(book|books|reading|story\\s*book|story\\s*books|stories\\s*book)\\b",
+              "value": "learning",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(puzzle|puzzles|jigsaw)\\b",
+              "value": "learning",
+              "confidence": 0.78
+            },
+            {
+              "pattern": "(?i)\\b(playset|playmat|play\\s*tent|playhouse)\\b",
+              "value": "play",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(ride\\s*on|ride-on|tricycle|scooter|trike)\\b",
+              "value": "play",
+              "confidence": 0.92
+            },
+            {
+              "pattern": "(?i)\\b(plush|stuffed\\s*animal|action\\s*figure)\\b",
+              "value": "play",
+              "confidence": 0.9,
+              "block_when_product_type_in": ["shirt", "bodysuit", "socks", "costume", "bib"]
+            },
+            {
+              "_doc": "B2b: bare 'ball' false-fires on 'highball glass' / 'ball shape lamp' (out-of-domain adult products). Tighten to play-context compounds; keep frisbee/kite (no FP risk).",
+              "pattern": "(?i)\\b(ball\\s*pit|ball\\s*pool|catch\\s*ball|toy\\s*ball|play\\s*ball|bouncing\\s*ball|frisbee|kite)\\b",
+              "value": "play",
+              "confidence": 0.82
+            },
+            {
+              "pattern": "(?i)\\b(toy|toys)\\b",
+              "value": "play",
+              "confidence": 0.72
+            },
+            {
+              "_doc": "B2b: figure/figurine matches 'velociraptor figure' (gold play). Apparel categories blocked because 'figure-hugging shirt' fires false positives.",
+              "pattern": "(?i)\\bfigure(s|ines?)?\\b",
+              "value": "play",
+              "confidence": 0.85,
+              "block_when_product_type_in": ["shirt", "bodysuit", "socks", "costume", "bib", "skincare", "makeup", "hair_care"]
+            },
+            {
+              "_doc": "B2b: doll/dolls. Apparel categories blocked.",
+              "pattern": "(?i)\\bdoll(s|ies?)?\\b",
+              "value": "play",
+              "confidence": 0.85,
+              "block_when_product_type_in": ["shirt", "bodysuit", "socks", "costume", "bib"]
+            },
+            {
+              "_doc": "B2b: kinetic/moon/magic sand -- sensory play.",
+              "pattern": "(?i)\\b(kinetic|moon|magic|moldable)\\s*sand\\b",
+              "value": "play",
+              "confidence": 0.9
+            },
+            {
+              "_doc": "B2b: bicycle/bike. Note tricycle/scooter/trike already covered in ride-on pattern.",
+              "pattern": "(?i)\\b(bicycle|bike|cycle)\\b",
+              "value": "play",
+              "confidence": 0.85
+            },
+            {
+              "_doc": "B2b: motorcycle/motorbike. Apparel categories blocked.",
+              "pattern": "(?i)\\b(motorcycle|motorbike)\\b",
+              "value": "play",
+              "confidence": 0.85,
+              "block_when_product_type_in": ["shirt", "bodysuit", "socks", "costume", "bib", "skincare", "makeup", "hair_care"]
+            },
+            {
+              "_doc": "B2b: game/games -- typically board games / play activities.",
+              "pattern": "(?i)\\b(game|games)\\b",
+              "value": "play",
+              "confidence": 0.78
+            },
+            {
+              "_doc": "B2b: blocks/lego -- building toys.",
+              "pattern": "(?i)\\b(lego|building\\s*blocks|wooden\\s*blocks)\\b",
+              "value": "play",
+              "confidence": 0.85
+            },
+            {
+              "_doc": "B2b: robot toys -- modern toy category.",
+              "pattern": "(?i)\\b(robot\\s*toy|toy\\s*robot)\\b",
+              "value": "play",
+              "confidence": 0.88
+            },
+            {
+              "_doc": "B2b: toy vehicles. Toy-prefix only to avoid firing on adult vehicles.",
+              "pattern": "(?i)\\btoy\\s*(?:truck|car|excavator|vehicle|train)\\b",
+              "value": "play",
+              "confidence": 0.88
+            },
+            {
+              "_doc": "B2b: construction/excavator toy sets when paired with toy-context cues.",
+              "pattern": "(?i)\\b(construction\\s*(?:truck|set|kit|playset)|excavator|loader)\\b",
+              "value": "play",
+              "confidence": 0.8
+            }
+          ]
+        }
+      },
+      "proposal": {
+        "confidence_min": 0.7,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": true,
+        "score_weight": 0.095762,
+        "usage": "ranking_signal",
+        "signal_tags": [
+          "saturatable"
+        ],
+        "_weight_reason": "suggester_v2"
+      }
+    },
+    "seasonality": {
+      "_doc": "Demonstrates extensibility: adding a new attribute is a manifest entry + a normalization block. No code changes. Not persona-relevant -- carried as a ranking signal for future seasonal-damping work.",
+      "object_type": "product",
+      "taxonomy": {
+        "kind": "closed",
+        "cardinality": "single",
+        "normalization_ref": "seasonality",
+        "unmatched_policy": "discard",
+        "allowed_values": [
+          "spring",
+          "summer",
+          "autumn",
+          "winter",
+          "all_season"
+        ]
+      },
+      "input": {
+        "modes": [
+          "regex_extract",
+          "llm_evidence"
+        ],
+        "precedence": [
+          "regex_extract",
+          "llm_evidence"
+        ],
+        "regex_extract": {
+          "fields": [
+            "name"
+          ],
+          "patterns": [
+            {
+              "pattern": "(?i)\\b(?:swim|swimwear|beachwear|summer)\\b",
+              "value": "summer",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(?:winter|snow|thermal)\\b",
+              "value": "winter",
+              "confidence": 0.85
+            },
+            {
+              "pattern": "(?i)\\b(?:autumn|fall|back\\s*to\\s*school)\\b",
+              "value": "autumn",
+              "confidence": 0.82
+            },
+            {
+              "pattern": "(?i)\\b(?:spring)\\b",
+              "value": "spring",
+              "confidence": 0.8
+            },
+            {
+              "pattern": "(?i)\\b(?:all\\s*season|year\\s*round)\\b",
+              "value": "all_season",
+              "confidence": 0.75
+            }
+          ]
+        },
+        "llm_evidence": {
+          "fields": [
+            "name"
+          ],
+          "class_name": "contextual_semantic",
+          "max_objects_per_run": 30
+        }
+      },
+      "proposal": {
+        "confidence_min": 0.5,
+        "max_values_per_object": 1,
+        "require_evidence": true
+      },
+      "approval": {
+        "min_proposal_count": 3,
+        "min_distinct_objects": 2,
+        "min_avg_confidence": 0.85
+      },
+      "backfill": {
+        "strategy": "highest_confidence",
+        "single_row_per_object": true,
+        "idempotent": true
+      },
+      "default_policy": {
+        "on_unresolved": "leave_null"
+      },
+      "recommendation": {
+        "persona_relevant": false,
+        "score_weight": 0.0,
+        "usage": "ranking_signal"
+      }
+    }
+  }
+}

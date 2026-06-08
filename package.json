@@ -1,0 +1,27 @@
+{
+  "name": "personafirst-backend",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000P\u0000e\u0000r\u0000s\u0000o\u0000n\u0000a\u0000F\u0000i\u0000r\u0000s\u0000t\u0000-\u0000B\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000-\u0000v\u00001\u0000\r\u0000 \u0000#\u0000 \u0000P\u0000e\u0000r\u0000s\u0000o\u0000n\u0000a\u0000F\u0000i\u0000r\u0000s\u0000t\u0000-\u0000B\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000-\u0000v\u00001\u0000\r\u0000 \u0000#\u0000 \u0000P\u0000e\u0000r\u0000s\u0000o\u0000n\u0000a\u0000F\u0000i\u0000r\u0000s\u0000t\u0000-\u0000B\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000-\u0000v\u00001\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Salehlafi24/PersonaFirst-backend-v1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Salehlafi24/PersonaFirst-backend-v1/issues"
+  },
+  "homepage": "https://github.com/Salehlafi24/PersonaFirst-backend-v1#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.89.0"
+  }
+}

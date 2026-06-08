@@ -1,0 +1,71 @@
+{
+  "_doc": "Deterministic, taxonomy-level intent rules. Maps product_type -> repurchase_behavior, repurchase_window_days, recommendation_role. No customer preference, no LLM, no per-product judgement -- the rule is keyed only by product_type and applies to every product of that type. Edit this JSON to retune; rerun scripts/populate_product_intent_rules.py to materialise onto Product rows.",
+  "version": "1.0",
+
+  "_repurchase_legend": {
+    "one_time": "Customer typically buys this once (durable, large, slow cycle). Suppress on any prior purchase of same group.",
+    "repurchasable": "Customer typically rebuys after window_days. Suppress only within the window.",
+    "null_means_unknown": "Engine treats unset as 'no decision' -- candidate is not suppressed."
+  },
+  "_role_legend": {
+    "main":          "Standard product. Subject to saturation/repurchase suppression.",
+    "complementary": "Pairs alongside other purchases. Bypasses saturation/repurchase suppression."
+  },
+
+  "product_type": {
+    "diaper":             { "repurchase_behavior": "repurchasable", "repurchase_window_days": 14,  "recommendation_role": "main" },
+    "wipes":              { "repurchase_behavior": "repurchasable", "repurchase_window_days": 30,  "recommendation_role": "main" },
+    "bath_product":       { "repurchase_behavior": "repurchasable", "repurchase_window_days": 60,  "recommendation_role": "main" },
+    "skincare":           { "repurchase_behavior": "repurchasable", "repurchase_window_days": 60,  "recommendation_role": "main" },
+    "hair_care":          { "repurchase_behavior": "repurchasable", "repurchase_window_days": 60,  "recommendation_role": "main" },
+    "supplement":         { "repurchase_behavior": "repurchasable", "repurchase_window_days": 30,  "recommendation_role": "main" },
+    "feminine_care":      { "repurchase_behavior": "repurchasable", "repurchase_window_days": 30,  "recommendation_role": "main" },
+    "snack":              { "repurchase_behavior": "repurchasable", "repurchase_window_days": 14,  "recommendation_role": "main" },
+    "coffee":             { "repurchase_behavior": "repurchasable", "repurchase_window_days": 30,  "recommendation_role": "main" },
+    "tea":                { "repurchase_behavior": "repurchasable", "repurchase_window_days": 60,  "recommendation_role": "main" },
+    "makeup":             { "repurchase_behavior": "repurchasable", "repurchase_window_days": 90,  "recommendation_role": "main" },
+
+    "pacifier":           { "repurchase_behavior": "repurchasable", "repurchase_window_days": 90,  "recommendation_role": "main" },
+    "teether":            { "repurchase_behavior": "repurchasable", "repurchase_window_days": 180, "recommendation_role": "main" },
+    "bib":                { "repurchase_behavior": "repurchasable", "repurchase_window_days": 90,  "recommendation_role": "main" },
+    "bodysuit":           { "repurchase_behavior": "repurchasable", "repurchase_window_days": 180, "recommendation_role": "main" },
+    "shirt":              { "repurchase_behavior": "repurchasable", "repurchase_window_days": 180, "recommendation_role": "main" },
+    "socks":              { "repurchase_behavior": "repurchasable", "repurchase_window_days": 180, "recommendation_role": "main" },
+    "costume":            { "repurchase_behavior": "repurchasable", "repurchase_window_days": 365, "recommendation_role": "main" },
+    "swim_accessory":     { "repurchase_behavior": "repurchasable", "repurchase_window_days": 365, "recommendation_role": "complementary" },
+    "blanket":            { "repurchase_behavior": "repurchasable", "repurchase_window_days": 365, "recommendation_role": "main" },
+    "towel":              { "repurchase_behavior": "repurchasable", "repurchase_window_days": 365, "recommendation_role": "main" },
+    "bedding":            { "repurchase_behavior": "repurchasable", "repurchase_window_days": 365, "recommendation_role": "main" },
+
+    "stroller":           { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "stroller_accessory": { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "complementary" },
+    "bouncer":            { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "ride_on":            { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "bicycle":            { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "walker_toy":         { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "furniture":          { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "changing_mat":       { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "mug":                { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "water_bottle":       { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "lunch_box":          { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "backpack":           { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+
+    "book":               { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "puzzle":             { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "game":               { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "vehicle_toy":        { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "plush_toy":          { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "learning_toy":       { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "sensory_toy":        { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "musical_toy":        { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "construction_toy":   { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "action_figure":      { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "bath_toy":           { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+    "playset":            { "repurchase_behavior": "one_time", "repurchase_window_days": null, "recommendation_role": "main" },
+
+    "art_supply":         { "repurchase_behavior": "repurchasable", "repurchase_window_days": 90,  "recommendation_role": "main" },
+    "stationery":         { "repurchase_behavior": "repurchasable", "repurchase_window_days": 90,  "recommendation_role": "complementary" },
+    "notebook":           { "repurchase_behavior": "repurchasable", "repurchase_window_days": 180, "recommendation_role": "complementary" },
+    "party_supply":       { "repurchase_behavior": "repurchasable", "repurchase_window_days": 60,  "recommendation_role": "complementary" }
+  }
+}

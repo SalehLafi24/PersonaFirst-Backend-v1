@@ -150,9 +150,10 @@ def test_behavior_first_direct_fallback(client, db):
 # behavior_first + fallback_behavior="balanced" -> uses blended fallback
 # ---------------------------------------------------------------------------
 
-def test_behavior_first_balanced_fallback(client, db):
-    """With fallback_behavior='balanced', effective_score =
-    direct_score + relationship_score + behavioral_score."""
+def test_behavior_first_balanced_fallback_high_signal(client, db):
+    """With fallback_behavior='balanced', effective_score uses a weighted blend:
+    0.5*direct + 0.3*rel + 0.2*beh.  For direct_score=0.9, rel=0, beh=0:
+    eff = 0.45, which is below the high-signal threshold (0.6) -> filtered."""
     ws = make_workspace(client, "FB-BAL", "fb-bal")
     wid = ws["id"]
 
@@ -166,9 +167,8 @@ def test_behavior_first_balanced_fallback(client, db):
         "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
         "diversity_mode": "off", "fallback_behavior": "balanced",
     })
-    data = resp.json()["results"]
-    assert len(data) == 1
-    assert data[0]["product_id"] == "prod_test"
+    # Weighted blend 0.5*0.9 = 0.45 < threshold 0.6 -> filtered
+    assert len(resp.json()["results"]) == 0
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +264,100 @@ def test_fallback_explanation_present(client, db):
 
 
 # ---------------------------------------------------------------------------
+# recommendation_source reflects fallback type
+# ---------------------------------------------------------------------------
+
+def test_behavior_first_direct_fallback_source_label(client, db):
+    """behavior_first + fallback='direct' -> source = 'fallback_direct'."""
+    ws = make_workspace(client, "FB-SRC1", "fb-src1")
+    wid = ws["id"]
+    _build_high_signal_customer(db, wid, "cust_power")
+    _assert_high_signal(client, wid, "cust_power")
+    seed_product(db, wid, "prod_test", "SKU-T", "Test",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_power", {
+        "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "direct",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    assert data[0]["recommendation_source"] == "fallback_direct"
+
+
+def test_behavior_first_balanced_fallback_source_label(client, db):
+    """behavior_first + fallback='balanced' -> source = 'fallback_balanced'.
+    Uses low-signal customer so weighted blend passes threshold."""
+    ws = make_workspace(client, "FB-SRC2", "fb-src2")
+    wid = ws["id"]
+    seed_affinity(db, wid, "cust_new", "category", "yoga", 0.9)
+    seed_product(db, wid, "prod_test", "SKU-T", "Test",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_new", {
+        "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "balanced",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    assert data[0]["recommendation_source"] == "fallback_balanced"
+
+
+def test_relationship_only_direct_fallback_source_label(client, db):
+    """relationship_only + fallback='direct' -> source = 'fallback_direct'."""
+    ws = make_workspace(client, "FB-SRC3", "fb-src3")
+    wid = ws["id"]
+    _build_high_signal_customer(db, wid, "cust_power")
+    _assert_high_signal(client, wid, "cust_power")
+    seed_product(db, wid, "prod_test", "SKU-T", "Test",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_power", {
+        "slot_id": "s1", "algorithm": "relationship_only", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "direct",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    assert data[0]["recommendation_source"] == "fallback_direct"
+
+
+def test_relationship_only_balanced_fallback_source_label(client, db):
+    """relationship_only + fallback='balanced' -> source = 'fallback_balanced'.
+    Uses low-signal customer so weighted blend passes threshold."""
+    ws = make_workspace(client, "FB-SRC4", "fb-src4")
+    wid = ws["id"]
+    seed_affinity(db, wid, "cust_new", "category", "yoga", 0.9)
+    seed_product(db, wid, "prod_test", "SKU-T", "Test",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_new", {
+        "slot_id": "s1", "algorithm": "relationship_only", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "balanced",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    assert data[0]["recommendation_source"] == "fallback_balanced"
+
+
+def test_non_fallback_source_label_unchanged(client, db):
+    """Without fallback, recommendation_source follows existing logic."""
+    ws = make_workspace(client, "FB-SRC5", "fb-src5")
+    wid = ws["id"]
+    seed_affinity(db, wid, "cust_1", "category", "yoga", 0.9)
+    seed_product(db, wid, "prod_test", "SKU-T", "Test",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_1", {
+        "slot_id": "s1", "algorithm": "balanced", "top_n": 5,
+        "diversity_mode": "off",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    # Normal direct signal -> "direct", not a fallback label
+    assert data[0]["recommendation_source"] == "direct"
+
+
+# ---------------------------------------------------------------------------
 # Default fallback_behavior preserves existing behavior
 # ---------------------------------------------------------------------------
 
@@ -286,3 +380,146 @@ def test_default_fallback_behavior_unchanged(client, db):
     })
     # behavior_first with no behavioral signal, threshold=0.6 -> empty
     assert len(resp.json()["results"]) == 0
+
+
+# ---------------------------------------------------------------------------
+# Balanced fallback uses weighted blend (0.5d + 0.3r + 0.2b)
+# ---------------------------------------------------------------------------
+
+def test_balanced_fallback_weighted_blend(client, db):
+    """Low-signal customer (threshold=0.2). Balanced eff = 0.5*0.9 = 0.45
+    which passes threshold 0.2 -> returned.  Proves weighted blend works."""
+    ws = make_workspace(client, "FB-WB", "fb-wb")
+    wid = ws["id"]
+
+    # Low signal customer -> threshold=0.2
+    seed_affinity(db, wid, "cust_new", "category", "yoga", 0.9)
+
+    seed_product(db, wid, "prod_test", "SKU-T", "Test Product",
+                 attributes=[("category", "yoga")])
+
+    resp = slot_post(client, wid, "cust_new", {
+        "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "balanced",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 1
+    assert data[0]["product_id"] == "prod_test"
+
+
+# ---------------------------------------------------------------------------
+# Balanced fallback does not inflate scores beyond the blended scale
+# ---------------------------------------------------------------------------
+
+def test_balanced_fallback_no_inflation(client, db):
+    """The balanced effective_score (0.5*d) is always <= d,
+    so it never inflates beyond the direct fallback score."""
+    ws = make_workspace(client, "FB-NI", "fb-ni")
+    wid = ws["id"]
+
+    _build_high_signal_customer(db, wid, "cust_power")
+    _assert_high_signal(client, wid, "cust_power")
+
+    seed_product(db, wid, "prod_test", "SKU-T", "Test Product",
+                 attributes=[("category", "yoga")])
+
+    # "direct" fallback: eff = direct_score = 0.9 -> passes threshold 0.6
+    resp_direct = slot_post(client, wid, "cust_power", {
+        "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "direct",
+    })
+    assert len(resp_direct.json()["results"]) == 1
+
+    # "balanced" fallback: eff = 0.5*0.9 = 0.45 -> below threshold 0.6
+    resp_balanced = slot_post(client, wid, "cust_power", {
+        "slot_id": "s2", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "balanced",
+    })
+    assert len(resp_balanced.json()["results"]) == 0
+
+
+# ---------------------------------------------------------------------------
+# Ranking uses weighted balanced effective_score
+# ---------------------------------------------------------------------------
+
+def test_balanced_fallback_ranking(client, db):
+    """Two fallback candidates are ranked by weighted blend, not raw sum."""
+    ws = make_workspace(client, "FB-RANK", "fb-rank")
+    wid = ws["id"]
+
+    # Low signal -> threshold=0.2
+    seed_affinity(db, wid, "cust_1", "category", "yoga", 0.9)
+    seed_affinity(db, wid, "cust_1", "category", "running", 0.5)
+
+    # prod_a: direct_score=0.9 -> balanced eff = 0.5*0.9 = 0.45
+    seed_product(db, wid, "prod_a", "SKU-A", "Prod A",
+                 attributes=[("category", "yoga")])
+    # prod_b: direct_score=0.5 -> balanced eff = 0.5*0.5 = 0.25
+    seed_product(db, wid, "prod_b", "SKU-B", "Prod B",
+                 attributes=[("category", "running")])
+
+    resp = slot_post(client, wid, "cust_1", {
+        "slot_id": "s1", "algorithm": "behavior_first", "top_n": 5,
+        "diversity_mode": "off", "fallback_behavior": "balanced",
+    })
+    data = resp.json()["results"]
+    assert len(data) == 2
+    # Ranked by effective_score DESC: prod_a (0.45) then prod_b (0.25)
+    assert data[0]["product_id"] == "prod_a"
+    assert data[1]["product_id"] == "prod_b"
+
+
+# ---------------------------------------------------------------------------
+# fallback_delta: unit tests for _compute_effective_score
+# ---------------------------------------------------------------------------
+
+def test_fallback_delta_positive_when_fallback_applies():
+    """When fallback triggers, effective_score > final_score -> delta > 0."""
+    from app.services.recommendation_service import _compute_effective_score
+    from app.schemas.recommendation import RecommendationRead
+
+    rec = RecommendationRead(
+        product_id="p1", sku="S1", name="P1", group_id=None,
+        matched_attributes=[], direct_score=0.9, relationship_score=0.0,
+        popularity_score=0.0, behavioral_score=0.0,
+        recommendation_score=0.0, recommendation_source="direct",
+        explanation="", relationship_matches=[], behavioral_matches=[],
+    )
+
+    # "direct" fallback
+    eff, _ = _compute_effective_score(rec, 0.27, "behavior_first", "direct")
+    delta = round(eff - 0.27, 6)
+    assert eff == 0.9
+    assert delta == 0.63
+
+    # "balanced" fallback: 0.5*0.9 + 0.3*0 + 0.2*0 = 0.45
+    eff_bal, _ = _compute_effective_score(rec, 0.27, "behavior_first", "balanced")
+    delta_bal = round(eff_bal - 0.27, 6)
+    assert eff_bal == 0.45
+    assert delta_bal == 0.18
+
+
+def test_fallback_delta_zero_when_no_fallback():
+    """When signal is present or fallback_behavior='none', delta = 0."""
+    from app.services.recommendation_service import _compute_effective_score
+    from app.schemas.recommendation import RecommendationRead
+
+    rec = RecommendationRead(
+        product_id="p1", sku="S1", name="P1", group_id=None,
+        matched_attributes=[], direct_score=0.9, relationship_score=0.0,
+        popularity_score=0.0, behavioral_score=0.8,
+        recommendation_score=0.0, recommendation_source="behavioral",
+        explanation="", relationship_matches=[], behavioral_matches=[],
+    )
+
+    # fallback_behavior="none" -> no change
+    eff, explanation = _compute_effective_score(rec, 1.07, "behavior_first", "none")
+    assert eff == 1.07
+    assert explanation == ""
+    assert round(eff - 1.07, 6) == 0.0
+
+    # Signal present (behavioral_score > 0) -> no fallback even with "direct"
+    eff2, explanation2 = _compute_effective_score(rec, 1.07, "behavior_first", "direct")
+    assert eff2 == 1.07
+    assert explanation2 == ""
+    assert round(eff2 - 1.07, 6) == 0.0

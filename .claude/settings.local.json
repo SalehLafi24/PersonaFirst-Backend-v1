@@ -7,7 +7,25 @@
       "Bash(python -m pytest tests/test_recommendations_v2.py -v)",
       "Bash(python -m pytest -q)",
       "Bash(python:*)",
-      "Bash(.venv/Scripts/python -m pytest tests/test_behavior_engine.py tests/test_recommendations_v7.py -v 2>&1)"
+      "Bash(.venv/Scripts/python -m pytest tests/test_behavior_engine.py tests/test_recommendations_v7.py -v 2>&1)",
+      "Bash(xargs grep:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(python -m scripts.run_recommendations_c004_eval)",
+      "Read(//tmp/**)",
+      "Bash(PYTHONIOENCODING=utf-8 python scripts/run_real_text_enrichment.py --dry-run --limit 1 --attributes layering_role)",
+      "Bash(PYTHONIOENCODING=utf-8 python scripts/run_real_catalog_eval.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python scripts/prepare_mumz_sample.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python *)",
+      "Bash(node --check served_admin.js)",
+      "Bash(git stash *)",
+      "Bash(python3 *)",
+      "Bash(git check-ignore *)",
+      "Bash(Select-String \"pycache\")",
+      "Bash(Select-Object -First 3)",
+      "Bash(git config *)",
+      "Bash(Select-String -NotMatch \"pycache\")",
+      "Bash(git add *)"
     ]
   }
 }

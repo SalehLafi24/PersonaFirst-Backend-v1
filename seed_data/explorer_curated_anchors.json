@@ -1,0 +1,16 @@
+{
+  "_doc": "Curated demo anchors per workspace. Picked from validation results (strong product_types where the recommender produces a coherent, explainable top-5). Format: { workspace_slug: { anchors: [product_id, ...] } }. Demo Mode in the Explorer restricts the picker to these anchors.",
+  "mumzworld_v3_sample": {
+    "anchors": [
+      "27545113-VD-0652805088365",
+      "GRT-DB01000040515",
+      "19188949-0923_RED",
+      "33908227-DWHL_3161",
+      "BDM-413566",
+      "0X-MW-9780192729798",
+      "2804452-AH0385GR",
+      "AMS-21004",
+      "BNDL-TC-B-MM01G"
+    ]
+  }
+}

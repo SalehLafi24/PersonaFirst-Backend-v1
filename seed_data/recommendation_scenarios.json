@@ -1,0 +1,83 @@
+[
+  {
+    "scenario_id": "S001",
+    "customer_id": "C001",
+    "goal": "Running-focused recommendation quality",
+    "expected_top_relevant": [
+      "P001",
+      "P004",
+      "P014",
+      "P010"
+    ],
+    "expected_avoid": [
+      "P003",
+      "P013",
+      "P016"
+    ],
+    "notes": "High-support and athletic products should dominate. Low-support lounge items should score lower."
+  },
+  {
+    "scenario_id": "S002",
+    "customer_id": "C002",
+    "goal": "Yoga/pilates profile",
+    "expected_top_relevant": [
+      "P005",
+      "P003",
+      "P018",
+      "P002"
+    ],
+    "expected_avoid": [
+      "P001",
+      "P014",
+      "P011"
+    ],
+    "notes": "Yoga/pilates and low-medium support should beat high-impact running gear."
+  },
+  {
+    "scenario_id": "S003",
+    "customer_id": "C003",
+    "goal": "Travel capsule wardrobe",
+    "expected_top_relevant": [
+      "P006",
+      "P007",
+      "P008",
+      "P009",
+      "P013"
+    ],
+    "expected_avoid": [
+      "P001",
+      "P014"
+    ],
+    "notes": "Travel and versatile casual pieces should rank strongly."
+  },
+  {
+    "scenario_id": "S004",
+    "customer_id": "C004",
+    "goal": "Formal preference",
+    "expected_top_relevant": [
+      "P011",
+      "P017"
+    ],
+    "expected_avoid": [
+      "P013",
+      "P003"
+    ],
+    "notes": "Formal items should clearly beat lounge products."
+  },
+  {
+    "scenario_id": "S005",
+    "customer_id": "C005",
+    "goal": "Lounge/recovery preference",
+    "expected_top_relevant": [
+      "P013",
+      "P003",
+      "P018",
+      "P016"
+    ],
+    "expected_avoid": [
+      "P001",
+      "P011"
+    ],
+    "notes": "Lounge and recovery items should rank ahead of formal or high-impact pieces."
+  }
+]

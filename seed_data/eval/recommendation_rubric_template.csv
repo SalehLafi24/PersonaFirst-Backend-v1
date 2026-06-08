@@ -1,0 +1,11 @@
+customer_id,profile_label,top_n,manifest_version,git_sha,reviewed_at,reviewer,q1_anchor_sense,q2_no_bizarre_items,q3_complement_quality,q4_saturation_respect,q5_surprise,notes
+synthetic_baby_essentials,infant parent (heavy purchase history),10,1.2,,,,,,,,,
+synthetic_baby_essentials_alt,infant parent (alt distribution),10,1.2,,,,,,,,,
+synthetic_toy_focused,play-focused buyer (mixed ages),10,1.2,,,,,,,,,
+synthetic_book_heavy,kids/learning buyer,10,1.2,,,,,,,,,
+synthetic_apparel_focused,apparel buyer (mixed ages),10,1.2,,,,,,,,,
+synthetic_mixed_category,cross-segment buyer (one of each),10,1.2,,,,,,,,,
+synthetic_adult_self,adult-self buyer (supplements/makeup/coffee/skincare),10,1.2,,,,,,,,,
+synthetic_gift_buyer,gift buyer (variety across ages),10,1.2,,,,,,,,,
+synthetic_cold_start,cold-start (single interaction),10,1.2,,,,,,,,,
+synthetic_recent_repurchase,recent-purchase customer,10,1.2,,,,,,,,,

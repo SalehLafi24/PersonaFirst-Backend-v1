@@ -1,0 +1,578 @@
+version: "1.2"
+workspace_slug: "mumzworld_v3_sample"
+manifest_version_at_authoring: "1.0"
+authored_at: "2026-05-08"
+revised_at: "2026-05-09"
+authors: ["personafirst_team"]
+domain: "baby and childcare retail"
+
+changelog:
+  v1_1:
+    date: "2026-05-09"
+    driven_by: "pilot labeling of 12 stress-test products (claude_pilot_v1)"
+    changes:
+      - "gender: explicit rules for character-theme licensing, colour-only,
+         animal/print themes, and historical-stereotype rejection."
+      - "use_case: themed toys take play (not the themed moment); apparel
+         bundled with play-themed accessories takes apparel default (null);
+         'Set' disambiguation between bundle vs themed playset."
+      - "age_group: explicit phrase signals (For Kids / For Boys / For Girls)
+         beat inferred ranges; adult-targeted utility products = adult; out-
+         of-domain products still take their target band, not null."
+      - "product_type: figurine-and-scenery systems are playset, not
+         construction_toy; out-of-domain catalog scope clarified."
+    not_changed:
+      - "Value definitions, taxonomy lists, cardinality, and out_of_vocabulary
+         policy. Edits are clarifications to edge_cases only."
+    re_labeling_required: false
+    rationale: |
+      Pilot labelers already applied these rules implicitly (visible in
+      friction_notes). v1.1 codifies the rules they used. Existing pilot
+      labels are forward-compatible.
+
+  v1_2:
+    date: "2026-05-09"
+    driven_by: "30-product bridge batch (claude_bridge_v1) surfaced 12 v1.2
+                candidates; 3 pervasive rules promoted, 9 niche deferred"
+    changes:
+      - "gender: pink color in baby/toy retail IS gender-coding (asymmetric
+         with blue, which remains neutral). Reflects retail reality even
+         though strict 'colour alone' symmetry would say unisex."
+      - "gender: female-coded product categories without explicit gender
+         language. Beauty/makeup, hair clips, hair accessories default to
+         female by category convention. (List intentionally short -- this
+         is a category-level exception to the no-historical-stereotype
+         rule.)"
+      - "use_case: explicit rule for bouncers/swings -- no use_case fits;
+         leave null. Soothing isn't a value; do not force-fit to
+         sleeping or learning."
+    not_changed:
+      - "Value definitions, taxonomy lists. Edits to edge_cases only."
+    re_labeling_required: "limited (~3 bridge products affected)"
+    deferred:
+      - "Bicycle play vs travel rule (1 case)"
+      - "Adult incontinence vs feminine_care rule (1 case)"
+      - "Mermaid in female-coded character list (1 case)"
+      - "Apparel without age cue default rule (1 case)"
+      - "Ride-on age default (1 case)"
+      - "Costume daily dress-up vs party split (1 case)"
+      - "Stationery teen vs adult default (1 case)"
+      - "Artist-grade tools age default (1 case)"
+      - "Star-Wars-style male-coded character borderline (review only)"
+
+labeler_brief: |
+  This guide tells you how to assign attribute values to products in the
+  mumzworld_v3_sample catalog. Workflow:
+
+    1. Read the product NAME first. Don't look at current_system_values
+       in the gold-set sample until you've formed your own answer.
+    2. Compare against the value definitions in this guide. Pick the
+       single value that best matches.
+    3. If no value fits, mark the label as null. Do NOT guess. Do NOT
+       invent a new value during labeling -- new values flow through
+       taxonomy_admin, not the gold set.
+    4. For multi-context products (e.g. a "swim diaper" -> swimming or
+       diapering), follow the per-attribute edge_cases.
+    5. Add a note in the `notes` field whenever a product genuinely
+       defies the value set; those notes drive future taxonomy work.
+
+  Cardinality is single across all four attributes today. If you find
+  yourself wanting to assign two values, pick the dominant one and
+  document the secondary context in `notes`.
+
+attributes:
+
+  # ----------------------------------------------------------------------
+  # CLOSED: age_group  (7 values declared in the manifest)
+  # ----------------------------------------------------------------------
+
+  age_group:
+    description: |
+      The customer life-stage / age band the product is intended for.
+      Single value; pick the dominant target if the product spans bands.
+    cardinality: "single"
+    taxonomy_kind: "closed"
+    out_of_vocabulary_policy: |
+      Leave null. The 7 values are exhaustive for this workspace.
+    edge_cases: |
+      - "0-12m" or "0+ months" -> infant.
+      - Products marketed at the parent (e.g., breast pumps, postpartum
+        care) -> adult.
+      - "All ages" or "for the whole family" -> universal.
+      - Apparel sized in age ranges: prefer the dominant band
+        ("6m-2y" -> infant; "2-4y" -> toddler; "5-7y" -> kids;
+        "8+" -> teen). When the range spans two bands, pick by midpoint.
+      # ---- v1.1 additions (pilot-driven) -------------------------------
+      - Explicit phrase signals BEAT inferred age ranges. "For Kids" /
+        "For Boys" / "For Girls" / "For Men" / "For Women" name the band
+        directly. Use the named band even if the product also lists an
+        age range that overlaps multiple bands. Example: a probiotic
+        gummy explicitly labelled "For Kids" -> kids, even if the dosage
+        chart covers ages 2-12.
+      - Adult-targeted utility products (multivitamins, postpartum care,
+        kitchen organisation, household items, adult t-shirts) -> adult.
+        The product's user is an adult, even when the catalog primarily
+        sells baby goods. The trigger is the product's *user*, not its
+        catalog placement.
+      - Out-of-domain products (e.g., kitchen organisation in a baby-care
+        store) still take their target band, NOT null. Pick the band the
+        product targets and add a note flagging the catalog-scope issue.
+      - Do NOT use "teen" as a catch-all for everything older than kids.
+        Teen is roughly 8 years and up. Adult-targeted products go to
+        adult; "teen" requires teen/pre-teen marketing cues.
+
+    values:
+      newborn:
+        definition: |
+          Designed for 0 to 3 months of age. Includes products explicitly
+          marked "newborn", "0-3m", or sized for the smallest infants.
+        positive_examples:
+          - "Newborn-size diapers"
+          - "0-3m onesie"
+        negative_examples:
+          - "0-12m onesie -> infant (covers a wider band)"
+
+      infant:
+        definition: |
+          Designed for roughly 0 to 24 months (or 0 to 2 years). The
+          most common baby-care band. Includes most bibs, pacifiers,
+          teethers, and infant-feeding gear.
+        positive_examples:
+          - "Star Babies - Disposable Bibs (infant)"
+          - "Frigg - Daisy Silicone Pacifier 0-6M"
+          - "Tutti Rocks - Teether Corn Ring"
+        negative_examples:
+          - "Snack-time bib for 3-year-old -> toddler"
+        notes: |
+          When the product name says "baby" without a more specific age,
+          default to infant.
+
+      toddler:
+        definition: |
+          Designed for roughly 2 to 4 years. Walking-age children;
+          includes potty-training, push-along walkers, simple puzzles.
+        positive_examples:
+          - "Walker toy 12m+"
+          - "Toddler shoes"
+        negative_examples:
+          - "Pram / stroller (typical use 0-3y) -> infant"
+
+      kids:
+        definition: |
+          Designed for roughly 5 to 7 years. Pre-school / early-primary.
+          Includes school-themed products, beginner books, simple games.
+        positive_examples:
+          - "Kindergarten backpack"
+          - "Picture story book"
+
+      teen:
+        definition: |
+          Designed for roughly 8 years and up. Pre-teen and teenage.
+          Includes more complex games, harder books, larger apparel,
+          older-child-targeted toys.
+        positive_examples:
+          - "8+ puzzle"
+          - "Teen-themed cosmetics"
+
+      adult:
+        definition: |
+          Designed for parents / caregivers, not the child directly.
+          Includes breast pumps, postpartum care, parent-targeted
+          accessories.
+        positive_examples:
+          - "Breast pump"
+          - "Postpartum support belt"
+
+      universal:
+        definition: |
+          Explicitly designed for all ages, or covers the whole family.
+        positive_examples:
+          - "Family bath towel set"
+        notes: |
+          Use sparingly. Most "all ages" claims are marketing; if the
+          product is plainly for one band, pick that band.
+
+  # ----------------------------------------------------------------------
+  # CLOSED: gender  (3 values)
+  # ----------------------------------------------------------------------
+
+  gender:
+    description: |
+      The gender presentation the product is marketed for. Closed
+      vocabulary of 3 values. Pick the dominant target.
+    cardinality: "single"
+    taxonomy_kind: "closed"
+    out_of_vocabulary_policy: |
+      Leave null. There are no other values; the manifest is exhaustive.
+    edge_cases: |
+      - "Boys' toy" -> male.
+      - "Girls' toy" -> female.
+      - Product is colour-coded but not gender-marked (e.g. plain blue
+        bib) -> unisex.
+      - Apparel where the size range and styling are not gendered ->
+        unisex.
+      # ---- v1.1 additions (pilot-driven) -------------------------------
+      - Character licensing alone is NOT gender coding. Mickey, Pokémon,
+        dinosaur, animal print, bug print -> unisex unless paired with
+        explicit gender language ("Boys' Mickey shirt") or a strongly
+        gender-coded character (princess, fairy, ballerina -> female;
+        superhero, soldier, knight, race-car driver -> male).
+      - Colour alone is NOT gender coding. "Blue diaper" / "Red bug
+        print" -> unisex. Add "Boys'" / "Girls'" or a gendered character
+        to make it gendered.
+      - Print themes (animals, vehicles, dinosaurs, bugs) are unisex
+        defaults. They become gendered only when paired with explicit
+        gender language or a strongly gendered character theme.
+      - Historical gender associations do NOT apply. "Metal construction
+        toys are for boys" / "dolls are for girls" / "kitchen toys are
+        for girls" -> reject. Modern catalog products without an explicit
+        gender cue are unisex regardless of legacy stereotype.
+      - Adult utility products without a gender cue (kitchen organisers,
+        general household items) -> unisex.
+      # ---- v1.2 additions (bridge-driven) ------------------------------
+      - PINK in baby and toy retail IS gender coding -> female. This is
+        an asymmetric exception to the "colour alone is not gender
+        coding" rule above. Empirical retail convention: pink products
+        in baby / toy categories signal female targeting even when no
+        gender phrase is present. Blue remains neutral (the example
+        "Blue diaper -> unisex" still holds).
+        Cue: a product positioned as pink (colour, theme, packaging
+        palette) without any other gender cue -> female.
+      - Female-coded product CATEGORIES default to female even without
+        an explicit gender phrase. The category itself signals the
+        target audience by retail convention. Categories: beauty
+        products (BB cream, makeup, cosmetics), hair accessories
+        (clips, bands, scrunchies), nail products. This is a category-
+        level exception to the "reject historical stereotype" rule
+        above and is intentionally short -- do not extend without a
+        named retail-convention basis.
+
+    values:
+      male:
+        definition: |
+          Marketed for boys / men / father. Often colour-coded blue,
+          uses masculine framing in the product name, or explicitly says
+          "boy" / "for him" / "men's".
+        positive_examples:
+          - "Boys' romper - Blue"
+          - "Father's-day gift set"
+
+      female:
+        definition: |
+          Marketed for girls / women / mother. Often colour-coded
+          pink/purple, explicitly says "girl" / "for her" / "women's",
+          or features feminine-coded characters.
+        positive_examples:
+          - "Princess costume"
+          - "Mother's nursing pillow"
+
+      unisex:
+        definition: |
+          Not gender-marketed. Suitable for any child or any caregiver.
+          Default for plain colours, generic infant care items, neutral
+          toys.
+        positive_examples:
+          - "Star Babies - Disposable Bibs (white)"
+          - "Wooden block set - natural"
+        notes: |
+          Most infant care items default to unisex unless explicitly
+          coded otherwise.
+
+  # ----------------------------------------------------------------------
+  # CLOSED: use_case  (10 values)
+  # ----------------------------------------------------------------------
+
+  use_case:
+    description: |
+      The primary moment / context the product is used in. A product
+      can plausibly serve multiple moments; pick the dominant one for
+      this workspace's single-cardinality contract.
+    cardinality: "single"
+    taxonomy_kind: "closed"
+    out_of_vocabulary_policy: |
+      Leave null. The 10 values are exhaustive; if no value fits, the
+      product genuinely has no use_case (e.g., a generic mug). Do NOT
+      invent new values.
+    edge_cases: |
+      - Bundles spanning multiple moments (e.g., "Disposable Bibs +
+        Changing Mat"): pick by largest-quantity component. If equal,
+        pick by the moment named first in the product title.
+      - Generic products (e.g., plain water bottles): leave null unless
+        the name explicitly references a moment.
+      - Apparel without context (plain shirts): null. Do NOT force
+        clothing into a use_case.
+      # ---- v1.1 additions (pilot-driven) -------------------------------
+      - Themed toys take use_case=play, NOT the themed moment. A "school
+        playset", "kitchen playset", "hospital playset", "tea set", or
+        "Mr. Potato Head set" is play -- the themed moment is the
+        product's *fiction*, not its real moment of use.
+        Real-school items (backpacks, lunch boxes, stationery) take
+        use_case=school. Real-feeding items take feeding. The rule is:
+        if a child is *pretending* the moment, it's play; if the moment
+        is real, it's the actual use_case.
+      - Apparel bundled with a play-themed accessory (e.g., "Plush Gift
+        Set with Socks for Baby"): the apparel is the dominant component
+        -> use_case=null per the apparel rule. The plush is themed
+        packaging; it does not promote use_case=play.
+      - "Set" in product names is ambiguous. Distinguish:
+          * Bundle of components (e.g., "Bibs + Changing Mat Set") ->
+            pick by largest-quantity component per the bundle rule.
+          * Themed playset (e.g., "Tea Set", "Mr. Potato Head Set",
+            "Princess Breakfast Set", "Doctor Kit") -> single product;
+            use_case=play.
+        Cue: bundles list multiple distinct components; themed playsets
+        contain many parts of one fictional whole.
+      - Age-graded engineering / construction toys with explicit age
+        recommendations (e.g., "Metal Mechanix 8+") -> use_case=learning
+        per the age-graded rule already in `learning.notes`.
+        Without an age grade, default to play.
+      # ---- v1.2 additions (bridge-driven) ------------------------------
+      - Bouncers, baby swings, infant rockers, sensory soothers, white-
+        noise machines: no existing use_case value fits. Soothing /
+        regulation isn't an AAV value. Leave use_case=null. Do NOT
+        force-fit to sleeping (the product is for awake-soothing) or
+        learning (the product is for sensory regulation). Add a note
+        flagging the gap.
+
+    values:
+      feeding:
+        definition: |
+          Used during the act of feeding -- nursing, mealtime, snack
+          time. Includes bibs, sippy cups, baby bottles, breast pumps,
+          highchairs, formula. Pacifiers count because the soothing
+          behaviour is contiguous with feeding moments.
+        positive_examples:
+          - "Star Babies - Disposable Bibs"
+          - "Suavinex - Fusion Soother Pacifier"
+        negative_examples:
+          - "Hans Larsen Stainless Water Bottle 650ml -> null (generic adult bottle)"
+        notes: |
+          Bottles only when explicitly "baby/feeding/nursing bottle".
+
+      diapering:
+        definition: |
+          Used during the diaper-change moment. Diapers, wipes, changing
+          mats, rash creams.
+        positive_examples:
+          - "Star Babies - Reusable Changing Mats"
+          - "Nip - Sensitive Wipes 60pcs"
+        negative_examples:
+          - "Diaper bag -> travel (the carrying moment dominates)"
+
+      bathing:
+        definition: |
+          Used during bath / shower / hygiene. Bath toys, shampoo, body
+          wash, bath towels, bath sponges.
+        positive_examples:
+          - "Bath sponge for babies"
+          - "Baby shampoo"
+
+      sleeping:
+        definition: |
+          Used during sleep / bedtime / naps. Swaddles, sleep sacks,
+          pajamas, blankets, crib sheets, white-noise machines.
+        positive_examples:
+          - "Swaddle blanket"
+          - "Toddler sleep sack"
+        notes: |
+          Generic onesies/bodysuits without sleep context default to
+          null, NOT sleeping.
+
+      travel:
+        definition: |
+          Used while transporting the child. Strollers, car seats, diaper
+          bags, travel cots, baby carriers.
+        positive_examples:
+          - "Bugaboo - Donkey 5 Duo Stroller"
+          - "Diaper backpack"
+
+      school:
+        definition: |
+          Used during the school day. Backpacks, lunch boxes, stationery,
+          notebooks, school uniforms.
+        positive_examples:
+          - "Kindergarten backpack"
+          - "Lunch box with compartments"
+
+      swimming:
+        definition: |
+          Used at the pool / beach / in water. Swimsuits, swim diapers,
+          pool floats, swim arm-bands, beach toys.
+        positive_examples:
+          - "Swim diaper 12m+"
+          - "Pool float ring"
+        notes: |
+          Beach towels: prefer bathing if the product is generic;
+          swimming if the name is explicitly "beach towel".
+
+      play:
+        definition: |
+          Active play -- toys, ride-ons, plush, action figures, balls.
+          The default category for things in a child's hands without a
+          specific moment context.
+        positive_examples:
+          - "Mattel - Velociraptor figure"
+          - "Plush teddy bear"
+        notes: |
+          When in doubt between play and learning, prefer play unless
+          the product is plainly educational (book, flashcards).
+
+      learning:
+        definition: |
+          Educational moments -- books, puzzles, flashcards, learning
+          toys, alphabet/number games.
+        positive_examples:
+          - "Picture story book"
+          - "Alphabet flashcards"
+        notes: |
+          Activity / coloring books still belong here. Puzzles can be
+          either learning or play; default to learning if the product
+          name mentions "educational" or has age-graded difficulty.
+
+      party:
+        definition: |
+          Celebrations and dress-up. Costumes, party supplies, balloons,
+          cake toppers, decorations.
+        positive_examples:
+          - "Princess costume"
+          - "Birthday balloon arch"
+
+  # ----------------------------------------------------------------------
+  # OPEN: product_type  (49 active values; 8 anchors documented here)
+  # ----------------------------------------------------------------------
+
+  product_type:
+    description: |
+      The primary functional category of the product. Discovered via
+      enrichment and curated through taxonomy_admin approval. This
+      workspace currently has ~49 distinct values; the canonical
+      examples below are anchors -- a small representative subset to
+      help labelers calibrate. The full active value list is in the
+      AttributeAllowedValue rows for this workspace.
+    cardinality: "single"
+    taxonomy_kind: "open"
+    out_of_vocabulary_policy: |
+      If no existing value fits, leave the label null and add a note in
+      the `notes` field. Do NOT invent a new product_type during
+      labeling. New values flow through taxonomy_admin (the system
+      proposes via enrichment, humans approve); the labeling pipeline
+      doesn't extend the vocabulary.
+
+      To check whether a value exists, search the active
+      AttributeAllowedValue list for this workspace -- not the canonical
+      examples below.
+    edge_cases: |
+      - Bundles (e.g., "Bibs + Changing Mat"): pick the largest-quantity
+        component. Tie-break: the component named first.
+      - Multi-purpose items: the dominant function is the parent
+        product (stroller); secondary components (bag) are accessories.
+      - Apparel: prefer the most specific value (`bodysuit` over a
+        generic `clothing`).
+      - Books with strong learning angle: still `book`. Use_case
+        captures the learning angle separately; don't double-encode.
+      # ---- v1.1 additions (pilot-driven) -------------------------------
+      - Figurine-and-scenery systems (Playmobil, Sylvanian Families,
+        themed doll-houses with figures, "playmobil <theme>" sets) ->
+        playset. NOT construction_toy.
+        Construction_toy is for building systems where the construction
+        IS the play (Lego, magnetic tiles, metal construction kits like
+        Meccano / Metal Mechanix). The distinguishing question: "is the
+        child building, or is the child enacting a scene?" Building ->
+        construction_toy. Enacting a scene -> playset.
+      - Out-of-domain catalog scope: if a product is plainly outside
+        the workspace's domain (e.g., a kitchen sponge holder in a baby
+        catalog) AND no existing AAV value fits, label product_type as
+        null and add a note flagging "catalog-scope". The null is
+        because no value matches, not because the product is unusual --
+        attribute_eval should treat catalog-scope nulls as a separate
+        category from "system missed it" nulls.
+
+    canonical_examples:
+      bib:
+        definition: |
+          An item worn around the neck to catch food or spills. Includes
+          drool bibs and feeding bibs.
+        positive_examples:
+          - "Star Babies - Disposable Bibs 20pcs"
+          - "Munch Mitt + Buddy Bib bundle"
+        notes: |
+          When bundled with another component (e.g., bibs + changing
+          mat), pick by quantity per the edge-case rule.
+
+      stroller:
+        definition: |
+          A wheeled vehicle for transporting an infant or toddler.
+        positive_examples:
+          - "Bugaboo - Donkey 5 Duo Complete Stroller"
+          - "Moon - Pronto Autofold Stroller"
+        negative_examples:
+          - "Stroller cup holder -> stroller_accessory"
+        notes: |
+          Always single product_type=stroller. Bundled accessories are
+          a separate product family.
+
+      pacifier:
+        definition: |
+          A soothing teat-like device for infants. Silicone, latex, and
+          similar variants.
+        positive_examples:
+          - "Nip - Cherry Round Soother - 0-6M"
+          - "Frigg - Daisy Silicone Pacifier"
+        negative_examples:
+          - "Teether ring (different action) -> teether"
+
+      water_bottle:
+        definition: |
+          A reusable container for drinking water, sized for older
+          children or adults. NOT baby feeding bottles.
+        positive_examples:
+          - "Hans Larsen - Aversa Stainless Water Bottle 650ml"
+        negative_examples:
+          - "Baby feeding bottle -> use the baby-specific bottle value"
+        notes: |
+          The catalog has BOTH `water_bottle` (for older kids/adults)
+          and bottle-style values for infant feeding. Disambiguate via
+          size + age cues + the words "baby" / "feeding" / "nursing".
+
+      book:
+        definition: |
+          Bound printed reading material. Activity books, story books,
+          board books, picture books all count.
+        positive_examples:
+          - "DINO COVE 16: Haunting of the Ghost Runners"
+          - "Two Little Penguins Story Book"
+        notes: |
+          Coloring/activity books are still `book`. The educational
+          angle is captured by `use_case=learning`, not by a separate
+          product_type.
+
+      changing_mat:
+        definition: |
+          A flat surface designed for diaper changes. Disposable or
+          reusable.
+        positive_examples:
+          - "Star Babies - Reusable Changing Mats - White"
+        negative_examples:
+          - "Bedding mat / play mat -> bedding or playmat"
+
+      ride_on:
+        definition: |
+          A wheeled toy a child sits on or rides. Includes powered cars,
+          balance bikes, push-cars, and similar.
+        positive_examples:
+          - "Lamborghini Urus 12V kids ride-on car"
+          - "Toyota Tundra ride-on truck"
+        negative_examples:
+          - "Add-on parts (battery, seat cover) -> stroller_accessory or vehicle_toy"
+
+      stroller_accessory:
+        definition: |
+          A complementary item designed to be used WITH a stroller.
+          Cup holders, sun shades, stroller fans, parent organizers.
+        positive_examples:
+          - "Stroller cup holder"
+          - "Stroller mosquito net"
+        notes: |
+          Marked as `recommendation_role=complementary` in the manifest;
+          a stroller buyer should still see these post-purchase. The
+          parent stroller stays `stroller`.

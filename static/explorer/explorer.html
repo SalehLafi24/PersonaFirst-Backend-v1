@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Recommendation Explorer · PersonaFirst</title>
+  <link rel="stylesheet" href="/admin/explorer/static/explorer.css">
+</head>
+<body>
+  <header class="hdr">
+    <div class="hdr-inner">
+      <h1 class="hdr-title">Recommendation Explorer</h1>
+      <div class="hdr-controls">
+        <div class="mode-switch" role="tablist" aria-label="Mode">
+          <button id="mode-product"  class="mode-btn mode-active" type="button" role="tab">Product Mode</button>
+          <button id="mode-customer" class="mode-btn"             type="button" role="tab">Customer Mode</button>
+        </div>
+        <label class="ws-picker">
+          Workspace
+          <select id="ws-select"></select>
+        </label>
+        <label class="toggle">
+          <input id="demo-toggle" type="checkbox" checked>
+          <span>Demo Mode</span>
+        </label>
+        <label class="toggle toggle-debug" id="debug-toggle-wrap">
+          <input id="debug-toggle" type="checkbox">
+          <span>Show debug details</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <aside id="picker-host" class="picker-host"></aside>
+
+    <section class="results">
+      <div id="anchor-host"></div>
+      <div id="grid-host"></div>
+      <div id="debug-host"></div>
+    </section>
+  </main>
+
+  <div id="status-bar" class="status-bar" hidden></div>
+
+  <script type="module" src="/admin/explorer/static/explorer.js"></script>
+</body>
+</html>

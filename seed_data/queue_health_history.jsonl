@@ -1,0 +1,1 @@
+{"timestamp": "2026-05-07T23:48:23+00:00", "workspace_id": 8, "workspace_slug": "mumzworld_v3_sample", "pending_total": 954, "stale_count": 0, "stale_threshold_days": 14, "oldest_age_days": 9, "avg_age_days": 5.94, "by_attribute": {"age_group": 1, "seasonality": 3, "product_type": 225, "brand": 725}, "by_attribute_stale": {}}

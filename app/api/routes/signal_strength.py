@@ -2,8 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.schemas.signal_strength import BatchSignalStrengthRead, SignalStrengthRead
-from app.services import signal_strength_service
+from app.schemas.signal_strength import (
+    AudienceSignalRead,
+    AudienceSignalRequest,
+    BatchSignalStrengthRead,
+    SignalStrengthRead,
+)
+from app.services import audience_signal_service, signal_strength_service
 from app.services.workspace_service import get_workspace
 
 router = APIRouter(
@@ -16,6 +21,17 @@ def _require_workspace(workspace_id: int, db: Session = Depends(get_db)) -> int:
     if not get_workspace(db, workspace_id):
         raise HTTPException(status_code=404, detail="Workspace not found")
     return workspace_id
+
+
+@router.post("/audience", response_model=AudienceSignalRead)
+def get_audience_signal(
+    body: AudienceSignalRequest,
+    workspace_id: int = Depends(_require_workspace),
+    db: Session = Depends(get_db),
+):
+    return audience_signal_service.compute_audience_signal(
+        db, workspace_id, body.customer_ids,
+    )
 
 
 @router.get("/{customer_id}", response_model=SignalStrengthRead)

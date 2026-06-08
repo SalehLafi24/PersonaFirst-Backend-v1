@@ -1,0 +1,32 @@
+[
+  {
+    "customer_id": "C001",
+    "name": "Maya Runner",
+    "archetype": "high_intensity_runner",
+    "notes": "Prefers black/navy performance gear, high support, running and training products."
+  },
+  {
+    "customer_id": "C002",
+    "name": "Lina Studio",
+    "archetype": "yoga_pilates",
+    "notes": "Likes green/pink tones, yoga and pilates products, low/medium support."
+  },
+  {
+    "customer_id": "C003",
+    "name": "Sara Travel",
+    "archetype": "travel_capsule",
+    "notes": "Prefers navy/beige/white travel-friendly versatile pieces."
+  },
+  {
+    "customer_id": "C004",
+    "name": "Nour Formal",
+    "archetype": "formal_evening",
+    "notes": "Leans toward formal dresses and slim silhouettes."
+  },
+  {
+    "customer_id": "C005",
+    "name": "Dana Lounge",
+    "archetype": "lounge_recovery",
+    "notes": "Prefers soft lounge items, grey/pink, recovery-day apparel."
+  }
+]

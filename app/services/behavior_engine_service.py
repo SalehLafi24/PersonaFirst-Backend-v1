@@ -2,7 +2,9 @@ from collections import defaultdict
 
 from sqlalchemy.orm import Session
 
+from app.models.customer import CustomerInteraction, INTERACTION_PURCHASE
 from app.models.customer_purchase import CustomerPurchase
+from app.models.product import Product
 from app.models.product_behavior_relationship import ProductBehaviorRelationship
 
 
@@ -67,5 +69,74 @@ def run_behavior_engine(db: Session, workspace_id: int) -> int:
         )
         created += 1
 
+    db.commit()
+    return created
+
+
+def run_behavior_engine_from_interactions(db: Session, workspace_id: int) -> int:
+    """Interaction-sourced sibling of run_behavior_engine.
+
+    Same algorithm: full-refresh directional co-purchase strengths
+        strength(A → B) = customers_who_bought_both / customers_who_bought_A
+    but reads CustomerInteraction(type='purchase') and resolves external
+    product_id to Product DB id at runtime. Writes into the same
+    product_behavior_relationships table as the purchase-sourced engine.
+    """
+    interactions = (
+        db.query(CustomerInteraction)
+        .filter(CustomerInteraction.workspace_id == workspace_id,
+                CustomerInteraction.interaction_type == INTERACTION_PURCHASE)
+        .all()
+    )
+    if not interactions:
+        return 0
+
+    pids = list({i.product_id for i in interactions})
+    products = (
+        db.query(Product)
+        .filter(Product.workspace_id == workspace_id,
+                Product.product_id.in_(pids))
+        .all()
+    )
+    db_id_by_ext: dict[str, int] = {p.product_id: p.id for p in products}
+
+    customer_products: dict[str, set[int]] = defaultdict(set)
+    for i in interactions:
+        db_id = db_id_by_ext.get(i.product_id)
+        if db_id is None:
+            continue
+        customer_products[i.customer_id].add(db_id)
+
+    if not customer_products:
+        return 0
+
+    source_count: dict[int, int] = defaultdict(int)
+    overlap_count: dict[tuple[int, int], int] = defaultdict(int)
+    for product_ids in customer_products.values():
+        sorted_ids = sorted(product_ids)
+        for a in sorted_ids:
+            source_count[a] += 1
+            for b in sorted_ids:
+                if a != b:
+                    overlap_count[(a, b)] += 1
+
+    db.query(ProductBehaviorRelationship).filter(
+        ProductBehaviorRelationship.workspace_id == workspace_id
+    ).delete()
+
+    created = 0
+    for (a, b), overlap in sorted(overlap_count.items()):
+        src_count = source_count[a]
+        if src_count == 0:
+            continue
+        db.add(ProductBehaviorRelationship(
+            workspace_id=workspace_id,
+            source_product_db_id=a,
+            target_product_db_id=b,
+            strength=round(overlap / src_count, 6),
+            customer_overlap_count=overlap,
+            source_customer_count=src_count,
+        ))
+        created += 1
     db.commit()
     return created
