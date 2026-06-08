@@ -46,7 +46,7 @@ Thanks for taking 30 minutes to do this.
 
 ## What you're rating
 
-For each of 10 customers below, you'll see:
+For each customer below, you'll see:
 - **Profile** — one-line description.
 - **Recently bought** — products the customer has actually purchased.
 - **Recommended** — the 10 products our system suggests.
@@ -100,7 +100,7 @@ can compare reviewers without overwriting.
 
 ## Time
 
-~3 minutes per customer × 10 customers = ~30 minutes total.
+~3 minutes per customer; about half an hour for the full panel.
 
 ---
 """
