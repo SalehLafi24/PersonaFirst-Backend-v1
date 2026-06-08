@@ -21,24 +21,28 @@ There are no right answers — your honest read is exactly what we need.
 
 ## The 5 questions, in plain language
 
-| # | Question | Answer | Meaning |
+**Every question is worded so that `yes` (or `none` for q2) is the good
+answer.** You never answer "yes" to report a problem — if something feels
+wrong, that's a `no` (or a non-zero count on q2). Trust your first instinct.
+
+| # | Question (yes / none = good) | Answer | ✓ good vs ✗ problem |
 |---|---|---|---|
-| q1 | **Anchor sense** — do the recs match what this customer is clearly into? | yes / no | "yes" if a glance at history + recs feels coherent. "no" if the recs ignore the obvious shopping pattern. |
-| q2 | **Bizarre items** — any rec that's clearly out of place? | none / 1 / >1 | A rec for adult skincare to someone buying baby books = bizarre. A rec for a slightly different product type = not bizarre. |
-| q3 | **Complement vs more-of-same** — do the recs feel like things that *go with* what they bought, or just *more of* what they bought? | yes / partial / no | "yes" = recs add a different dimension to their existing basket. "no" = recs are clones / near-duplicates. |
-| q4 | **No bad repeats** — does anything appear that they just bought, in a way that feels wrong? | yes / no | "yes" = no awkward repeats. "no" = something they bought yesterday is being re-pitched. |
-| q5 | **Surprise** — is there at least one rec that's an interesting expansion — something they probably didn't expect but still makes sense? | yes / no | "yes" = at least one defensible "huh, that's a nice idea". "no" = everything is predictable. |
+| q1 | **Anchor sense** — do the recs match what this customer is clearly into? | yes / no | ✓ yes = history + recs feel coherent · ✗ no = recs ignore the obvious shopping pattern |
+| q2 | **Bizarre items** — how many recs are clearly out of place? (a count) | none / 1 / >1 | ✓ none · ✗ 1 or >1 — e.g. adult skincare to a baby-book buyer is bizarre; a slightly different product type is not |
+| q3 | **Complement vs more-of-same** — do the recs *go with* what they bought, rather than just being *more of* the same? | yes / partial / no | ✓ yes = adds a different dimension to their basket · partial = mixed · ✗ no = clones / near-duplicates |
+| q4 | **No bad repeats** — are things they just bought kept out of the recs (or clearly justified if shown)? | yes / no | ✓ yes = no awkward repeats · ✗ no = something they bought yesterday is being re-pitched |
+| q5 | **Surprise** — is there at least one interesting expansion — something they probably didn't expect but still makes sense? | yes / no | ✓ yes = at least one defensible "huh, that's a nice idea" · ✗ no = everything is predictable |
 
 ## How to record your answers
 
 In `recommendation_rubric_template.csv`, for each customer row, fill:
 - `reviewer` — your name or initials
 - `reviewed_at` — today's date
-- `q1_anchor_sense` — yes / no
-- `q2_no_bizarre_items` — none / 1 / >1
-- `q3_complement_quality` — yes / partial / no
-- `q4_saturation_respect` — yes / no
-- `q5_surprise` — yes / no
+- `q1_anchor_sense` — yes / no _(yes = good)_
+- `q2_no_bizarre_items` — none / 1 / >1 _(none = good)_
+- `q3_complement_quality` — yes / partial / no _(yes = good)_
+- `q4_saturation_respect` — yes / no _(yes = good)_
+- `q5_surprise` — yes / no _(yes = good)_
 - `notes` — any specific observation (1-2 sentences)
 
 Save the file as `recommendation_rubric_<your_name>_<date>.csv` so we
@@ -84,12 +88,12 @@ _Profile: infant parent (heavy purchase history)_
 9. **Fissman - Baby Dinosaur Design Training Sippy Cup** &nbsp; _infant, for feeding_
 10. **Nan - Organic Stage 1 Infant Formula - 0-6M - 380 g** &nbsp; _infant, for feeding_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -120,12 +124,12 @@ _Profile: infant parent (alt distribution)_
 9. **Star Babies - Disposable Bibs 15pcs w/ Disposable Towel 3pcs - Elephant** &nbsp; _bib, infant, for feeding_
 10. **Nan - Organic Stage 1 Infant Formula - 0-6M - 380 g** &nbsp; _infant, for feeding_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -156,12 +160,12 @@ _Profile: play-focused buyer (mixed ages)_
 9. **Myts - Outdoor Pony Spring Rider - Yellow** &nbsp; _ride on, kids_
 10. **Viga - Beech Wood Block 6 Trays - Set#2** &nbsp; _construction toy, kids_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -192,12 +196,12 @@ _Profile: kids/learning buyer_
 9. **Clementoni - Puzzle Frame Me Up Disney Cars - 60pcs** &nbsp; _puzzle, kids, for learning_
 10. **Toy School - Lights And Sounds Phonics Desk** &nbsp; _learning toy, toddler, for learning_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -228,12 +232,12 @@ _Profile: apparel buyer (mixed ages)_
 9. **Party Camel - Graduation Banner Kit** &nbsp; _party supply, teen, for party_
 10. **Shush - Mega Beauty Suitcase** &nbsp; _playset, teen, for play_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -264,12 +268,12 @@ _Profile: cross-segment buyer (one of each)_
 9. **Early Learning Centre - Soft Stuff Colourful Dough Collection** &nbsp; _art supply, toddler, for learning_
 10. **Eurekakids - Professions Montessori Educational Puzzle - 40pcs** &nbsp; _puzzle, toddler, for learning_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -300,12 +304,12 @@ _Profile: adult-self buyer (supplements/makeup/coffee/skincare/hair_care)_
 9. **Flormar - Smokey Eyes Carbon Black Waterproof Eyeliner** &nbsp; _makeup, adult_
 10. **Petal Fresh Superfoods - Damage Control Hair Serum, 2oz** &nbsp; _hair care, adult_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -335,12 +339,12 @@ _Profile: gift buyer (variety across ages and product_types)_
 9. **Munch Mitt - Polka dots - Green + Buddy Bib - T-Rex** &nbsp; _teether, infant, for feeding_
 10. **British Museum: ABC** &nbsp; _book, infant, for learning_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -364,12 +368,12 @@ _Profile: cold-start (single interaction)_
 9. **BABYBJORN - Fabric Seat Mesh Bouncer Bliss Navy Blue** &nbsp; _bouncer, infant_
 10. **Night Angel - Boys Reusable Diapers W/Pads Pack of 3 - Light Blue** &nbsp; _diaper, infant, for diapering_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
@@ -397,12 +401,12 @@ _Profile: recent-purchase customer (tests RepurchaseSuppression)_
 9. **Nan - Organic Stage 1 Infant Formula - 0-6M - 380 g** &nbsp; _infant, for feeding_
 10. **Star Babies - Changing Mats 12pcs w/ Scented Bag Dispenser & Disposable Bib** &nbsp; _changing mat, infant, for feeding_
 
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---

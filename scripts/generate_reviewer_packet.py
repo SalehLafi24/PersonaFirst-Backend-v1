@@ -63,24 +63,28 @@ There are no right answers — your honest read is exactly what we need.
 
 ## The 5 questions, in plain language
 
-| # | Question | Answer | Meaning |
+**Every question is worded so that `yes` (or `none` for q2) is the good
+answer.** You never answer "yes" to report a problem — if something feels
+wrong, that's a `no` (or a non-zero count on q2). Trust your first instinct.
+
+| # | Question (yes / none = good) | Answer | ✓ good vs ✗ problem |
 |---|---|---|---|
-| q1 | **Anchor sense** — do the recs match what this customer is clearly into? | yes / no | "yes" if a glance at history + recs feels coherent. "no" if the recs ignore the obvious shopping pattern. |
-| q2 | **Bizarre items** — any rec that's clearly out of place? | none / 1 / >1 | A rec for adult skincare to someone buying baby books = bizarre. A rec for a slightly different product type = not bizarre. |
-| q3 | **Complement vs more-of-same** — do the recs feel like things that *go with* what they bought, or just *more of* what they bought? | yes / partial / no | "yes" = recs add a different dimension to their existing basket. "no" = recs are clones / near-duplicates. |
-| q4 | **No bad repeats** — does anything appear that they just bought, in a way that feels wrong? | yes / no | "yes" = no awkward repeats. "no" = something they bought yesterday is being re-pitched. |
-| q5 | **Surprise** — is there at least one rec that's an interesting expansion — something they probably didn't expect but still makes sense? | yes / no | "yes" = at least one defensible "huh, that's a nice idea". "no" = everything is predictable. |
+| q1 | **Anchor sense** — do the recs match what this customer is clearly into? | yes / no | ✓ yes = history + recs feel coherent · ✗ no = recs ignore the obvious shopping pattern |
+| q2 | **Bizarre items** — how many recs are clearly out of place? (a count) | none / 1 / >1 | ✓ none · ✗ 1 or >1 — e.g. adult skincare to a baby-book buyer is bizarre; a slightly different product type is not |
+| q3 | **Complement vs more-of-same** — do the recs *go with* what they bought, rather than just being *more of* the same? | yes / partial / no | ✓ yes = adds a different dimension to their basket · partial = mixed · ✗ no = clones / near-duplicates |
+| q4 | **No bad repeats** — are things they just bought kept out of the recs (or clearly justified if shown)? | yes / no | ✓ yes = no awkward repeats · ✗ no = something they bought yesterday is being re-pitched |
+| q5 | **Surprise** — is there at least one interesting expansion — something they probably didn't expect but still makes sense? | yes / no | ✓ yes = at least one defensible "huh, that's a nice idea" · ✗ no = everything is predictable |
 
 ## How to record your answers
 
 In `recommendation_rubric_template.csv`, for each customer row, fill:
 - `reviewer` — your name or initials
 - `reviewed_at` — today's date
-- `q1_anchor_sense` — yes / no
-- `q2_no_bizarre_items` — none / 1 / >1
-- `q3_complement_quality` — yes / partial / no
-- `q4_saturation_respect` — yes / no
-- `q5_surprise` — yes / no
+- `q1_anchor_sense` — yes / no _(yes = good)_
+- `q2_no_bizarre_items` — none / 1 / >1 _(none = good)_
+- `q3_complement_quality` — yes / partial / no _(yes = good)_
+- `q4_saturation_respect` — yes / no _(yes = good)_
+- `q5_surprise` — yes / no _(yes = good)_
 - `notes` — any specific observation (1-2 sentences)
 
 Save the file as `recommendation_rubric_<your_name>_<date>.csv` so we
@@ -172,12 +176,12 @@ def _print_recs(response):
 
 
 _QUESTION_BLOCK = """
-**Your ratings for this customer** _(record in CSV)_:
-- q1 anchor sense: yes / no
-- q2 bizarre items: none / 1 / >1
-- q3 complement quality: yes / partial / no
-- q4 no bad repeats: yes / no
-- q5 surprise: yes / no
+**Your ratings for this customer** _(record in CSV — `yes` / `none` = good)_:
+- q1 anchor sense: yes / no  _(yes = good)_
+- q2 bizarre items: none / 1 / >1  _(none = good)_
+- q3 complement quality: yes / partial / no  _(yes = good)_
+- q4 no bad repeats: yes / no  _(yes = good)_
+- q5 surprise: yes / no  _(yes = good)_
 - notes:
 
 ---
