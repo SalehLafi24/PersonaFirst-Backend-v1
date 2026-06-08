@@ -189,6 +189,13 @@ _QUESTION_BLOCK = """
 
 
 def main() -> None:
+    # The packet uses non-ASCII glyphs (✓ ✗ ·); force UTF-8 stdout so
+    # redirecting to a file on a cp1252 default (Windows) doesn't crash.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", required=True)
     parser.add_argument("--fixture", type=Path, default=_DEFAULT_FIXTURE)
