@@ -25,13 +25,19 @@ recs feel wrong" cases. NOT graded — produces a per-question pass-rate, not a 
 
 For each customer, answer each question. Three-state for q2/q3, binary for q1/q4/q5.
 
-| Q | Question | Values | Meaning |
+**Polarity — read this first.** Every question is worded so that **`yes`
+(or `none` for q2) is always the good answer** and **`no` (or a non-zero
+count) always flags a problem**. No question is inverted: you never answer
+"yes" to report something wrong. If your instinct is "yes, there's a problem
+here", that maps to the **`no`** column.
+
+| Q | Question (yes / none = good) | Values | ✓ good vs ✗ problem |
 |---|---|---|---|
-| q1 | **Anchor sense**: does the rec set make sense given the customer's stated persona? | yes / no | "no" iff the dominant persona signal isn't reflected at all |
-| q2 | **No bizarre items**: any rec clearly absurd given the persona? | none / 1 / >1 | counts items, not severity |
-| q3 | **Complement quality**: do complement-style recs actually complement, not duplicate? | yes / partial / no | partial = some complements are echoes |
-| q4 | **Saturation respect**: no recently-purchased items reappearing without justification? | yes / no | cross-reference engine output's `intent_contributions` |
-| q5 | **Surprise**: at least one rec interesting-but-defensible? | yes / no | guards against echo-chamber |
+| q1 | **Anchor sense**: do the recs reflect the customer's dominant persona / shopping pattern? | yes / no | ✓ yes · ✗ no = the dominant signal isn't reflected at all |
+| q2 | **No bizarre items**: are the recs all sensible for this persona? Count any clearly-absurd ones — **`none` is the good answer.** | none / 1 / >1 | ✓ none · ✗ 1 or >1 — counts items, not severity |
+| q3 | **Complement quality**: do complement-style recs genuinely complement rather than duplicate? | yes / partial / no | ✓ yes · partial = some complements are echoes · ✗ no = clones / near-dupes |
+| q4 | **No bad repeats** (saturation respect): are recently-bought items kept out of the recs, or clearly justified when shown? **If you spot a just-bought item re-pitched, answer `no`.** | yes / no | ✓ yes = respected · ✗ no = an unjustified repeat appeared (cross-check `intent_contributions`) |
+| q5 | **Surprise**: is there at least one interesting-but-defensible rec? | yes / no | ✓ yes · ✗ no = everything is predictable (echo chamber) |
 
 ## Filling the template
 
