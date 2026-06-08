@@ -250,7 +250,7 @@ def approve_attribute_aggregate(
     Returns ``(aggregate, definition_payload)`` where definition_payload
     is a dict shaped like an AttributeDefinition constructor argument.
     """
-    agg = db.query(ProposedAttributeAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
 
@@ -299,7 +299,7 @@ def reject_attribute_aggregate(
     review_note: str | None = None,
 ) -> ProposedAttributeAggregate:
     """Reject an attribute aggregate."""
-    agg = db.query(ProposedAttributeAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
     agg.status = ATTR_PROPOSAL_STATUS_REJECTED
@@ -329,7 +329,7 @@ def merge_attribute_aggregate(
         raise ValueError(
             f"target '{target_attribute_name}' is not in existing attributes"
         )
-    agg = db.query(ProposedAttributeAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
     agg.status = ATTR_PROPOSAL_STATUS_MERGED
