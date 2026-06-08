@@ -189,7 +189,7 @@ class TestRefreshAggregates:
         # Add more events and re-refresh.
         self._seed(db, ws, products=["P002", "P003"])
         refresh_attribute_aggregates(db, workspace_id=ws.id)
-        agg_after = db.query(ProposedAttributeAggregate).get(agg.id)
+        agg_after = db.get(ProposedAttributeAggregate, agg.id)
         assert agg_after.status == ATTR_PROPOSAL_STATUS_REJECTED
         assert agg_after.proposal_count == 1  # not updated
 

@@ -411,7 +411,7 @@ def approve_aggregate(
     """
     from app.services.attribute_taxonomy_service import upsert_allowed_value
 
-    agg = db.query(ProposedAttributeValueAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeValueAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
 
@@ -474,7 +474,7 @@ def reject_aggregate(
 
     ``merge_reason`` is typically ``noise`` for low-signal rejections.
     """
-    agg = db.query(ProposedAttributeValueAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeValueAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
     agg.status = PROPOSAL_STATUS_REJECTED
@@ -743,7 +743,7 @@ def merge_aggregate(
         raise ValueError(
             f"target '{target_allowed_value}' is not in current allowed_values"
         )
-    agg = db.query(ProposedAttributeValueAggregate).get(aggregate_id)
+    agg = db.get(ProposedAttributeValueAggregate, aggregate_id)
     if agg is None:
         raise ValueError(f"aggregate {aggregate_id} not found")
     agg.status = PROPOSAL_STATUS_MERGED
